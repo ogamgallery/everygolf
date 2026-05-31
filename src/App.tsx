@@ -4715,7 +4715,18 @@ function EveryGolfApp() {
 
 export default function AppWrapper() {
   return (
-    <div className="w-full min-h-screen bg-gray-200 flex items-center justify-center font-sans sm:py-8 sm:px-4">
+    <div className="w-full min-h-screen bg-gray-200 flex flex-col items-center justify-center font-sans py-8 px-4 gap-4">
+      {/* 내부 관계자용 배포/유출 금지 안내 배너 */}
+      <div className="hidden sm:block w-full max-w-[390px] bg-gray-900 border border-gray-800 rounded-2xl p-4 shadow-lg text-center">
+        <p className="text-xs font-black text-amber-400 flex items-center justify-center gap-1.5 mb-1.5">
+          ⚠️ 비인가자 배포 및 무단 유출 금지
+        </p>
+        <p className="text-[10px] text-gray-300 font-bold leading-relaxed">
+          본 애플리케이션은 에브리골프 관계자 검토용 데모 제품입니다.<br />
+          비인가자에 대한 무단 공유, 배포 및 상업적 유출을 엄격히 금지합니다.
+        </p>
+      </div>
+
       <div className="w-full h-[100dvh] sm:w-[390px] sm:h-[844px] sm:max-w-[390px] bg-white relative sm:rounded-[40px] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl overflow-hidden flex flex-col ring-1 ring-gray-900/5 mx-auto">
         <div className="hidden sm:block absolute top-0 inset-x-0 h-7 z-[200] pointer-events-none">
           <div className="w-[120px] h-7 bg-gray-900 mx-auto rounded-b-[20px]"></div>
