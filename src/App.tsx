@@ -1362,7 +1362,7 @@ function EveryGolfApp() {
             className="absolute w-[1600px] h-[1600px] left-1/2 top-1/2 -ml-[800px] -mt-[800px] cursor-grab active:cursor-grabbing touch-none flex items-center justify-center"
           >
             <img 
-              src="/image/naver_map.png" 
+              src="image/naver_map.png" 
               className="w-full h-full object-contain opacity-105 saturate-100 select-none pointer-events-none" 
               alt="naver map"
             />

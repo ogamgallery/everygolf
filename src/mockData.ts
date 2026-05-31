@@ -118,8 +118,8 @@ export const MOCK_INFLUENCERS = [
     title: '"골프인플루언서계의 GD"',
     tags: ['#유쾌한라운딩', '#백돌이탈출'],
     description: '안녕하세요! 🏌️‍♂️ 다양한 채널에서 즐거운 골프 라이프를 전하고 있는 캐디와니입니다.\n\n단순히 공만 치는 라운딩이 아니라, 필드에서의 실전 꿀팁과 멘탈 관리법까지 아낌없이 전수해 드립니다. 저와 함께 웃음 끊이지 않는 프리미엄 라운딩을 즐겨보세요!',
-    avatar: '/image/1.png',
-    cover: '/image/2.png',
+    avatar: 'image/1.png',
+    cover: 'image/2.png',
     schedule: { location: '스카이72 GC (인천)', time: '이번주 토요일 11:00 티오프', count: 3 }
   },
   {
