@@ -93,8 +93,8 @@ function EveryGolfApp() {
     }
   ]);
   
-  const [activeFilterModal, setActiveFilterModal] = useState<keyof PartnerFilters | null>(null);
-  const [showSaveFavModal, setShowSaveFavModal] = useState(false);
+  const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
+
   const [favNameInput, setFavNameInput] = useState('');
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
   const [expandedPartnerId, setExpandedPartnerId] = useState<number | null>(null);
@@ -2329,103 +2329,54 @@ function EveryGolfApp() {
   };
 
   const FilterSelectorModal = () => {
-    if (!activeFilterModal) return null;
+    if (!showDetailedFilterModal) return null;
 
-    let title = '';
-    let options: string[] = [];
+    const filterOptions = [
+      {
+        key: 'cost',
+        label: '비용 부담',
+        options: ['전체', '1/N 결제', '호스트 부담']
+      },
+      {
+        key: 'gender',
+        label: '모집 성별',
+        options: ['전체', '남성', '여성', '무관']
+      },
+      {
+        key: 'age',
+        label: '모집 연령대',
+        options: ['전체', '20대', '30대', '40대', '50대 이상', '20~30대', '30~40대', '40~50대']
+      },
+      {
+        key: 'region',
+        label: '선호 지역',
+        options: ['전체', '서울', '인천', '경기', '강원', '충청', '경상', '전라', '제주']
+      },
+      {
+        key: 'date',
+        label: '라운딩 날짜',
+        options: ['전체', '오늘', '내일', '이번주 주말']
+      }
+    ];
 
-    switch (activeFilterModal) {
-      case 'cost':
-        title = '비용 부담 조건';
-        options = ['전체', '1/N 결제', '호스트 부담'];
-        break;
-      case 'gender':
-        title = '모집 성별 조건';
-        options = ['전체', '남성', '여성', '무관'];
-        break;
-      case 'age':
-        title = '모집 연령대 조건';
-        options = ['전체', '20대', '30대', '40대', '50대 이상', '20~30대', '30~40대', '40~50대'];
-        break;
-      case 'region':
-        title = '선호 지역 조건';
-        options = ['전체', '서울', '인천', '경기', '강원', '충청', '경상', '전라', '제주'];
-        break;
-      case 'date':
-        title = '라운딩 날짜 조건';
-        options = ['전체', '오늘', '내일', '이번주 주말'];
-        break;
-    }
-
-    return (
-      <AnimatePresence>
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          exit={{ opacity: 0 }} 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-[9999]"
-          onClick={() => setActiveFilterModal(null)}
-        >
-          <motion.div 
-            initial={{ y: '100%' }} 
-            animate={{ y: 0 }} 
-            exit={{ y: '100%' }} 
-            transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="w-full sm:max-w-[390px] bg-white rounded-t-[30px] p-6 shadow-2xl flex flex-col"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5 shrink-0"></div>
-            <div className="flex justify-between items-center mb-6 shrink-0">
-              <h3 className="text-lg font-black text-gray-900">{title}</h3>
-              <button onClick={() => setActiveFilterModal(null)} className="p-2 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors">
-                <X size={18} />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-2.5 pb-8 overflow-y-auto max-h-[40vh]">
-              {options.map((opt) => {
-                const isSelected = partnerFilters[activeFilterModal] === opt;
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => {
-                      setPartnerFilters(prev => ({ ...prev, [activeFilterModal]: opt }));
-                      setActiveFilterModal(null);
-                      showToast(`상세 필터가 '${opt}'(으)로 적용되었습니다.`);
-                    }}
-                    className={`py-3.5 rounded-xl font-bold text-xs border transition-all ${
-                      isSelected 
-                        ? 'border-green-600 bg-green-50 text-green-600 font-black shadow-sm' 
-                        : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    );
-  };
-
-  const SaveFavoriteModal = () => {
-    if (!showSaveFavModal) return null;
-
-    const handleSave = () => {
+    const handleSaveFavorite = () => {
       if (!favNameInput.trim()) {
         showToast('즐겨찾기 이름을 입력해주세요.');
         return;
       }
-      const newFav: FavoriteFilter = {
+      const hasActiveFilter = Object.values(partnerFilters).some(v => v !== '전체');
+      if (!hasActiveFilter) {
+        showToast('최소 한 개의 필터 조건을 지정해야 저장할 수 있습니다.');
+        return;
+      }
+      const newFav = {
         id: `fav-${Date.now()}`,
         name: favNameInput.trim(),
         filters: { ...partnerFilters }
       };
       setFavoriteFilters(prev => [newFav, ...prev]);
-      showToast(`'${favNameInput}' 조건이 즐겨찾기에 등록되었습니다! ⭐`);
+      showToast(`'${favNameInput}' 조건이 즐겨찾기에 추가되었습니다! ⭐`);
       setFavNameInput('');
-      setShowSaveFavModal(false);
     };
 
     return (
@@ -2434,42 +2385,112 @@ function EveryGolfApp() {
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }} 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]"
-          onClick={() => setShowSaveFavModal(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-[9999]"
+          onClick={() => setShowDetailedFilterModal(false)}
         >
           <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }} 
-            animate={{ scale: 1, opacity: 1 }} 
-            exit={{ scale: 0.95, opacity: 0 }} 
-            className="w-full max-w-[320px] bg-white rounded-3xl p-6 shadow-2xl flex flex-col"
+            initial={{ y: '100%' }} 
+            animate={{ y: 0 }} 
+            exit={{ y: '100%' }} 
+            transition={{ type: 'spring', damping: 25, stiffness: 250 }}
+            className="w-full sm:max-w-[390px] bg-white rounded-t-[30px] p-5 shadow-2xl flex flex-col max-h-[85vh]"
             onClick={e => e.stopPropagation()}
           >
-            <h3 className="text-base font-black text-gray-900 mb-3 flex items-center gap-1.5">
-              ⭐ 필터 즐겨찾기 저장
-            </h3>
-            <p className="text-xs text-gray-400 font-bold mb-4">
-              현재 설정된 상세 조건을 단번에 불러올 이름을 적어주세요.
-            </p>
-            <input
-              type="text"
-              placeholder="예: 경기 30대 여성"
-              value={favNameInput}
-              onChange={e => setFavNameInput(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-green-500 bg-gray-50 mb-5"
-              maxLength={15}
-            />
-            <div className="flex gap-2">
+            <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4 shrink-0"></div>
+            <div className="flex justify-between items-center mb-4 shrink-0">
+              <h3 className="text-lg font-black text-gray-900 flex items-center gap-1.5">
+                <Filter size={20} className="text-green-600 shrink-0" />
+                <span>통합 상세 조건 설정</span>
+              </h3>
+              <button onClick={() => setShowDetailedFilterModal(false)} className="p-2 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* 필터 세부 항목 스크롤 영역 */}
+            <div className="flex-1 overflow-y-auto pr-1 space-y-5 py-2 hide-scrollbar">
+              {filterOptions.map((group) => (
+                <div key={group.key} className="space-y-2">
+                  <h4 className="text-xs font-black text-gray-400 uppercase tracking-wider block">
+                    {group.label}
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.options.map((opt) => {
+                      const isSelected = partnerFilters[group.key as keyof PartnerFilters] === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setPartnerFilters(prev => ({ ...prev, [group.key as keyof PartnerFilters]: opt }));
+                          }}
+                          className={`px-3 py-2 rounded-xl font-bold text-[11px] border transition-all ${
+                            isSelected 
+                              ? 'border-green-600 bg-green-50 text-green-600 font-extrabold shadow-sm scale-[1.02]' 
+                              : 'border-gray-100 bg-gray-50/50 text-gray-500 hover:bg-gray-50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              {/* 필터 즐겨찾기 저장 내장 섹션 */}
+              <div className="bg-amber-50/40 border border-amber-100/50 rounded-2xl p-4 mt-6 space-y-3">
+                <h4 className="text-xs font-black text-amber-800 flex items-center gap-1.5">
+                  <Star size={14} className="text-amber-500 fill-amber-500 shrink-0" />
+                  <span>현재 설정으로 즐겨찾기 등록</span>
+                </h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="예: 경기 30대 1/N"
+                    value={favNameInput}
+                    onChange={e => setFavNameInput(e.target.value)}
+                    className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-medium outline-none focus:border-green-500 bg-white"
+                    maxLength={15}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSaveFavorite}
+                    className="bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-black px-4 py-2.5 rounded-xl transition-all shadow-sm shrink-0"
+                  >
+                    등록
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* 하단 제어 버튼 팩 */}
+            <div className="pt-4 border-t border-gray-100 shrink-0 pb-safe flex gap-2.5">
               <button 
-                onClick={() => setShowSaveFavModal(false)}
-                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors"
+                type="button"
+                onClick={() => {
+                  setPartnerFilters({
+                    cost: '전체',
+                    gender: '전체',
+                    age: '전체',
+                    region: '전체',
+                    date: '전체'
+                  });
+                  showToast('필터 조건이 전체 초기화되었습니다.');
+                }}
+                className="flex-1 py-3.5 bg-gray-100 hover:bg-gray-250 text-gray-700 font-bold rounded-xl text-xs transition-colors border border-gray-200/50"
               >
-                취소
+                초기화
               </button>
               <button 
-                onClick={handleSave}
-                className="flex-1 py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl text-xs shadow-md transition-colors"
+                type="button"
+                onClick={() => {
+                  setShowDetailedFilterModal(false);
+                  showToast('필터가 정상적으로 적용되었습니다! ⛳');
+                }}
+                className="flex-1 py-3.5 bg-gray-900 hover:bg-gray-800 text-white font-extrabold rounded-xl text-xs transition-colors shadow-md"
               >
-                저장하기
+                조건 적용하기
               </button>
             </div>
           </motion.div>
@@ -2477,6 +2498,11 @@ function EveryGolfApp() {
       </AnimatePresence>
     );
   };
+
+  const SaveFavoriteModal = () => {
+    return null;
+  };
+
 
   // --- [Main Navigation Views] ---
   // (Main views inside activeTab)
@@ -4184,66 +4210,76 @@ function EveryGolfApp() {
                  </div>
 
                   <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full">
-                     {/* 즐겨찾기 필터 영역 */}
-                     <div className="flex justify-between items-center mb-3">
+                     {/* 필터 즐겨찾기 영역 */}
+                      <div className="flex justify-between items-center mb-3">
                         <p className="text-xs font-black text-gray-700 flex items-center gap-1.5">
                           <Star size={14} className="text-amber-500 fill-amber-500 shrink-0"/> 필터 즐겨찾기
                         </p>
                         <button 
                           onClick={() => {
-                            const hasActiveFilter = Object.values(partnerFilters).some(v => v !== '전체');
-                            if (!hasActiveFilter) {
-                              showToast('활성화된 상세 조건 필터가 없습니다. 필터를 먼저 지정해주세요.');
-                              return;
-                            }
                             setFavNameInput('');
-                            setShowSaveFavModal(true);
+                            setShowDetailedFilterModal(true);
                           }} 
                           className="text-[10px] shrink-0 text-amber-600 font-extrabold bg-amber-50 border border-amber-200/50 px-2 py-1 rounded-lg hover:bg-amber-100 transition-colors"
                         >
-                          ⭐ 현재 조건 저장
+                          ⭐ 필터 저장하기
                         </button>
-                     </div>
-                     
-                     {/* 즐겨찾기 칩 목록 */}
-                     {favoriteFilters.length === 0 ? (
-                       <p className="text-[10px] text-gray-400 font-bold mb-4">자주 쓰는 조건 조합을 저장해보세요.</p>
-                     ) : (
-                       <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 w-full snap-x">
-                         {favoriteFilters.map((fav) => (
-                           <div 
-                             key={fav.id}
-                             onClick={() => {
-                               setPartnerFilters(fav.filters);
-                               showToast(`즐겨찾기 '${fav.name}' 조건이 일괄 적용되었습니다.`);
-                             }}
-                             className="flex items-center gap-1 bg-amber-50/60 border border-amber-100 hover:bg-amber-100 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
-                           >
-                             <span>{fav.name}</span>
-                             <button
-                               onClick={(e) => {
-                                 e.stopPropagation();
-                                 setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
-                                 showToast(`즐겨찾기 '${fav.name}'이 삭제되었습니다.`);
-                               }}
-                               className="p-0.5 hover:bg-amber-200/80 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
-                             >
-                               <X size={10} strokeWidth={3} />
-                             </button>
-                           </div>
-                         ))}
-                       </div>
-                     )}
+                      </div>
+                      
+                      {/* 즐겨찾기 칩 목록 */}
+                      {favoriteFilters.length === 0 ? (
+                        <p className="text-[10px] text-gray-400 font-bold mb-4">자주 쓰는 조건 조합을 저장해보세요.</p>
+                      ) : (
+                        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 w-full snap-x">
+                          {favoriteFilters.map((fav) => (
+                            <div 
+                              key={fav.id}
+                              onClick={() => {
+                                setPartnerFilters(fav.filters);
+                                showToast(`즐겨찾기 '${fav.name}' 조건이 일괄 적용되었습니다.`);
+                              }}
+                              className="flex items-center gap-1 bg-amber-50/60 border border-amber-100 hover:bg-amber-100 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
+                            >
+                              <span>{fav.name}</span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
+                                  showToast(`즐겨찾기 '${fav.name}'이 삭제되었습니다.`);
+                                }}
+                                className="p-0.5 hover:bg-amber-200/80 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
+                              >
+                                <X size={10} strokeWidth={3} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
-                     {/* 구분선 */}
-                     <div className="border-t border-gray-100 my-3"></div>
+                      {/* 구분선 */}
+                      <div className="border-t border-gray-100 my-3"></div>
 
-                     {/* 상세 조건 영역 */}
-                     <div className="flex justify-between items-center mb-3">
-                        <p className="text-sm font-bold text-gray-800 flex items-center gap-1.5">
-                          <Filter size={16} className="shrink-0 text-green-600"/> 상세 조건
-                        </p>
+                      {/* 통합 상세 조건 설정 버튼 영역 */}
+                      <div className="flex gap-2 mb-4 w-full">
+                        <button
+                          type="button"
+                          onClick={() => setShowDetailedFilterModal(true)}
+                          className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 active:scale-[0.98] text-black font-black py-3 px-4 rounded-xl text-xs shadow-md transition-all animate-none"
+                        >
+                          <Filter size={14} className="shrink-0" />
+                          <span>상세조건 설정</span>
+                          {(() => {
+                            const activeCount = Object.values(partnerFilters).filter(v => v !== '전체').length;
+                            return activeCount > 0 ? (
+                              <span className="bg-black text-white text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 font-extrabold ml-1 animate-pulse">
+                                {activeCount}
+                              </span>
+                            ) : null;
+                          })()}
+                        </button>
+                        
                         <button 
+                          type="button"
                           onClick={() => {
                             setPartnerFilters({
                               cost: '전체',
@@ -4252,39 +4288,13 @@ function EveryGolfApp() {
                               region: '전체',
                               date: '전체'
                             });
-                            showToast('상세 필터 조건이 모두 초기화되었습니다.');
+                            showToast('상세 필터가 모두 초기화되었습니다.');
                           }} 
-                          className="text-xs shrink-0 text-green-600 font-bold bg-green-50 px-2.5 py-1.5 rounded-lg hover:bg-green-100 transition-colors"
+                          className="px-4 py-3 bg-gray-100 text-gray-700 hover:bg-gray-250 font-bold rounded-xl text-xs border border-gray-200/50 shrink-0 transition-colors"
                         >
                           초기화
                         </button>
-                     </div>
-                     
-                     <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1 w-full snap-x">
-                        {[
-                          { key: 'cost', label: '비용 부담', val: partnerFilters.cost },
-                          { key: 'gender', label: '성별', val: partnerFilters.gender },
-                          { key: 'age', label: '연령대', val: partnerFilters.age },
-                          { key: 'region', label: '지역', val: partnerFilters.region },
-                          { key: 'date', label: '날짜', val: partnerFilters.date },
-                        ].map((filterObj) => {
-                          const isApplied = filterObj.val !== '전체';
-                          return (
-                            <div 
-                              key={filterObj.key} 
-                              onClick={() => setActiveFilterModal(filterObj.key as any)} 
-                              className={`flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer shadow-sm shrink-0 snap-start border ${
-                                isApplied 
-                                  ? 'bg-green-600 border-green-600 text-white font-extrabold scale-[1.02]' 
-                                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
-                              }`}
-                            >
-                              <span>{isApplied ? `${filterObj.label}: ${filterObj.val}` : filterObj.label}</span>
-                              <ChevronDown size={12} className={`shrink-0 ${isApplied ? 'text-white' : 'text-gray-400'}`}/>
-                            </div>
-                          );
-                        })}
-                     </div>
+                      </div>
                   </div>
                  {filteredPartners.length === 0 ? (
                    <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
