@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Home, Calendar, Users, User, Bell, Search, MapPin, 
   Clock, Sparkles, X, ChevronRight, MessageSquare, Heart, Share2, Filter, 
-  Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2, AlertCircle,
+  Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2, AlertCircle, AlertTriangle,
   ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
   Flag, UserPlus, CalendarCheck2
@@ -4825,7 +4825,8 @@ export default function AppWrapper() {
       {/* 내부 관계자용 배포/유출 금지 안내 배너 (우측 하단 배치) */}
       <div className="hidden sm:block absolute bottom-6 right-6 w-full max-w-[280px] bg-gray-900/90 backdrop-blur-sm border border-gray-850 rounded-2xl p-4.5 shadow-xl z-[300]">
         <p className="text-xs font-black text-amber-400 flex items-center gap-1.5 mb-1.5">
-          ⚠️ 비인가자 배포 및 무단 유출 금지
+          <AlertTriangle size={14} className="text-amber-400 shrink-0" />
+          <span>비인가자 배포 및 무단 유출 금지</span>
         </p>
         <p className="text-[10px] text-gray-400 font-bold leading-relaxed">
           본 애플리케이션은 에브리골프 관계자 검토용 데모 제품입니다. 비인가자에 대한 무단 공유, 배포 및 상업적 유출을 엄격히 금지합니다.
