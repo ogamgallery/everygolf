@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Home, Calendar, Users, User, Bell, Search, MapPin, 
   Clock, Sparkles, X, ChevronRight, MessageSquare, Heart, Share2, Filter, 
-  Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2,
+  Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2, AlertCircle,
   ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
   Flag, UserPlus, CalendarCheck2
@@ -194,21 +194,35 @@ function EveryGolfApp() {
 
   // --- [Global Components] ---
 
-  const GlobalToast = () => (
-    <AnimatePresence>
-      {toastMessage && (
-        <motion.div 
-          initial={{ opacity: 0, y: 50, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.9 }}
-          className="absolute bottom-24 left-1/2 -translate-x-1/2 w-fit bg-gray-900/90 backdrop-blur-sm text-white px-5 py-3 rounded-2xl text-sm font-bold shadow-xl z-[100] whitespace-nowrap flex items-center gap-2 border border-white/10"
-        >
-          <CheckCircle2 size={18} className="text-green-400 shrink-0" />
-          <span className="truncate">{toastMessage}</span>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+  const GlobalToast = () => {
+    const isError = toastMessage && (
+      toastMessage.includes('실패') || 
+      toastMessage.includes('올바르지') || 
+      toastMessage.includes('오류') || 
+      toastMessage.includes('제한') || 
+      toastMessage.includes('금지')
+    );
+    return (
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
+            exit={{ opacity: 0, y: 20, scale: 0.9, x: "-50%" }}
+            style={{ left: "50%" }}
+            className="absolute bottom-24 w-fit bg-gray-900/90 backdrop-blur-sm text-white px-5 py-3 rounded-2xl text-sm font-bold shadow-xl z-[100] whitespace-nowrap flex items-center gap-2 border border-white/10"
+          >
+            {isError ? (
+              <AlertCircle size={18} className="text-red-400 shrink-0" />
+            ) : (
+              <CheckCircle2 size={18} className="text-green-400 shrink-0" />
+            )}
+            <span className="truncate">{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
 
   const TopBarNav = ({ title, rightIcon, transparent = false }: { title: string, rightIcon?: React.ReactNode, transparent?: boolean }) => (
     <div className={`px-4 pt-12 pb-4 ${transparent ? 'bg-transparent text-white' : 'bg-white text-gray-900 border-b border-gray-100'} sticky top-0 z-10 flex items-center justify-between shrink-0`}>
@@ -4583,7 +4597,7 @@ function EveryGolfApp() {
         showToast('관리자 인증에 성공하였습니다! ⛳');
       } else {
         setErrorMsg('아이디 또는 비밀번호가 올바르지 않습니다.');
-        showToast('인증에 실패하였습니다.');
+        showToast('로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.');
       }
     };
 
