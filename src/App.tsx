@@ -69,6 +69,7 @@ interface FavoriteFilter {
 function EveryGolfApp() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [viewStack, setViewStack] = useState<ViewState[]>([{ id: 'home-root', type: 'main' }]);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => sessionStorage.getItem('admin_auth') === 'true');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const [partnerFilters, setPartnerFilters] = useState<PartnerFilters>({
@@ -4569,9 +4570,87 @@ function EveryGolfApp() {
     }
   };
 
+  const AdminLoginView = () => {
+    const [adminId, setAdminId] = useState('');
+    const [adminPw, setAdminPw] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+
+    const handleAdminLogin = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (adminId.trim() === 'ogam' && adminPw === '1234') {
+        sessionStorage.setItem('admin_auth', 'true');
+        setIsAdminLoggedIn(true);
+        showToast('관리자 인증에 성공하였습니다! ⛳');
+      } else {
+        setErrorMsg('아이디 또는 비밀번호가 올바르지 않습니다.');
+        showToast('인증에 실패하였습니다.');
+      }
+    };
+
+    return (
+      <div className="w-full h-full bg-gray-950 flex flex-col justify-between p-6 relative font-sans text-white">
+        {/* Top Logo */}
+        <div className="flex-1 flex flex-col justify-center items-center">
+          <div className="mb-10 text-center">
+            <span className="text-4xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent tracking-tighter">
+              everygolf
+            </span>
+            <p className="text-xs text-gray-400 font-bold mt-2.5">관리자 보안 검증 시스템</p>
+          </div>
+
+          <form onSubmit={handleAdminLogin} className="w-full space-y-4">
+            <div>
+              <label className="text-[11px] font-black text-gray-400 uppercase tracking-wider block mb-1.5">Admin ID</label>
+              <input 
+                type="text" 
+                placeholder="아이디를 입력하세요" 
+                value={adminId}
+                onChange={e => { setAdminId(e.target.value); setErrorMsg(''); }}
+                className="w-full px-4 py-3.5 bg-gray-900 border border-gray-800 rounded-xl outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 font-bold text-sm text-white placeholder-gray-600 transition-all" 
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-black text-gray-400 uppercase tracking-wider block mb-1.5">Password</label>
+              <input 
+                type="password" 
+                placeholder="비밀번호를 입력하세요" 
+                value={adminPw}
+                onChange={e => { setAdminPw(e.target.value); setErrorMsg(''); }}
+                className="w-full px-4 py-3.5 bg-gray-900 border border-gray-800 rounded-xl outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 font-bold text-sm text-white placeholder-gray-600 transition-all" 
+              />
+            </div>
+
+            {errorMsg && (
+              <p className="text-xs text-red-400 font-bold text-center mt-2 animate-pulse">{errorMsg}</p>
+            )}
+
+            <button 
+              type="submit" 
+              className="w-full py-4 mt-6 bg-green-500 hover:bg-green-600 active:scale-[0.98] text-black font-black rounded-xl text-sm shadow-lg shadow-green-500/10 transition-all"
+            >
+              시스템 접속 승인
+            </button>
+          </form>
+        </div>
+
+        {/* Footer Notice */}
+        <div className="text-center shrink-0 py-4">
+          <p className="text-[10px] text-gray-600 font-bold leading-relaxed">
+            * 본 시스템은 외부인의 접근이 엄격히 금지됩니다.<br />
+            IP 로그 및 접속 기록이 내부 보안 정책에 의해 모니터링됩니다.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="w-full h-full relative font-sans selection:bg-green-100 selection:text-green-900 bg-black overflow-hidden">
-      <AnimatePresence initial={false}>
+      {!isAdminLoggedIn ? (
+        <AdminLoginView />
+      ) : (
+        <>
+          <AnimatePresence initial={false}>
         {viewStack.map((view, index) => {
           const isTop = index === viewStack.length - 1;
           const isBottom = index === 0;
@@ -4709,6 +4788,8 @@ function EveryGolfApp() {
       </AnimatePresence>
       <FilterSelectorModal />
       <SaveFavoriteModal />
+        </>
+      )}
     </div>
   );
 }
