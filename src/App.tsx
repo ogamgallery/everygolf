@@ -4303,90 +4303,119 @@ function EveryGolfApp() {
                           transition={{ delay: i * 0.05 }} 
                           key={partner.id} 
                           onClick={() => setExpandedPartnerId(isExpanded ? null : partner.id)} 
-                          className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group shrink-0 w-full flex flex-col"
+                          className={`bg-white transition-all cursor-pointer flex flex-col \${
+                            isExpanded 
+                              ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
+                              : 'p-3.5 border-b border-gray-100 rounded-none shadow-none hover:bg-gray-50/50'
+                          }`}
                         >
-                           <div className="flex justify-between items-start mb-2 gap-2">
-                             <div className="flex flex-wrap items-center gap-1.5 text-xs font-bold text-green-600">
-                               <span>{partner.date || '이번주'}</span>
-                               <span>·</span>
-                               <span>{partner.time}</span>
-                               <span>·</span>
-                               <span className="text-gray-900">그린피 {partner.price || '180,000'}원</span>
-                             </div>
-                             <span className={`text-[10px] shrink-0 font-bold px-2 py-0.5 rounded-md shadow-sm border ${partner.status === '모집중' ? 'bg-green-50 text-green-600 border-green-100' : partner.status === '마감임박' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-gray-100 text-gray-500 border-gray-200'}`}>{partner.status}</span>
-                           </div>
-                           
-                           <h4 className="font-bold text-gray-900 text-base mb-3 leading-snug group-hover:text-green-600 transition-colors break-words">{partner.title}</h4>
-                           
-                           <div className="flex flex-wrap gap-1.5 mb-4">
-                             <span className="text-[11px] font-bold bg-blue-50 text-blue-600 border border-blue-100/30 px-2.5 py-1 rounded-lg shrink-0">🙋‍♂️ {hostInfo.gender}</span>
-                             <span className="text-[11px] font-bold bg-orange-50 text-orange-600 border border-orange-100/30 px-2.5 py-1 rounded-lg shrink-0">🎂 {hostInfo.age}</span>
-                             <span className="text-[11px] font-bold bg-purple-50 text-purple-600 border border-purple-100/30 px-2.5 py-1 rounded-lg shrink-0">🏌️‍♂️ {hostInfo.handicap}타</span>
-                             <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0 border ${hostInfo.smoke === '비흡연' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/30' : 'bg-gray-50 text-gray-500 border-gray-200/30'}`}>
-                               {hostInfo.smoke === '비흡연' ? '🚭 비흡연' : '🚬 흡연'}
-                             </span>
-                             {hostInfo.license === '보유' && (
-                               <span className="text-[11px] font-bold bg-amber-50 text-amber-600 border border-amber-100/30 px-2.5 py-1 rounded-lg shrink-0">👑 프로인증</span>
-                             )}
-                           </div>
-                           
-                           <div className="flex justify-between items-center border-t border-gray-50 pt-3 gap-2">
-                             <div 
-                               onClick={(e) => { 
-                                 e.stopPropagation(); 
-                                 pushView('userProfileDetail', partner); 
-                               }} 
-                               className="flex items-center gap-2 min-w-0 flex-1 hover:opacity-85 transition-opacity"
-                             >
-                               <img src={partner.avatar} className="w-8 h-8 shrink-0 bg-gray-100 rounded-full object-cover shadow-sm border border-gray-200"/>
-                               <div className="min-w-0">
-                                 <span className="text-sm font-bold text-gray-800 block truncate">{partner.author} 님</span>
-                                 <span className="text-[10px] text-gray-400 font-medium block truncate">조회 {partner.views}</span>
-                               </div>
-                             </div>
-                             <ChevronDown size={18} className={`text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-green-600' : ''}`} />
-                           </div>
-                           
-                           <AnimatePresence>
-                             {isExpanded && (
-                               <motion.div 
-                                 initial={{ height: 0, opacity: 0 }}
-                                 animate={{ height: 'auto', opacity: 1 }}
-                                 exit={{ height: 0, opacity: 0 }}
-                                 transition={{ duration: 0.2 }}
-                                 className="overflow-hidden border-t border-gray-100 mt-3 pt-3.5"
-                               >
-                                 <p className="text-xs text-gray-600 leading-relaxed font-bold bg-gray-50 p-3.5 rounded-xl border border-gray-100/80 mb-3 whitespace-pre-wrap">
-                                   {partner.description}
-                                 </p>
-                                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                                   <button 
-                                     onClick={() => { 
-                                       if (!userProfile) {
-                                         showToast('매칭 프로필 설정 후 신청이 가능합니다.');
-                                         pushView('profileInput');
-                                       } else {
-                                         showToast(`${partner.author}님의 모집글에 동반자 신청을 완료했습니다! ⛳`);
-                                       }
-                                     }} 
-                                     className="flex-1 py-3 bg-green-600 text-white rounded-xl text-xs font-black shadow-md hover:bg-green-700 transition-colors"
-                                   >
-                                     신청하기
-                                   </button>
-                                   <button 
-                                     onClick={() => pushView('chat', partner)} 
-                                     className="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-black shadow-md hover:bg-gray-800 transition-colors"
-                                   >
-                                     1:1 채팅하기
-                                   </button>
-                                 </div>
-                               </motion.div>
-                             )}
-                           </AnimatePresence>
+                          <div className="flex justify-between items-center w-full py-1 text-left">
+                            {/* 1. 구장 정보 (좌측) */}
+                            <div className="flex flex-col gap-1 w-[32%] shrink-0">
+                              <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{partner.location}</h4>
+                              <span className="text-[10.5px] text-gray-500 font-bold flex items-center gap-0.5">
+                                <MapPin size={10} className="text-green-600 shrink-0" />
+                                <span>{partner.location.includes('인천') ? '인천' : partner.location.includes('경기') ? '경기' : '수도권'}</span>
+                              </span>
+                            </div>
+
+                            {/* 2. 일정 및 인적사항 (중앙) */}
+                            <div className="flex flex-col gap-1 items-center text-center w-[40%] shrink-0">
+                              <span className="text-[11.5px] text-gray-800 font-black">
+                                {partner.date || '이번주'} {partner.time.split(' ')[0]}
+                              </span>
+                              <span className="text-[10px] text-gray-500 font-bold truncate max-w-full">
+                                {hostInfo.gender} · {hostInfo.age} · {hostInfo.handicap}타
+                              </span>
+                            </div>
+
+                            {/* 3. 상태 및 비용 (우측) */}
+                            <div className="flex flex-col gap-1 items-end text-right w-[28%] shrink-0">
+                              <span className="text-[13px] text-green-600 font-black">
+                                {partner.price || '180,000'}원
+                              </span>
+                              <span className={`text-[8.5px] shrink-0 font-bold px-1.5 py-0.5 rounded border \${
+                                partner.status === '모집중' 
+                                  ? 'bg-green-50 text-green-600 border-green-100' 
+                                  : partner.status === '마감임박' 
+                                    ? 'bg-red-50 text-red-600 border-red-100' 
+                                    : 'bg-gray-100 text-gray-500 border-gray-200'
+                              }`}>
+                                {partner.status}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* 드롭바 형식의 상세 공고글 영역 */}
+                          <AnimatePresence>
+                            {isExpanded && (
+                              <motion.div 
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden border-t border-gray-100 mt-3 pt-3.5 flex flex-col gap-3"
+                              >
+                                {/* 공고글 제목 */}
+                                <div className="bg-green-50/40 border border-green-100/50 p-3 rounded-xl">
+                                  <h5 className="font-extrabold text-gray-900 text-xs leading-snug break-words">
+                                    {partner.title}
+                                  </h5>
+                                </div>
+                                
+                                {/* 공고글 사연/내용 */}
+                                <p className="text-xs text-gray-600 leading-relaxed font-bold bg-gray-50 p-3.5 rounded-xl border border-gray-100/80 whitespace-pre-wrap">
+                                  {partner.description}
+                                </p>
+
+                                {/* 흡연/라이센스 세부 정보 및 작성자 프로필 */}
+                                <div className="flex items-center justify-between gap-2 bg-gray-50/50 p-2.5 rounded-xl border border-gray-100/50 text-[10px]">
+                                  <div className="flex gap-1.5 text-gray-500 font-bold">
+                                    <span>🚭 {hostInfo.smoke || '비흡연'}</span>
+                                    <span>·</span>
+                                    <span>🏌️‍♂️ 프로인증: {hostInfo.license === '보유' ? '유' : '무'}</span>
+                                  </div>
+                                  <div 
+                                    onClick={(e) => { 
+                                      e.stopPropagation(); 
+                                      pushView('userProfileDetail', partner); 
+                                    }} 
+                                    className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+                                  >
+                                    <img src={partner.avatar} className="w-5 h-5 bg-gray-100 rounded-full object-cover border border-gray-200"/>
+                                    <span className="font-bold text-gray-800">{partner.author} 님 (조회 {partner.views})</span>
+                                  </div>
+                                </div>
+
+                                {/* 버튼 팩 */}
+                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                                  <button 
+                                    onClick={() => { 
+                                      if (!userProfile) {
+                                        showToast('매칭 프로필 설정 후 신청이 가능합니다.');
+                                        pushView('profileInput');
+                                      } else {
+                                        showToast(`${partner.author}님의 모집글에 동반자 신청을 완료했습니다! ⛳`);
+                                      }
+                                    }} 
+                                    className="flex-1 py-3 bg-green-600 text-white rounded-xl text-xs font-black shadow-md hover:bg-green-700 transition-colors"
+                                  >
+                                    신청하기
+                                  </button>
+                                  <button 
+                                    onClick={() => pushView('chat', partner)} 
+                                    className="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-black shadow-md hover:bg-gray-800 transition-colors"
+                                  >
+                                    1:1 채팅하기
+                                  </button>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </motion.div>
                       );
                     })
-                 )}
+                  )}
               </motion.div>
             )}
           </AnimatePresence>
