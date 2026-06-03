@@ -4587,11 +4587,19 @@ function EveryGolfApp() {
                                     key={app.id} 
                                     className="bg-gray-50/60 p-2 rounded-xl border border-gray-150/40 flex items-center justify-between gap-3 text-xs"
                                   >
-                                    <div className="flex items-center gap-2">
-                                      <img src={app.avatar} className="w-9 h-9 rounded-full object-cover bg-gray-200 shrink-0 shadow-sm" />
+                                    <div className="flex items-center gap-2.5">
+                                      <img 
+                                        src={app.avatar} 
+                                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} 
+                                        className="shrink-0 shadow-sm border border-gray-100/60" 
+                                      />
                                       <div className="flex flex-col">
-                                        <span className="font-extrabold text-gray-800 text-[11px]">{app.name}</span>
-                                        <span className="text-[8.5px] text-gray-400 font-bold">평균 {app.handicap}타</span>
+                                        <span className="font-extrabold text-gray-800 text-[11px]">
+                                          {app.name} <span className="text-[9px] text-gray-400 font-bold">({app.gender || '남성'} · {app.age || '30대'})</span>
+                                        </span>
+                                        <span className="text-[9px] text-gray-500 font-bold mt-0.5">
+                                          평균 {app.handicap}타 · {app.experience || '구력 3년'}
+                                        </span>
                                       </div>
                                     </div>
                                     
