@@ -4585,10 +4585,10 @@ function EveryGolfApp() {
                                 {partner.applicants.map((app: any) => (
                                   <div 
                                     key={app.id} 
-                                    className="bg-gray-50/60 p-2.5 rounded-xl border border-gray-150/40 flex items-center justify-between gap-3 text-xs"
+                                    className="bg-gray-50/60 p-2 rounded-xl border border-gray-150/40 flex items-center justify-between gap-3 text-xs"
                                   >
                                     <div className="flex items-center gap-2">
-                                      <img src={app.avatar} className="w-6.5 h-6.5 rounded-full object-cover bg-gray-200 shrink-0" />
+                                      <img src={app.avatar} className="w-9 h-9 rounded-full object-cover bg-gray-200 shrink-0 shadow-sm" />
                                       <div className="flex flex-col">
                                         <span className="font-extrabold text-gray-800 text-[11px]">{app.name}</span>
                                         <span className="text-[8.5px] text-gray-400 font-bold">평균 {app.handicap}타</span>
