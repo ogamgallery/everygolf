@@ -10,11 +10,11 @@ import {
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
 // --- [Mock Data] ---
-import { MOCK_BOOKINGS, MOCK_JOINS, MOCK_COMMUNITY, MOCK_PARTNERS, MOCK_INFLUENCERS } from './mockData';
+import { MOCK_BOOKINGS, MOCK_JOINS, MOCK_COMMUNITY, MOCK_PARTNERS, MOCK_INFLUENCERS, MOCK_CHAT_ROOMS } from './mockData';
 
 interface ViewState {
   id: string;
-  type: 'main' | 'bookingDetail' | 'postDetail' | 'partnerDetail' | 'map' | 'empty' | 'checkout' | 'success' | 'chat' | 'influencerProfile' | 'influencerList' | 'regionList' | 'joinDetail' | 'storyForm' | 'login' | 'profileInput' | 'userProfileDetail';
+  type: 'main' | 'bookingDetail' | 'postDetail' | 'partnerDetail' | 'map' | 'empty' | 'checkout' | 'success' | 'chat' | 'influencerProfile' | 'influencerList' | 'regionList' | 'joinDetail' | 'storyForm' | 'login' | 'profileInput' | 'userProfileDetail' | 'chatRoom';
   payload?: any;
 }
 
@@ -98,6 +98,7 @@ function EveryGolfApp() {
 
   const [favNameInput, setFavNameInput] = useState('');
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
+  const [chatRooms, setChatRooms] = useState<any[]>(MOCK_CHAT_ROOMS);
   const [expandedPartnerId, setExpandedPartnerId] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState('home');
   const [showSearchFilter, setShowSearchFilter] = useState(true);
@@ -242,6 +243,7 @@ function EveryGolfApp() {
         { id: 'home', icon: Home, label: '홈' },
         { id: 'booking', icon: CalendarCheck, label: '부킹/조인' },
         { id: 'community', icon: Users, label: '동반자 찾기' },
+        { id: 'chat', icon: MessageSquare, label: '채팅' },
         { id: 'mypage', icon: User, label: '마이페이지' },
       ].map((tab) => (
         <button 
@@ -4156,6 +4158,43 @@ function EveryGolfApp() {
   };
 
     const CommunityTabView = () => {
+      const handleAcceptApplicant = (partnerId: number, applicantId: number) => {
+        setPartnerList(prev => prev.map(p => {
+          if (p.id === partnerId) {
+            const updatedApplicants = p.applicants.map((a: any) => 
+              a.id === applicantId ? { ...a, status: '참여 확정' } : a
+            );
+            const nextNeeded = Math.max(0, (p.needed || 1) - 1);
+            const nextStatus = nextNeeded === 0 ? '마감' : p.status;
+            
+            showToast('지원자의 동반자 신청을 수락하였습니다! ⛳');
+            return { 
+              ...p, 
+              applicants: updatedApplicants,
+              needed: nextNeeded,
+              status: nextStatus
+            };
+          }
+          return p;
+        }));
+      };
+
+      const handleRejectApplicant = (partnerId: number, applicantId: number) => {
+        setPartnerList(prev => prev.map(p => {
+          if (p.id === partnerId) {
+            const updatedApplicants = p.applicants.map((a: any) => 
+              a.id === applicantId ? { ...a, status: '거절됨' } : a
+            );
+            showToast('지원자의 신청을 거절 처리하였습니다.');
+            return { 
+              ...p, 
+              applicants: updatedApplicants 
+            };
+          }
+          return p;
+        }));
+      };
+
       const getCCName = (partner: any) => {
         if (partner.name) return partner.name;
         const title = partner.title || '';
@@ -4441,7 +4480,7 @@ function EveryGolfApp() {
 
                      {/* 3. 상태 및 비용 (우측) */}
                      <div className="flex flex-col gap-1 items-end text-right w-[28%] shrink-0">
-                       <span className="text-[9.5px] font-bold text-gray-400 mb-0.5">모집 {partner.status === '마감' ? '4/4' : `${4 - (partner.needed || 1)}/4`}</span>
+                       
                         <span className="text-[13px] text-green-600 font-black">
                          {partner.price || '180,000'}원
                        </span>
@@ -4452,7 +4491,7 @@ function EveryGolfApp() {
                              ? 'bg-red-50 text-red-600 border-red-100' 
                              : 'bg-gray-100 text-gray-500 border-gray-200'
                        )}>
-                         {partner.status}
+                         {partner.status} {partner.status === '마감' ? '4/4' : `${4 - (partner.needed || 1)}/4`}
                        </span>
                      </div>
                    </div>
@@ -4520,6 +4559,58 @@ function EveryGolfApp() {
                              1:1 채팅하기
                            </button>
                          </div>
+
+                          {/* 지원자 현황 */}
+                          {partner.applicants && partner.applicants.length > 0 && (
+                            <div className="mt-3 pt-3.5 border-t border-gray-100 flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
+                              <span className="text-[11px] font-black text-gray-700">
+                                👥 지원자 현황 ({partner.applicants.length}명)
+                              </span>
+                              <div className="flex flex-col gap-2">
+                                {partner.applicants.map((app: any) => (
+                                  <div 
+                                    key={app.id} 
+                                    className="bg-gray-50/60 p-2.5 rounded-xl border border-gray-150/40 flex items-center justify-between gap-3 text-xs"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <img src={app.avatar} className="w-6.5 h-6.5 rounded-full object-cover bg-gray-200 shrink-0" />
+                                      <div className="flex flex-col">
+                                        <span className="font-extrabold text-gray-800 text-[11px]">{app.name}</span>
+                                        <span className="text-[8.5px] text-gray-400 font-bold">평균 {app.handicap}타</span>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-1.5">
+                                      {app.status === '대기중' ? (
+                                        <>
+                                          <button 
+                                            onClick={() => handleAcceptApplicant(partner.id, app.id)}
+                                            className="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[9px] font-black transition-all shadow-sm"
+                                          >
+                                            수락
+                                          </button>
+                                          <button 
+                                            onClick={() => handleRejectApplicant(partner.id, app.id)}
+                                            className="px-2.5 py-1 bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 rounded-lg text-[9px] font-black transition-all shadow-sm"
+                                          >
+                                            거절
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <span className={`text-[9px] font-black px-2 py-0.5 rounded ${
+                                          app.status === '참여 확정' 
+                                            ? 'bg-green-50 text-green-600 border border-green-100' 
+                                            : 'bg-gray-100 text-gray-400 border border-gray-150'
+                                        }`}>
+                                          {app.status}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                        </motion.div>
                      )}
                    </AnimatePresence>
@@ -4531,6 +4622,253 @@ function EveryGolfApp() {
       </div>
     );
   };
+
+  const ChatTabView = () => {
+    const [subTab, setSubTab] = useState<'agent' | 'partner'>('agent');
+
+    const filteredRooms = chatRooms.filter(room => room.type === subTab);
+
+    return (
+      <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden animate-in fade-in duration-150">
+        {/* Header */}
+        <div className="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm shrink-0">
+          <div className="px-5 pt-12 pb-4">
+            <h2 className="text-2xl font-black text-gray-900 tracking-tight">메시지</h2>
+          </div>
+          {/* Sub Tabs */}
+          <div className="flex px-5 gap-0 border-t border-gray-50">
+            <button 
+              onClick={() => setSubTab('agent')} 
+              className={`flex-1 py-3 text-sm font-bold border-b-[3px] transition-all relative text-center ${
+                subTab === 'agent' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-400'
+              }`}
+            >
+              에이전트 상담
+            </button>
+            <button 
+              onClick={() => setSubTab('partner')} 
+              className={`flex-1 py-3 text-sm font-bold border-b-[3px] transition-all relative text-center ${
+                subTab === 'partner' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-400'
+              }`}
+            >
+              동반자 채팅
+            </button>
+          </div>
+        </div>
+
+        {/* Room List */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-2.5 hide-scrollbar">
+          {filteredRooms.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm py-16">
+              <p className="text-gray-400 font-bold">진행 중인 대화방이 없습니다.</p>
+            </div>
+          ) : (
+            filteredRooms.map(room => (
+              <div 
+                key={room.id}
+                onClick={() => {
+                  setChatRooms(prev => prev.map(r => r.id === room.id ? { ...r, unreadCount: 0 } : r));
+                  pushView('chatRoom', room);
+                }}
+                className="bg-white p-4 rounded-2xl border border-gray-100 flex gap-3.5 cursor-pointer hover:border-green-300 hover:shadow-sm transition-all"
+              >
+                {room.type === 'agent' ? (
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-lg font-black shrink-0 shadow-sm">
+                    {room.avatar}
+                  </div>
+                ) : (
+                  <img src={room.avatar} className="w-12 h-12 rounded-xl object-cover shrink-0 bg-gray-100 border border-gray-100" />
+                )}
+
+                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-extrabold text-sm text-gray-800">{room.name}</span>
+                      {room.type === 'agent' && (
+                        <span className="text-[8.5px] font-bold text-green-600 bg-green-50 border border-green-100 px-1 py-0.5 rounded">
+                          직통 에이전트
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[9px] text-gray-400 font-bold shrink-0">{room.time}</span>
+                  </div>
+                  <p className="text-xs text-gray-500 font-medium truncate pr-4">
+                    {room.lastMessage}
+                  </p>
+                </div>
+
+                {room.unreadCount > 0 && (
+                  <div className="self-center w-5 h-5 rounded-full bg-red-500 text-white text-[9.5px] font-black flex items-center justify-center shrink-0 shadow-sm animate-pulse">
+                    {room.unreadCount}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const ChatRoomView = ({ payload }: { payload: any }) => {
+    const room = chatRooms.find(r => r.id === payload.id) || payload;
+    const [messages, setMessages] = useState<any[]>(room.initialMessages || []);
+    const [inputValue, setInputValue] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
+    const [repliesUsed, setRepliesUsed] = useState(0);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+      scrollToBottom();
+    }, [messages, isTyping]);
+
+    const handleSendMessage = () => {
+      if (!inputValue.trim()) return;
+
+      const userMsg = {
+        id: Date.now(),
+        sender: 'me' as const,
+        text: inputValue,
+        time: '오후 ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }).replace('AM', '').replace('PM', '').trim().split(' ').pop()
+      };
+
+      const updatedMsgs = [...messages, userMsg];
+      setMessages(updatedMsgs);
+      setInputValue('');
+
+      setChatRooms(prev => prev.map(r => r.id === room.id ? { 
+        ...r, 
+        lastMessage: userMsg.text, 
+        time: userMsg.time,
+        initialMessages: updatedMsgs 
+      } : r));
+
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+        const replyText = room.autoReplies && room.autoReplies[repliesUsed]
+          ? room.autoReplies[repliesUsed]
+          : '요청 확인했습니다. 에이전트 담당 매니저가 신속하게 추가 검토 후 직접 연락드리겠습니다! ⛳';
+
+        const replyMsg = {
+          id: Date.now() + 1,
+          sender: 'other' as const,
+          text: replyText,
+          time: '오후 ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }).replace('AM', '').replace('PM', '').trim().split(' ').pop()
+        };
+
+        const finalMsgs = [...updatedMsgs, replyMsg];
+        setMessages(finalMsgs);
+        setRepliesUsed(prev => prev + 1);
+
+        setChatRooms(prev => prev.map(r => r.id === room.id ? { 
+          ...r, 
+          lastMessage: replyMsg.text, 
+          time: replyMsg.time,
+          initialMessages: finalMsgs 
+        } : r));
+
+      }, 1500);
+    };
+
+    return (
+      <div className="w-full h-full bg-white flex flex-col relative overflow-hidden animate-in slide-in-from-right duration-200">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-100 px-4 pt-12 pb-3.5 flex justify-between items-center shrink-0 z-10 shadow-sm">
+          <button onClick={popView} className="p-1 hover:bg-gray-50 rounded-lg text-gray-700">
+            <ChevronLeft size={22} />
+          </button>
+          <div className="flex flex-col items-center">
+            <span className="font-extrabold text-sm text-gray-800 flex items-center gap-1.5">
+              {room.name}
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></span>
+            </span>
+            <span className="text-[8px] text-gray-400 font-bold mt-0.5">
+              {room.type === 'agent' ? '실시간 상담 서비스' : '동반자 매칭 채널'}
+            </span>
+          </div>
+          <a 
+            href="tel:010-4043-1307"
+            onClick={() => showToast('유선 상담 전화를 연결합니다...')}
+            className="p-2 bg-gray-50 hover:bg-gray-100 rounded-xl text-gray-800 shadow-sm transition-colors"
+          >
+            <Phone size={14} className="text-green-600 fill-current" />
+          </a>
+        </div>
+
+        {/* Message Panel */}
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-50/50 space-y-3 hide-scrollbar">
+          {messages.map((msg) => {
+            const isMe = msg.sender === 'me';
+            return (
+              <div 
+                key={msg.id}
+                className={`flex w-full items-end gap-1.5 ${isMe ? 'justify-end' : 'justify-start'}`}
+              >
+                {!isMe && (
+                  <div className="w-7 h-7 rounded-lg bg-green-600 text-white text-[10px] font-black flex items-center justify-center shrink-0 shadow-sm mr-0.5">
+                    {room.name[0]}
+                  </div>
+                )}
+                
+                {isMe && <span className="text-[8px] text-gray-400 font-bold mb-0.5">{msg.time}</span>}
+
+                <div 
+                  className={`max-w-[70%] px-3.5 py-2.5 rounded-2xl text-[11.5px] font-bold leading-relaxed shadow-sm ${
+                    isMe 
+                      ? 'bg-green-600 text-white rounded-tr-none' 
+                      : 'bg-white text-gray-700 rounded-tl-none border border-gray-150/50'
+                  }`}
+                >
+                  {msg.text}
+                </div>
+
+                {!isMe && <span className="text-[8px] text-gray-400 font-bold mb-0.5">{msg.time}</span>}
+              </div>
+            );
+          })}
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex w-full items-end gap-1.5 justify-start">
+              <div className="w-7 h-7 rounded-lg bg-green-600 text-white text-[10px] font-black flex items-center justify-center shrink-0 shadow-sm mr-0.5 animate-bounce">
+                {room.name[0]}
+              </div>
+              <div className="bg-white text-gray-400 px-4 py-2.5 rounded-2xl rounded-tl-none border border-gray-150/50 text-xs font-bold shadow-sm flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Panel */}
+        <div className="bg-white p-3 border-t border-gray-100 flex gap-2 items-center shrink-0 pb-safe">
+          <input 
+            type="text"
+            placeholder="메시지를 입력하세요..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
+            className="flex-1 px-4 py-3 bg-gray-50 border border-gray-150/60 rounded-xl text-xs font-bold outline-none focus:border-green-600 focus:bg-white transition-all text-gray-800"
+          />
+          <button 
+            onClick={handleSendMessage}
+            className="p-3 bg-green-600 hover:bg-green-700 active:scale-95 text-white rounded-xl shadow-md transition-all flex items-center justify-center shrink-0"
+          >
+            <Send size={14} className="fill-current" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
 const MyPageTabView = () => {
       const mannerTemperature = 38.2;
       const mannerPercent = ((mannerTemperature - 30) / (99 - 30)) * 100;
@@ -4690,6 +5028,7 @@ const MyPageTabView = () => {
                 <AnimatePresence mode="wait">
                   {activeTab === 'home' && <HomeView key="home" />}
                   {activeTab === 'community' && <CommunityTabView key="community" />}
+                  {activeTab === 'chat' && <ChatTabView key="chat" />}
                   {activeTab === 'mypage' && <MyPageTabView key="mypage" />}
                 </AnimatePresence>
               </div>
@@ -4701,6 +5040,7 @@ const MyPageTabView = () => {
         );
       case 'map': return <MapView payload={view.payload} />;
       case 'bookingDetail': return <BookingDetailView payload={view.payload} />;
+      case 'chatRoom': return <ChatRoomView payload={view.payload} />;
       case 'postDetail': return <PostDetailView payload={view.payload} />;
       case 'partnerDetail': return <PartnerDetailView payload={view.payload} />;
       case 'influencerProfile': return <InfluencerProfileView payload={view.payload} />;

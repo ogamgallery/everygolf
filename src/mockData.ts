@@ -89,6 +89,17 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
     license: index % 5 === 0 ? '보유' : '미보유'
   };
 
+  const applicants = index % 3 === 0 
+    ? [
+        { id: 1, name: '캐디와니', avatar: 'https://picsum.photos/seed/app1/100/100', handicap: 85, status: '참여 확정' },
+        { id: 2, name: '버디찬스', avatar: 'https://picsum.photos/seed/app2/100/100', handicap: 90, status: '대기중' }
+      ]
+    : index % 3 === 1
+      ? [
+          { id: 1, name: '이글헌터', avatar: 'https://picsum.photos/seed/app3/100/100', handicap: 95, status: '대기중' }
+        ]
+      : [];
+
   return {
     id: index + 1,
     title: `[${join.location}] ${join.name} ${join.needed}명 급구합니다!`,
@@ -109,7 +120,8 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
     date,
     price: join.price,
     description,
-    hostProfile
+    hostProfile,
+    applicants
   };
 });
 
@@ -153,5 +165,125 @@ export const MOCK_INFLUENCERS = [
     avatar: 'https://picsum.photos/seed/kimpro/200/200',
     cover: 'https://picsum.photos/seed/golfcoursekim/800/600',
     schedule: { location: '서원밸리 CC', time: '다음주 금요일 08:00 티오프', count: 2 }
+  }
+];
+
+export interface ChatMessage {
+  id: number;
+  sender: 'me' | 'other';
+  text: string;
+  time: string;
+}
+
+export interface ChatRoom {
+  id: string;
+  type: 'agent' | 'partner';
+  name: string;
+  avatar: string;
+  lastMessage: string;
+  time: string;
+  unreadCount: number;
+  initialMessages: ChatMessage[];
+  autoReplies: string[];
+}
+
+export const MOCK_CHAT_ROOMS: ChatRoom[] = [
+  {
+    id: 'agent-1',
+    type: 'agent',
+    name: '세종 매니저',
+    avatar: 'S',
+    lastMessage: '네, 고객님! 스카이72 예약 일정 조율 중입니다.',
+    time: '오후 3:45',
+    unreadCount: 2,
+    initialMessages: [
+      { id: 1, sender: 'other', text: '안녕하세요! 에브리골프 세종 매니저입니다. 찾으시는 티타임이 있으신가요?', time: '오후 3:30' },
+      { id: 2, sender: 'me', text: '네, 05/28 목요일 오전 스카이72 CC 혹시 예약 가능한가요?', time: '오후 3:40' },
+      { id: 3, sender: 'other', text: '네, 고객님! 스카이72 예약 일정 조율 중입니다.', time: '오후 3:45' }
+    ],
+    autoReplies: [
+      '확인 감사합니다! 요청하신 시간대로 골프장 예약 확정 후 메시지 드리겠습니다. 잠시만 기다려주세요! ⛳',
+      '네, 추가로 더 희망하시는 골프장이나 금액대가 있으시면 편하게 말씀 남겨주세요.'
+    ]
+  },
+  {
+    id: 'agent-2',
+    type: 'agent',
+    name: '지원 매니저',
+    avatar: 'J',
+    lastMessage: '요청하신 이천 사우스스프링스 예약 확정되었습니다.',
+    time: '오전 11:20',
+    unreadCount: 0,
+    initialMessages: [
+      { id: 1, sender: 'me', text: '사우스스프링스 05/29 예약 대기 넣은 것 어떻게 되었나요?', time: '오전 11:00' },
+      { id: 2, sender: 'other', text: '요청하신 이천 사우스스프링스 예약 확정되었습니다.', time: '오전 11:20' }
+    ],
+    autoReplies: [
+      '예약 확정 내역은 마이페이지 > 나의 예약 탭에서도 확인하실 수 있습니다. 이용해 주셔서 감사합니다! 😊'
+    ]
+  },
+  {
+    id: 'agent-3',
+    type: 'agent',
+    name: '민지 매니저',
+    avatar: 'M',
+    lastMessage: '페럼클럽 주말 잔여 티타임 리스트 보내드립니다.',
+    time: '어제',
+    unreadCount: 0,
+    initialMessages: [
+      { id: 1, sender: 'other', text: '페럼클럽 주말 잔여 티타임 리스트 보내드립니다.', time: '어제' }
+    ],
+    autoReplies: [
+      '티타임 선점을 원하시면 빠르게 말씀 부탁드립니다. 주말 잔여 티는 실시간 마감률이 매우 높습니다!'
+    ]
+  },
+  {
+    id: 'partner-1',
+    type: 'partner',
+    name: '골프왕',
+    avatar: 'https://picsum.photos/seed/partner0/100/100',
+    lastMessage: '안녕하세요! 스카이72 조인 신청했습니다. 구력은 어떻게 되시나요?',
+    time: '오후 4:10',
+    unreadCount: 1,
+    initialMessages: [
+      { id: 1, sender: 'other', text: '안녕하세요! 스카이72 조인 신청했습니다. 구력은 어떻게 되시나요?', time: '오후 4:10' }
+    ],
+    autoReplies: [
+      '아하, 그렇군요! 저도 비슷한 구력인데 편하게 명랑 골프로 치고 와요! 단톡방 파서 연락드릴게요 🏌️‍♂️',
+      '네, 내일 라운딩 때 뵙겠습니다! 조심히 오세요!'
+    ]
+  },
+  {
+    id: 'partner-2',
+    type: 'partner',
+    name: '캐디와니',
+    avatar: 'https://picsum.photos/seed/partner1/100/100',
+    lastMessage: '네, 그럼 클럽하우스 로비에서 6시까지 뵐게요!',
+    time: '오전 9:15',
+    unreadCount: 0,
+    initialMessages: [
+      { id: 1, sender: 'me', text: '내일 티오프 시간 맞춰서 몇 시까지 모일까요?', time: '오전 9:00' },
+      { id: 2, sender: 'other', text: '네, 그럼 클럽하우스 로비에서 6시까지 뵐게요!', time: '오전 9:15' }
+    ],
+    autoReplies: [
+      '네, 좋습니다! 내일 뵙겠습니다! ⛳',
+      '이따 필드에서 뵈어요~!'
+    ]
+  },
+  {
+    id: 'partner-3',
+    type: 'partner',
+    name: '버디찬스',
+    avatar: 'https://picsum.photos/seed/partner2/100/100',
+    lastMessage: '레이크우드 CC 티타임 양도 가능할까요?',
+    time: '어제',
+    unreadCount: 0,
+    initialMessages: [
+      { id: 1, sender: 'other', text: '레이크우드 CC 티타임 양도 가능할까요?', time: '어제' }
+    ],
+    autoReplies: [
+      '죄송합니다, 방금 양도 대기자가 있어서 먼저 거래 완료되었습니다 ㅠㅠ 다음에 또 기회되면 연락해요!',
+      '네, 확인 감사합니다.'
+    ]
   }
 ];
