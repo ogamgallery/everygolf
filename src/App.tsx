@@ -1826,35 +1826,52 @@ function EveryGolfApp() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="flex flex-col gap-3.5">
             {MOCK_INFLUENCERS.map((inf) => (
               <div 
                 key={inf.id} 
                 onClick={() => pushView('influencerProfile', inf)} 
-                className="bg-white border border-gray-100 rounded-3xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer flex gap-4 group"
+                className="w-full bg-white border border-gray-100/80 rounded-2.5xl p-5 shadow-sm cursor-pointer hover:border-green-300 hover:shadow-md transition-all flex flex-col gap-4 relative overflow-hidden group"
               >
-                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gray-100 shrink-0 relative">
-                  <img src={inf.avatar} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[8px] font-black text-center py-0.5 whitespace-nowrap">응모 가능</span>
-                </div>
-                
-                <div className="flex-1 min-w-0 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <h4 className="font-bold text-gray-900 text-base truncate">{inf.name}</h4>
-                      <span className="text-[9px] shrink-0 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-1.5 py-0.5 rounded font-black shadow-sm">VIP</span>
-                    </div>
-                    <p className="text-xs text-gray-500 font-bold truncate mb-2">{inf.title.replace(/"/g, '')}</p>
-                    
-                    <div className="flex flex-col gap-1 text-[11px] font-bold text-gray-400">
-                      <span className="truncate flex items-center gap-1"><MapPin size={11} className="text-green-600"/> {inf.schedule.location}</span>
-                      <span className="truncate flex items-center gap-1"><Calendar size={11} className="text-green-600"/> {inf.schedule.time.split(' ')[0]}</span>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-full blur-2xl"></div>
+
+                <div className="flex justify-between items-start z-10">
+                  <div className="flex items-center gap-3">
+                    <img src={inf.avatar} className="w-11 h-11 rounded-xl object-cover shadow-sm border border-gray-100 group-hover:scale-105 transition-transform" />
+                    <div className="flex flex-col">
+                      <h3 className="text-sm font-black text-gray-800 flex items-center gap-1.5">
+                        {inf.name} 
+                        <span className="bg-green-50 text-green-600 text-[8.5px] font-bold px-1.5 py-0.5 rounded-md border border-green-100">
+                          PRO
+                        </span>
+                      </h3>
+                      <span className="text-[10px] text-gray-400 font-bold mt-0.5">{inf.title.replace(/"/g, '')}</span>
                     </div>
                   </div>
+                  
+                  <span className="bg-rose-500 text-white px-2.5 py-1 rounded-lg text-[9.5px] font-black shadow-sm shrink-0">
+                    무료 응모 지원
+                  </span>
                 </div>
-                <div className="flex flex-col justify-center shrink-0">
-                  <button className="bg-gray-900 text-white group-hover:bg-green-600 text-xs font-bold px-3 py-2 rounded-xl transition-colors shadow-sm">
-                    응모하기
+
+                <p className="text-xs text-gray-500 font-medium leading-relaxed break-words whitespace-pre-line z-10">
+                  {inf.description.split('\n\n')[0] || inf.description}
+                </p>
+
+                <div className="flex justify-between items-center pt-3 border-t border-gray-50 z-10">
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-1 text-[10px] text-gray-500 font-bold">
+                      <MapPin size={10} className="text-green-600 shrink-0" />
+                      <span className="truncate max-w-[150px]">{inf.schedule.location}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[9.5px] text-gray-400 font-medium">
+                      <Clock size={10} className="text-gray-450 shrink-0" />
+                      <span className="truncate max-w-[150px]">{inf.schedule.time.split('티오프')[0]} 티오프</span>
+                    </div>
+                  </div>
+                  
+                  <button className="bg-green-600 hover:bg-green-700 active:scale-95 text-white px-4 py-2.5 rounded-xl text-[10.5px] font-black shadow-sm transition-all shrink-0">
+                    신청 사연 작성
                   </button>
                 </div>
               </div>
@@ -2529,66 +2546,38 @@ function EveryGolfApp() {
         </div>
       </div>
 
-            <div className="px-5 mt-5">
+      <div className="px-5 mt-5">
         <div className="flex justify-between items-end mb-3">
           <h2 className="text-lg font-black text-gray-900 flex items-center gap-2">인플루언서와 함께 라운딩</h2>
-          <button 
-            onClick={() => pushView('influencerList')} 
-            className="text-xs text-gray-400 font-bold hover:text-green-600 transition-colors flex items-center gap-0.5"
-          >
-            모두보기 <ChevronRight size={14} />
-          </button>
         </div>
-        <div className="flex flex-col gap-3.5 pb-4">
-          {MOCK_INFLUENCERS.map((inf) => (
-            <div 
-              key={inf.id} 
-              onClick={() => pushView('influencerProfile', inf)} 
-              className="w-full bg-white border border-gray-100/80 rounded-2.5xl p-5 shadow-sm cursor-pointer hover:border-green-300 hover:shadow-md transition-all flex flex-col gap-4 relative overflow-hidden group"
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-full blur-2xl"></div>
-
-              <div className="flex justify-between items-start z-10">
-                <div className="flex items-center gap-3">
-                  <img src={inf.avatar} className="w-11 h-11 rounded-xl object-cover shadow-sm border border-gray-100 group-hover:scale-105 transition-transform" />
-                  <div className="flex flex-col">
-                    <h3 className="text-sm font-black text-gray-800 flex items-center gap-1.5">
-                      {inf.name} 
-                      <span className="bg-green-50 text-green-600 text-[8.5px] font-bold px-1.5 py-0.5 rounded-md border border-green-100">
-                        PRO
-                      </span>
-                    </h3>
-                    <span className="text-[10px] text-gray-400 font-bold mt-0.5">{inf.title.replace(/"/g, '')}</span>
-                  </div>
-                </div>
-                
-                <span className="bg-rose-500 text-white px-2.5 py-1 rounded-lg text-[9.5px] font-black shadow-sm shrink-0">
-                  무료 응모 지원
-                </span>
-              </div>
-
-              <p className="text-xs text-gray-500 font-medium leading-relaxed break-words whitespace-pre-line z-10">
-                {inf.description.split('\n\n')[0] || inf.description}
-              </p>
-
-              <div className="flex justify-between items-center pt-3 border-t border-gray-50 z-10">
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex items-center gap-1 text-[10px] text-gray-500 font-bold">
-                    <MapPin size={10} className="text-green-600 shrink-0" />
-                    <span className="truncate max-w-[150px]">{inf.schedule.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[9.5px] text-gray-400 font-medium">
-                    <Clock size={10} className="text-gray-450 shrink-0" />
-                    <span className="truncate max-w-[150px]">{inf.schedule.time.split('티오프')[0]} 티오프</span>
-                  </div>
-                </div>
-                
-                <button className="bg-green-600 hover:bg-green-700 active:scale-95 text-white px-4 py-2.5 rounded-xl text-[10.5px] font-black shadow-sm transition-all shrink-0">
-                  신청 사연 작성
-                </button>
-              </div>
-            </div>
-          ))}
+        
+        <div 
+          onClick={() => pushView('influencerList')}
+          className="w-full bg-gradient-to-br from-green-600 via-emerald-600 to-teal-800 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden cursor-pointer group active:scale-[0.99] transition-all flex flex-col justify-between aspect-[21/9]"
+        >
+          <div className="absolute right-[-20px] bottom-[-20px] w-36 h-36 bg-white/10 rounded-full border border-white/10 shrink-0"></div>
+          <div className="absolute right-[40px] bottom-[-40px] w-24 h-24 bg-white/5 rounded-full shrink-0"></div>
+          
+          <div className="relative z-10">
+            <span className="inline-block bg-white/20 backdrop-blur-md text-white text-[9px] font-black px-2 py-0.5 rounded mb-2.5 shadow-sm">
+              스페셜 매칭 EVENT ⛳
+            </span>
+            <h3 className="text-base font-black leading-snug tracking-tight">
+              인플루언서 & 프로와 함께하는<br/>100% 무료 라운딩 매칭!
+            </h3>
+            <p className="text-[10px] text-green-100 font-bold mt-1.5 opacity-90">
+              인플루언서 공고 확인하고 지금 사연을 응모하세요!
+            </p>
+          </div>
+          
+          <div className="relative z-10 flex justify-between items-center mt-3 pt-2.5 border-t border-white/10">
+            <span className="text-[9.5px] text-white/80 font-extrabold flex items-center gap-1">
+              에브리골프 단독 특별 혜택
+            </span>
+            <span className="text-[10.5px] font-black text-white flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              공고 보러가기 <ChevronRight size={13} />
+            </span>
+          </div>
         </div>
       </div>
       
