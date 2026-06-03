@@ -5,7 +5,7 @@ import {
   Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2, AlertCircle, AlertTriangle,
   ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
-  Flag, UserPlus, CalendarCheck2
+  Flag, UserPlus, CalendarCheck
 } from 'lucide-react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
@@ -241,7 +241,7 @@ function EveryGolfApp() {
     <div className="absolute bottom-0 inset-x-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 flex justify-between pb-safe z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
       {[
         { id: 'home', icon: Home, label: '홈' },
-        { id: 'booking', icon: CalendarCheck2, label: '부킹/조인' },
+        { id: 'booking', icon: CalendarCheck, label: '부킹/조인' },
         { id: 'community', icon: Users, label: '동반자 찾기' },
         { id: 'mypage', icon: User, label: '마이페이지' },
       ].map((tab) => (
@@ -2579,7 +2579,7 @@ function EveryGolfApp() {
       <div className="px-5 mt-6 grid grid-cols-4 gap-3 w-full">
         {[
           { 
-            icon: CalendarCheck2, 
+            icon: CalendarCheck, 
             label: '부킹', 
             color: 'bg-green-50 text-green-600 hover:bg-green-100', 
             action: () => { 
