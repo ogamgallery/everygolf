@@ -874,6 +874,7 @@ function EveryGolfApp() {
             time: `${time} 티오프`,
             location: region,
             name: courseName,
+            needed: needed,
             gender: gender,
             age: age,
             status: '모집중',
@@ -4393,7 +4394,8 @@ function EveryGolfApp() {
 
                      {/* 3. 상태 및 비용 (우측) */}
                      <div className="flex flex-col gap-1 items-end text-right w-[28%] shrink-0">
-                       <span className="text-[13px] text-green-600 font-black">
+                       <span className="text-[9.5px] font-bold text-gray-400 mb-0.5">모집 {partner.status === '마감' ? '4/4' : `${4 - (partner.needed || 1)}/4`}</span>
+                        <span className="text-[13px] text-green-600 font-black">
                          {partner.price || '180,000'}원
                        </span>
                        <span className={"text-[8.5px] shrink-0 font-bold px-1.5 py-0.5 rounded border " + (

@@ -96,6 +96,7 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
     time: `${join.time} 티오프`,
     location: join.location,
     name: join.name,
+    needed: join.needed,
     gender: join.gender,
     age: join.age,
     status: join.status,
