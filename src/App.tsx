@@ -110,7 +110,6 @@ function EveryGolfApp() {
   // 티타임 찜하기 상태
   const [likedBookings, setLikedBookings] = useState<string[]>([]);
   const [bookingMode, setBookingMode] = useState<'부킹' | '조인'>('부킹');
-  const [communitySubTab, setCommunitySubTab] = useState('ggram');
   const [selectedDate, setSelectedDate] = useState('05/28 (목)');
     
     // 필터 및 모달 상태
@@ -2604,7 +2603,6 @@ function EveryGolfApp() {
             color: 'bg-purple-50 text-purple-600 hover:bg-purple-100', 
             action: () => { 
               setActiveTab('community'); 
-              setCommunitySubTab('partner'); 
               showToast('동반자 구하기 게시판으로 이동합니다.'); 
             } 
           },
