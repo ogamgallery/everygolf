@@ -4587,11 +4587,11 @@ function EveryGolfApp() {
                                     key={app.id} 
                                     className="bg-gray-50/60 p-2 rounded-xl border border-gray-150/40 flex items-center justify-between gap-3 text-xs"
                                   >
-                                    <div className="flex items-center gap-2.5">
+                                    <div className="flex items-center gap-2">
                                       <img 
                                         src={app.avatar} 
-                                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} 
-                                        className="shrink-0 shadow-sm border border-gray-100/60" 
+                                        style={{ width: '22px', height: '22px', borderRadius: '50%', objectFit: 'cover' }} 
+                                        className="shrink-0 shadow-sm border border-gray-100/50" 
                                       />
                                       <div className="flex flex-col">
                                         <span className="font-extrabold text-gray-800 text-[11px]">
