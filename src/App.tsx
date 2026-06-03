@@ -3287,27 +3287,7 @@ function EveryGolfApp() {
           <div className="bg-white flex flex-col shrink-0">
              
           </div>
-          {isDiscountSpecialOnly && (
-            <div className="mx-5 mt-4 p-3.5 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-xl shadow-sm flex items-center justify-between shrink-0">
-              <div>
-                <h4 className="text-xs font-black flex items-center gap-1">
-                  <Sparkles size={12} /> 당일/익일 특가티 내부 필터링 가동 중
-                </h4>
-                <p className="text-[9.5px] opacity-90 font-bold mt-0.5">
-                  18만원 이하의 오늘/내일 특가 부킹 티타임 리스트입니다.
-                </p>
-              </div>
-              <button 
-                onClick={() => {
-                  setIsDiscountSpecialOnly(false);
-                  showToast('일반 부킹 모드로 전환되었습니다.');
-                }}
-                className="bg-white/20 hover:bg-white/35 active:scale-95 text-white font-extrabold text-[9px] px-2 py-1 rounded-md transition-all shrink-0"
-              >
-                해제
-              </button>
-            </div>
-          )}
+
           <div className="bg-white flex flex-col shrink-0">
             {/* 상단 헤더 영역 (로고 + 부킹/조인 탭) */}
             <div className="bg-white px-5 pt-12 pb-0 border-b border-gray-100 flex items-center justify-between">
