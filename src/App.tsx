@@ -3776,7 +3776,7 @@ function EveryGolfApp() {
                                       <span className="text-[12.5px] text-gray-800 font-black">
                                         {item.time}
                                       </span>
-                                      <span className="text-[9.5px] text-gray-400 font-bold mt-0.5">{selectedDate.split(' ')[0]}</span>
+                                      <span className="text-[9.5px] text-gray-400 font-bold mt-0.5">{isDiscountSpecialOnly ? (item.id % 2 === 0 ? '05/28 (목)' : '05/29 (금)') : selectedDate.split(' ')[0]}</span>
                                     </div>
                                     <div className="flex flex-col items-center text-center w-[40%] shrink-0">
                                       <div className="flex items-center gap-1 justify-center">
@@ -3839,7 +3839,7 @@ function EveryGolfApp() {
                                 </div>
                                 <div className="flex flex-col gap-1 items-center text-center w-[38%] shrink-0">
                                   <span className="text-[12px] text-gray-800 font-black">
-                                    {selectedDate.split(' ')[0]}<span className="text-gray-400 font-bold">{selectedDate.split(' ')[1]}</span> {booking.time}
+                                    {isDiscountSpecialOnly ? (booking.id % 2 === 0 ? '05/28' : '05/29') : selectedDate.split(' ')[0]}<span className="text-gray-400 font-bold">{isDiscountSpecialOnly ? (booking.id % 2 === 0 ? '(목)' : '(금)') : selectedDate.split(' ')[1]}</span> {booking.time}
                                   </span>
                                   <div className="flex items-center gap-1 justify-center">
                                     <span className="text-[11px] text-gray-600 font-bold">{channelName}</span>
@@ -3902,7 +3902,7 @@ function EveryGolfApp() {
                                 </div>
                                 <div className="flex flex-col gap-1 items-center text-center w-[38%] shrink-0">
                                   <span className="text-[12px] text-gray-800 font-black">
-                                    {selectedDate.split(' ')[0]}<span className="text-gray-400 font-bold">{selectedDate.split(' ')[1]}</span> {join.time}
+                                    {isDiscountSpecialOnly ? (join.id % 2 === 0 ? '05/28' : '05/29') : selectedDate.split(' ')[0]}<span className="text-gray-400 font-bold">{isDiscountSpecialOnly ? (join.id % 2 === 0 ? '(목)' : '(금)') : selectedDate.split(' ')[1]}</span> {join.time}
                                   </span>
                                   <div className="flex items-center gap-1 justify-center">
                                     <span className="text-[11px] text-gray-600 font-bold">{channelName}</span>
@@ -4000,7 +4000,7 @@ function EveryGolfApp() {
                       <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-gray-900 font-bold shadow-sm border border-gray-100"><Clock size={18} className="text-green-600"/></div>
                       <div>
                         <p className="text-xs text-gray-400 font-bold mb-0.5">티오프 시간</p>
-                        <p className="font-black text-gray-800 text-sm">{selectedDate.split(' ')[0]} {activeDetailItem.data.time}</p>
+                        <p className="font-black text-gray-800 text-sm">{isDiscountSpecialOnly ? (activeDetailItem.data.id % 2 === 0 ? '05/28 (목)' : '05/29 (금)') : selectedDate.split(' ')[0]} {activeDetailItem.data.time}</p>
                       </div>
                     </div>
                     <div className="text-right">
