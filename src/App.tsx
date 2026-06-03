@@ -3322,18 +3322,20 @@ function EveryGolfApp() {
 
             {/* 가로 스크롤 캘린더 칩 (빠른 날짜 변경) */}
             <div className="bg-white border-b border-gray-100 relative overflow-visible">
-            <div className="flex items-center overflow-x-auto hide-scrollbar px-2 py-1.5">
-              <button 
-                onClick={() => {
-                  setShowCalendarModal(prev => !prev);
-                  setShowTimeFilter(false);
-                  setShowRegionFilter(false);
-                  setShowSearchQueryDropdown(false);
-                }}
-                className="min-w-[50px] h-[52px] flex items-center justify-center bg-white border border-gray-100 rounded-xl mx-0.5 text-gray-600 hover:bg-gray-50 shrink-0"
-              >
-                <Calendar size={18} />
-              </button>
+            <div className="flex items-center overflow-x-auto hide-scrollbar px-2 py-1.5 w-full">
+              {!isDiscountSpecialOnly && (
+                <button 
+                  onClick={() => {
+                    setShowCalendarModal(prev => !prev);
+                    setShowTimeFilter(false);
+                    setShowRegionFilter(false);
+                    setShowSearchQueryDropdown(false);
+                  }}
+                  className="min-w-[50px] h-[52px] flex items-center justify-center bg-white border border-gray-100 rounded-xl mx-0.5 text-gray-600 hover:bg-gray-50 shrink-0"
+                >
+                  <Calendar size={18} />
+                </button>
+              )}
               {(isDiscountSpecialOnly ? [dates[3], dates[4]] : dates).map((date) => {
                 const isSelected = selectedDate === date;
                 const isWeekend = date.includes('토') || date.includes('일');
@@ -3341,7 +3343,9 @@ function EveryGolfApp() {
                   <button 
                     key={date} 
                     onClick={() => setSelectedDate(date)}
-                    className={`min-w-[50px] h-[52px] flex flex-col items-center justify-center rounded-xl mx-0.5 transition-all ${isSelected ? 'bg-gray-900 text-white shadow-md' : 'bg-white hover:bg-gray-50 border border-gray-100'} ${isWeekend && !isSelected ? 'text-red-500' : 'text-gray-500'}`}
+                    className={`h-[52px] flex flex-col items-center justify-center rounded-xl mx-0.5 transition-all ${
+                      isDiscountSpecialOnly ? 'flex-1' : 'min-w-[50px] shrink-0'
+                    } ${isSelected ? 'bg-gray-900 text-white shadow-md' : 'bg-white hover:bg-gray-50 border border-gray-100'} ${isWeekend && !isSelected ? 'text-red-500' : 'text-gray-500'}`}
                   >
                     <span className="text-[9.5px] font-medium leading-none mb-1">{date.split(' ')[0]}</span>
                     <span className={`text-[11px] font-black leading-none ${isSelected ? 'text-white' : 'text-gray-900'} ${isWeekend && !isSelected ? 'text-red-500' : ''}`}>{date.split(' ')[1]}</span>
