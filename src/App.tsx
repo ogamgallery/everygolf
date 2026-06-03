@@ -2539,27 +2539,53 @@ function EveryGolfApp() {
             모두보기 <ChevronRight size={14} />
           </button>
         </div>
-        <div className="flex overflow-x-auto gap-4 snap-x hide-scrollbar pb-4">
+        <div className="flex flex-col gap-3.5 pb-4">
           {MOCK_INFLUENCERS.map((inf) => (
-            <div key={inf.id} onClick={() => pushView('influencerProfile', inf)} className="w-[280px] shrink-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 rounded-3xl p-5 text-white shadow-xl relative overflow-hidden cursor-pointer group aspect-[16/10] flex flex-col justify-end snap-start">
-              <div className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url('${inf.cover}')` }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/50 to-transparent" />
-              
-              <div className="relative z-10 w-full">
-                <span className="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold w-fit mb-2 shadow-sm block">무료 라운딩 응모</span>
-                <div className="flex items-center gap-3 mb-2">
-                  <img src={inf.avatar} className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"/>
-                  <div>
-                    <h2 className="text-lg font-bold leading-none">{inf.name}</h2>
-                    <span className="text-[10px] text-gray-300 font-medium">{inf.title.replace(/"/g, '')}</span>
+            <div 
+              key={inf.id} 
+              onClick={() => pushView('influencerProfile', inf)} 
+              className="w-full bg-white border border-gray-100/80 rounded-2.5xl p-5 shadow-sm cursor-pointer hover:border-green-300 hover:shadow-md transition-all flex flex-col gap-4 relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-full blur-2xl"></div>
+
+              <div className="flex justify-between items-start z-10">
+                <div className="flex items-center gap-3">
+                  <img src={inf.avatar} className="w-11 h-11 rounded-xl object-cover shadow-sm border border-gray-100 group-hover:scale-105 transition-transform" />
+                  <div className="flex flex-col">
+                    <h3 className="text-sm font-black text-gray-800 flex items-center gap-1.5">
+                      {inf.name} 
+                      <span className="bg-green-50 text-green-600 text-[8.5px] font-bold px-1.5 py-0.5 rounded-md border border-green-100">
+                        PRO
+                      </span>
+                    </h3>
+                    <span className="text-[10px] text-gray-400 font-bold mt-0.5">{inf.title.replace(/"/g, '')}</span>
                   </div>
                 </div>
-                <div className="flex justify-between items-center mt-3">
-                  <p className="text-xs text-gray-300 font-medium drop-shadow-md truncate max-w-[70%]">{inf.schedule.location}</p>
-                  <button className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-sm hover:bg-white hover:text-gray-900 transition-colors">
-                    프로필 보기
-                  </button>
+                
+                <span className="bg-rose-500 text-white px-2.5 py-1 rounded-lg text-[9.5px] font-black shadow-sm shrink-0">
+                  무료 응모 지원
+                </span>
+              </div>
+
+              <p className="text-xs text-gray-500 font-medium leading-relaxed break-words whitespace-pre-line z-10">
+                {inf.description.split('\n\n')[0] || inf.description}
+              </p>
+
+              <div className="flex justify-between items-center pt-3 border-t border-gray-50 z-10">
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-1 text-[10px] text-gray-500 font-bold">
+                    <MapPin size={10} className="text-green-600 shrink-0" />
+                    <span className="truncate max-w-[150px]">{inf.schedule.location}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[9.5px] text-gray-400 font-medium">
+                    <Clock size={10} className="text-gray-450 shrink-0" />
+                    <span className="truncate max-w-[150px]">{inf.schedule.time.split('티오프')[0]} 티오프</span>
+                  </div>
                 </div>
+                
+                <button className="bg-green-600 hover:bg-green-700 active:scale-95 text-white px-4 py-2.5 rounded-xl text-[10.5px] font-black shadow-sm transition-all shrink-0">
+                  신청 사연 작성
+                </button>
               </div>
             </div>
           ))}
