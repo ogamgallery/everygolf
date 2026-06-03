@@ -3816,9 +3816,23 @@ function EveryGolfApp() {
                                       )}
                                     </div>
                                     <div className="flex flex-col items-end text-right w-[30%] shrink-0">
-                                      <p className="font-black text-blue-500 text-[14px]">
-                                        {item.price}<span className="text-xs font-bold text-gray-500 ml-0.5">원</span>
-                                      </p>
+                                      {isDiscountSpecialOnly && bookingMode === '부킹' ? (
+                                        <div className="flex flex-col items-end">
+                                          <p className="text-[9.5px] text-gray-400 font-bold line-through leading-none mb-0.5">
+                                            {item.price}원
+                                          </p>
+                                          <p className="font-black text-rose-500 text-[13.5px] leading-tight">
+                                            {(parseInt(item.price.replace(/,/g, '')) - 10000).toLocaleString()}<span className="text-xs font-bold text-gray-500 ml-0.5">원</span>
+                                          </p>
+                                          <span className="text-[8.5px] font-black bg-rose-50 text-rose-600 px-1 py-0.5 rounded mt-0.5 shrink-0 block w-max">
+                                            1만P 적립 (체감가)
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <p className="font-black text-blue-500 text-[14px]">
+                                          {item.price}<span className="text-xs font-bold text-gray-500 ml-0.5">원</span>
+                                        </p>
+                                      )}
                                       {bookingMode === '조인' && (
                                         <span className="text-[10.5px] font-bold text-orange-500 mt-0.5">
                                           {item.needed}명 · {item.gender === '무관' ? '성별무관' : item.gender}
@@ -3890,9 +3904,23 @@ function EveryGolfApp() {
                                       />
                                     </button>
                                   </div>
-                                  <p className="font-black text-blue-500 text-[14.5px]">
-                                    {booking.price}<span className="text-xs font-bold text-gray-500 ml-0.5">원</span>
-                                  </p>
+                                  {isDiscountSpecialOnly && bookingMode === '부킹' ? (
+                                    <div className="flex flex-col items-end">
+                                      <p className="text-[9.5px] text-gray-400 font-bold line-through leading-none mb-0.5">
+                                        {booking.price}원
+                                      </p>
+                                      <p className="font-black text-rose-500 text-[14px] leading-tight">
+                                        {(parseInt(booking.price.replace(/,/g, '')) - 10000).toLocaleString()}<span className="text-xs font-bold text-gray-500 ml-0.5">원</span>
+                                      </p>
+                                      <span className="text-[8.5px] font-black bg-rose-50 text-rose-600 px-1 py-0.5 rounded mt-0.5 shrink-0 block w-max">
+                                        1만P 적립 (체감가)
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <p className="font-black text-blue-500 text-[14.5px]">
+                                      {booking.price}<span className="text-xs font-bold text-gray-500 ml-0.5">원</span>
+                                    </p>
+                                  )}
                                 </div>
                               </div>
                             );
