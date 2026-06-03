@@ -79,7 +79,7 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
   const license = index % 5 === 0 ? '보유' : '무관';
   const maxHandicap = index % 4 === 0 ? 90 : (index % 4 === 1 ? 100 : 120);
   const cost = index % 2 === 0 ? '1/N 결제' : '호스트 부담';
-  const date = index % 3 === 0 ? '오늘' : (index % 3 === 1 ? '내일' : '이번주 주말');
+  const date = index % 3 === 0 ? '05/28 (목)' : (index % 3 === 1 ? '05/29 (금)' : '05/30 (토)');
   const description = `${join.host}님이 올린 동반자 모집 공고글입니다. 매너 좋고 명랑한 라운딩을 함께 하실 동반자분 구해요! 끝나고 편하게 인사 나누실 분들 환영합니다. ⛳`;
   const hostProfile = {
     gender: index % 2 === 0 ? '남성' : '여성',
@@ -95,6 +95,7 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
     author: join.host,
     time: `${join.time} 티오프`,
     location: join.location,
+    name: join.name,
     gender: join.gender,
     age: join.age,
     status: join.status,

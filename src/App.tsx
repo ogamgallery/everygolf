@@ -851,7 +851,7 @@ function EveryGolfApp() {
       case '동반자 모집글 작성': {
         const [courseName, setCourseName] = useState('');
         const [region, setRegion] = useState('인천');
-        const [date, setDate] = useState('오늘');
+        const [date, setDate] = useState('05/28 (목)');
         const [time, setTime] = useState('07:00');
         const [price, setPrice] = useState('180,000');
         const [needed, setNeeded] = useState(1);
@@ -873,6 +873,7 @@ function EveryGolfApp() {
             author: userProfile ? '김골프' : '나홀로골퍼',
             time: `${time} 티오프`,
             location: region,
+            name: courseName,
             gender: gender,
             age: age,
             status: '모집중',
@@ -939,7 +940,7 @@ function EveryGolfApp() {
                       onChange={e => setDate(e.target.value)}
                       className="w-full px-3 py-3 bg-gray-50 rounded-xl outline-none focus:border-green-500 border border-transparent font-bold text-xs text-gray-900"
                     >
-                      {['오늘', '내일', '이번주 주말', '다음주'].map(d => (
+                      {['05/28 (목)', '05/29 (금)', '05/30 (토)', '05/31 (일)', '06/01 (월)', '06/02 (화)', '06/03 (수)'].map(d => (
                         <option key={d} value={d}>{d}</option>
                       ))}
                     </select>
@@ -4373,17 +4374,17 @@ function EveryGolfApp() {
                    <div className="flex justify-between items-center w-full py-1 text-left">
                      {/* 1. 구장 정보 (좌측) */}
                      <div className="flex flex-col gap-1 w-[32%] shrink-0">
-                       <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{partner.location}</h4>
+                       <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{partner.name || '골프 CC'}</h4>
                        <span className="text-[10.5px] text-gray-500 font-bold flex items-center gap-0.5">
                          <MapPin size={10} className="text-green-600 shrink-0" />
-                         <span>{partner.location.includes('인천') ? '인천' : partner.location.includes('경기') ? '경기' : '수도권'}</span>
+                         <span>{partner.location}</span>
                        </span>
                      </div>
 
                      {/* 2. 일정 및 인적사항 (중앙) */}
                      <div className="flex flex-col gap-1 items-center text-center w-[40%] shrink-0">
                        <span className="text-[11.5px] text-gray-850 font-black">
-                         {partner.date || '이번주'} {partner.time.split(' ')[0]}
+                         {partner.date ? partner.date.split(' ')[0] : '05/28'}<span className="text-gray-400 font-bold">{partner.date ? partner.date.split(' ')[1] : '(목)'}</span> {partner.time.split(' ')[0]}
                        </span>
                        <span className="text-[10px] text-gray-500 font-bold truncate max-w-full">
                          {hostInfo.gender} · {hostInfo.age} · {hostInfo.handicap}타
