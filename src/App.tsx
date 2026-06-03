@@ -2985,21 +2985,6 @@ function EveryGolfApp() {
             >
               everygolf
             </h1>
-            {/* 부킹 / 조인 모드 토글 탭 */}
-            <div className="bg-gray-100 p-0.5 rounded-xl flex">
-              <button 
-                onClick={() => { setBookingMode('부킹'); setIsDiscountSpecialOnly(false); }} 
-                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${bookingMode === '부킹' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'}`}
-              >
-                부킹
-              </button>
-              <button 
-                onClick={() => { setBookingMode('조인'); setIsDiscountSpecialOnly(false); }} 
-                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${bookingMode === '조인' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'}`}
-              >
-                조인
-              </button>
-            </div>
           </div>
 
           {/* 필터 입력 영역 (하단 패딩 최소화) */}
@@ -3142,6 +3127,43 @@ function EveryGolfApp() {
                     ))}
                   </div>
                 )}
+              </div>
+
+              {/* 서비스 구분 (부킹 / 조인 모드 선택) */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-gray-400">서비스 구분</span>
+                <div className="bg-gray-50 border border-gray-100 rounded-xl p-1.5 flex gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => { 
+                      setBookingMode('부킹'); 
+                      setIsDiscountSpecialOnly(false); 
+                      showToast('부킹 모드로 설정되었습니다.');
+                    }}
+                    className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
+                      bookingMode === '부킹' 
+                        ? 'bg-white text-gray-900 shadow-sm border border-gray-100' 
+                        : 'text-gray-400 hover:text-gray-600'
+                    }`}
+                  >
+                    부킹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { 
+                      setBookingMode('조인'); 
+                      setIsDiscountSpecialOnly(false); 
+                      showToast('조인 모드로 설정되었습니다.');
+                    }}
+                    className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
+                      bookingMode === '조인' 
+                        ? 'bg-white text-gray-900 shadow-sm border border-gray-100' 
+                        : 'text-gray-400 hover:text-gray-600'
+                    }`}
+                  >
+                    조인
+                  </button>
+                </div>
               </div>
 
               {/* 골프장명 직접 검색 */}
