@@ -2615,6 +2615,7 @@ function EveryGolfApp() {
               setBookingMode('부킹'); 
               setSelectedDate('05/28 (목)'); 
               setIsDiscountSpecialOnly(true);
+              setShowSearchFilter(false);
               showToast('금일~익일 마감 임박 특가 티타임을 검색합니다. ⚡'); 
             } 
           },
