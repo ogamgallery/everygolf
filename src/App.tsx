@@ -2969,7 +2969,7 @@ function EveryGolfApp() {
 
 
     return (
-      <div className={`bg-gray-50 flex flex-col w-full relative ${showSearchFilter ? 'pb-24 min-h-full overflow-y-auto' : 'flex-1 min-h-0 overflow-hidden'}`}>
+      <div className={`bg-gray-50 flex flex-col w-full relative ${showSearchFilter ? 'pb-16 min-h-full overflow-y-auto' : 'flex-1 min-h-0 overflow-hidden'}`}>
         {showSearchFilter ? (
           <>
           {/* 상단 타이틀 */}
