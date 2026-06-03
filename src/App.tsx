@@ -4143,7 +4143,34 @@ function EveryGolfApp() {
   };
 
     const CommunityTabView = () => {
-    const ageMatch = (postAge: string, userAge: number) => {
+      const getCCName = (partner: any) => {
+        if (partner.name) return partner.name;
+        const title = partner.title || '';
+        const closeBraceIdx = title.indexOf(']');
+        if (closeBraceIdx !== -1) {
+          const afterBrace = title.substring(closeBraceIdx + 1).trim();
+          const match = afterBrace.match(/(.+?)\s+\d+명/);
+          if (match) return match[1].trim();
+          return afterBrace;
+        }
+        return '골프 CC';
+      };
+
+      const getFormattedDate = (dateStr: string) => {
+        const dateVal = dateStr || '오늘';
+        if (dateVal === '오늘' || dateVal === '05/28 (목)') {
+          return '오늘';
+        }
+        if (dateVal === '내일' || dateVal === '05/29 (금)') {
+          return '05/29 (금)';
+        }
+        if (dateVal === '이번주 주말' || dateVal === '05/30 (토)') {
+          return '05/30 (토)';
+        }
+        return dateVal;
+      };
+
+      const ageMatch = (postAge: string, userAge: number) => {
       if (postAge === '무관') return true;
       const match = postAge.match(/(\d+)(?:~(\d+))?대/);
       if (match) {
@@ -4375,7 +4402,7 @@ function EveryGolfApp() {
                    <div className="flex justify-between items-center w-full py-1 text-left">
                      {/* 1. 구장 정보 (좌측) */}
                      <div className="flex flex-col gap-1 w-[32%] shrink-0">
-                       <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{partner.name || '골프 CC'}</h4>
+                       <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{getCCName(partner)}</h4>
                        <span className="text-[10.5px] text-gray-500 font-bold flex items-center gap-0.5">
                          <MapPin size={10} className="text-green-600 shrink-0" />
                          <span>{partner.location}</span>
@@ -4385,7 +4412,14 @@ function EveryGolfApp() {
                      {/* 2. 일정 및 인적사항 (중앙) */}
                      <div className="flex flex-col gap-1 items-center text-center w-[40%] shrink-0">
                        <span className="text-[11.5px] text-gray-850 font-black">
-                         {partner.date ? partner.date.split(' ')[0] : '05/28'}<span className="text-gray-400 font-bold">{partner.date ? partner.date.split(' ')[1] : '(목)'}</span> {partner.time.split(' ')[0]}
+                         {(() => {
+                            const formatted = getFormattedDate(partner.date);
+                            const dateText = formatted.split(' ')[0];
+                            const dayText = formatted.split(' ')[1] || '';
+                            return (
+                              <>{dateText}<span className="text-gray-400 font-bold">{dayText}</span> {partner.time.split(' ')[0]}</>
+                            );
+                          })()}
                        </span>
                        <span className="text-[10px] text-gray-500 font-bold truncate max-w-full">
                          {hostInfo.gender} · {hostInfo.age} · {hostInfo.handicap}타
