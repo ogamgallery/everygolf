@@ -293,15 +293,15 @@ function EveryGolfApp() {
     <AnimatePresence>
       {isAiOpen && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm" onClick={() => setIsAiOpen(false)}>
-          <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 300 }} onClick={e => e.stopPropagation()} className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)] flex flex-col h-[85vh]">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+          <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 300 }} onClick={e => e.stopPropagation()} className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)] flex flex-col h-[80%]">
+            <div className="flex justify-between items-center p-4 border-b border-gray-100 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-tr from-green-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg"><Sparkles size={20} className="text-white"/></div>
                 <div><h3 className="text-lg font-black text-gray-900 tracking-tight">AI 비서</h3><p className="text-xs text-green-600 font-bold">1초 만에 찾아주는 맞춤 티타임</p></div>
               </div>
               <button onClick={() => setIsAiOpen(false)} className="p-2 bg-gray-50 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-600 transition-colors"><X size={20}/></button>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
                {aiChatStep >= 0 && (
                  <div className="space-y-4">
                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
