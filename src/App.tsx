@@ -94,6 +94,7 @@ function EveryGolfApp() {
   ]);
   
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
+  const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
 
   const [favNameInput, setFavNameInput] = useState('');
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
@@ -248,6 +249,7 @@ function EveryGolfApp() {
           key={tab.id}
           onClick={() => { 
             if (tab.id === 'booking') {
+              setIsDiscountSpecialOnly(false);
               if (activeTab === 'booking') {
                 setSelectedTime('전체 시간');
                 setSelectedRegion('전체 지역');
@@ -2612,7 +2614,8 @@ function EveryGolfApp() {
               setActiveTab('booking'); 
               setBookingMode('부킹'); 
               setSelectedDate('05/28 (목)'); 
-              showToast('당일 마감 임박 특가 티타임을 검색합니다. ⚡'); 
+              setIsDiscountSpecialOnly(true);
+              showToast('금일~익일 마감 임박 특가 티타임을 검색합니다. ⚡'); 
             } 
           },
         ].map((item, idx) => (
@@ -2735,12 +2738,25 @@ function EveryGolfApp() {
       let rawData: any[] = bookingMode === '부킹' ? MOCK_BOOKINGS : MOCK_JOINS;
       
       // 날짜 변경 시 리스트 셔플링 시뮬레이션 (동적 효과 부여)
-      const dateIdx = dates.indexOf(selectedDate);
-      if (dateIdx !== -1) {
-        rawData = [...rawData].filter((_, idx) => (idx + dateIdx) % 3 !== 2);
+      if (isDiscountSpecialOnly) {
+        const todayIdx = 3; // 05/28 (목)
+        const tomorrowIdx = 4; // 05/29 (금)
+        rawData = [...rawData].filter((_, idx) => 
+          ((idx + todayIdx) % 3 !== 2) || ((idx + tomorrowIdx) % 3 !== 2)
+        );
+      } else {
+        const dateIdx = dates.indexOf(selectedDate);
+        if (dateIdx !== -1) {
+          rawData = [...rawData].filter((_, idx) => (idx + dateIdx) % 3 !== 2);
+        }
       }
 
       const filtered = rawData.filter(item => {
+        // 특가 전용 모드 시 가격 제한 (18만원 이하)
+        if (isDiscountSpecialOnly && bookingMode === '부킹') {
+          const priceVal = parseInt(item.price.replace(/,/g, ''));
+          if (priceVal > 180000) return false;
+        }
         // 시간대 필터링 (1부/오전, 2부/오후, 3부/야간)
         if (selectedTime !== '전체 시간') {
           const hour = parseInt(item.time.split(':')[0]);
@@ -2979,13 +2995,13 @@ function EveryGolfApp() {
             {/* 부킹 / 조인 모드 토글 탭 */}
             <div className="bg-gray-100 p-0.5 rounded-xl flex">
               <button 
-                onClick={() => setBookingMode('부킹')} 
+                onClick={() => { setBookingMode('부킹'); setIsDiscountSpecialOnly(false); }} 
                 className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${bookingMode === '부킹' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'}`}
               >
                 부킹
               </button>
               <button 
-                onClick={() => setBookingMode('조인')} 
+                onClick={() => { setBookingMode('조인'); setIsDiscountSpecialOnly(false); }} 
                 className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${bookingMode === '조인' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'}`}
               >
                 조인
@@ -2995,6 +3011,28 @@ function EveryGolfApp() {
 
           {/* 필터 입력 영역 (하단 패딩 최소화) */}
           <div className="flex-1 p-5 pb-4 space-y-5">
+            {isDiscountSpecialOnly && (
+              <div className="bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-2xl p-4 shadow-md flex items-center justify-between shrink-0">
+                <div>
+                  <h4 className="text-xs font-black flex items-center gap-1.5">
+                    <Sparkles size={14} className="shrink-0" />
+                    <span>실시간 당일/익일 마감특가 선별 중</span>
+                  </h4>
+                  <p className="text-[10px] opacity-90 font-bold mt-1">
+                    18만원 이하의 금일(05/28) & 익일(05/29) 초특가 티타임만 노출됩니다.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => {
+                    setIsDiscountSpecialOnly(false);
+                    showToast('일반 부킹 모드로 전환되었습니다.');
+                  }}
+                  className="bg-white/20 hover:bg-white/35 active:scale-95 text-white font-extrabold text-[9px] px-2.5 py-1.5 rounded-lg transition-all shrink-0"
+                >
+                  해제
+                </button>
+              </div>
+            )}
             <div>
               <h2 className="text-lg font-black text-gray-800 leading-tight">어디로 라운딩을 떠나시나요?</h2>
               <p className="text-xs text-gray-400 mt-1 font-bold">원하시는 날짜, 시간, 장소를 입력해 주세요.</p>
@@ -3231,6 +3269,30 @@ function EveryGolfApp() {
       ) : (
         <div ref={scrollRef} className="flex-1 w-full overflow-y-auto hide-scrollbar bg-gray-50 flex flex-col pb-32">
           {/* 상단 헤더 영역 (탭 + 날짜 + 시간대/조인) */}
+          <div className="bg-white flex flex-col shrink-0">
+             
+          </div>
+          {isDiscountSpecialOnly && (
+            <div className="mx-5 mt-4 p-3.5 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-xl shadow-sm flex items-center justify-between shrink-0">
+              <div>
+                <h4 className="text-xs font-black flex items-center gap-1">
+                  <Sparkles size={12} /> 당일/익일 특가티 내부 필터링 가동 중
+                </h4>
+                <p className="text-[9.5px] opacity-90 font-bold mt-0.5">
+                  18만원 이하의 오늘/내일 특가 부킹 티타임 리스트입니다.
+                </p>
+              </div>
+              <button 
+                onClick={() => {
+                  setIsDiscountSpecialOnly(false);
+                  showToast('일반 부킹 모드로 전환되었습니다.');
+                }}
+                className="bg-white/20 hover:bg-white/35 active:scale-95 text-white font-extrabold text-[9px] px-2 py-1 rounded-md transition-all shrink-0"
+              >
+                해제
+              </button>
+            </div>
+          )}
           <div className="bg-white flex flex-col shrink-0">
             {/* 상단 헤더 영역 (로고 + 부킹/조인 탭) */}
             <div className="bg-white px-5 pt-12 pb-0 border-b border-gray-100 flex items-center justify-between">
