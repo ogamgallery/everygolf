@@ -2883,28 +2883,26 @@ function EveryGolfApp() {
       const managerName = channels[item.id % channels.length] || '에브리골프 매니저';
       
       return (
-        <div className="border-t border-gray-100 pt-4 mt-3 w-full text-left space-y-4 animate-in fade-in slide-in-from-top-2 duration-200" onClick={(e) => e.stopPropagation()}>
+        <div className="border-t border-gray-100 pt-4 mt-3 w-full text-left space-y-3.5 animate-in fade-in slide-in-from-top-1 duration-150" onClick={(e) => e.stopPropagation()}>
           
           {/* 매니저 코멘트 블록 */}
-          <div className="bg-gradient-to-br from-green-50/70 to-emerald-50/30 rounded-2xl p-4 border border-green-100/60 relative overflow-hidden">
-            <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-20 h-20 bg-green-500/5 rounded-full blur-xl"></div>
-            
+          <div className="bg-gray-50/70 rounded-xl p-3.5 border border-gray-100 relative">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-green-500 to-emerald-600 flex items-center justify-center text-white text-[10px] font-black shadow-sm shrink-0">
+                <div className="w-6.5 h-6.5 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-[10px] font-black shrink-0">
                   {managerName[0]}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[11px] text-gray-800 font-extrabold">{managerName}의 스페셜 코멘트</span>
+                  <span className="text-[11px] text-gray-800 font-extrabold">{managerName} 추천사</span>
                   <span className="text-[8.5px] text-gray-400 font-bold">추천 티타임 · {caddieType}</span>
                 </div>
               </div>
-              <span className="text-[8.5px] text-gray-400 bg-white border border-gray-200 px-1.5 py-0.5 rounded-md font-bold flex items-center gap-0.5 shrink-0">
+              <span className="text-[8.5px] text-gray-450 font-bold shrink-0">
                 👁️ {viewsCount}명 확인
               </span>
             </div>
             
-            <p className="text-gray-700 text-xs font-bold leading-relaxed whitespace-pre-wrap pl-0.5">
+            <p className="text-gray-650 text-xs font-bold leading-relaxed whitespace-pre-wrap pl-0.5">
               "{item.name || '골프장'}의 잔디 상태 및 그린 컨디션이 매우 우수한 골프장입니다. 편리하고 신속한 실시간 부킹 조율을 약속드리며, 아래 직통 버튼으로 문의 시 즉각 확정 예약을 도와드립니다."
             </p>
           </div>
@@ -2914,14 +2912,14 @@ function EveryGolfApp() {
             <a 
               href="tel:010-4043-1307"
               onClick={(e) => { e.stopPropagation(); showToast('매니저 유선 연결 중...'); }}
-              className="flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 active:scale-[0.97] text-white py-3.5 rounded-2xl text-[11px] font-black transition-all shadow-[0_4px_12px_rgba(17,24,39,0.12)]"
+              className="flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] text-gray-700 py-3 rounded-xl text-[11px] font-black transition-all shadow-sm"
             >
-              <Phone size={13} className="text-green-400 fill-current animate-pulse shrink-0" />
+              <Phone size={13} className="text-gray-450 shrink-0" />
               <span>매니저 직통 통화</span>
             </a>
             <button 
               onClick={() => showToast('1:1 메시지 상담으로 이동합니다.')}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 active:scale-[0.97] text-white py-3.5 rounded-2xl text-[11px] font-black transition-all shadow-[0_4px_12px_rgba(16,185,129,0.18)]"
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white py-3 rounded-xl text-[11px] font-black transition-all shadow-sm"
             >
               <Mail size={13} className="text-white shrink-0" />
               <span>실시간 채팅 문의</span>
@@ -2929,34 +2927,34 @@ function EveryGolfApp() {
           </div>
           
           {/* 위약 규정 카드 */}
-          <div className="bg-rose-50/40 rounded-2xl p-4 border border-rose-100/50 space-y-2.5">
-            <div className="flex items-center gap-1.5 text-rose-600 font-extrabold text-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
+          <div className="bg-gray-50/60 rounded-xl p-3.5 border border-gray-100 space-y-2.5">
+            <div className="flex items-center gap-1.5 text-gray-700 font-extrabold text-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0"></span>
               <span>이용 및 위약 규정 안내</span>
             </div>
             
             <div className="grid grid-cols-2 gap-2 text-[10.5px]">
-              <div className="bg-white/85 p-2.5 rounded-xl border border-rose-100/20 flex flex-col shadow-sm">
+              <div className="bg-white p-2.5 rounded-lg border border-gray-100 flex flex-col shadow-sm">
                 <span className="text-gray-400 font-bold text-[9px]">주중 취소 기한</span>
-                <span className="text-gray-850 font-black mt-0.5"><strong className="text-rose-500">5일 전</strong>까지 무료취소</span>
+                <span className="text-gray-800 font-black mt-0.5"><strong className="text-red-500">5일 전</strong>까지 무료취소</span>
               </div>
-              <div className="bg-white/85 p-2.5 rounded-xl border border-rose-100/20 flex flex-col shadow-sm">
+              <div className="bg-white p-2.5 rounded-lg border border-gray-100 flex flex-col shadow-sm">
                 <span className="text-gray-400 font-bold text-[9px]">주말 취소 기한</span>
-                <span className="text-gray-850 font-black mt-0.5"><strong className="text-rose-500">8일 전</strong>까지 무료취소</span>
+                <span className="text-gray-800 font-black mt-0.5"><strong className="text-red-500">8일 전</strong>까지 무료취소</span>
               </div>
             </div>
             
             <ul className="text-[10px] text-gray-500 space-y-1.5 pl-0.5 list-none font-bold">
               <li className="flex items-start gap-1">
-                <span className="text-rose-300 mt-0.5 shrink-0">•</span>
+                <span className="text-gray-355 mt-0.5 shrink-0">•</span>
                 <span>해당 요금은 18홀 정상 라운드 종료시에만 유효하게 적용됩니다.</span>
               </li>
               <li className="flex items-start gap-1">
-                <span className="text-rose-300 mt-0.5 shrink-0">•</span>
+                <span className="text-gray-355 mt-0.5 shrink-0">•</span>
                 <span>기상 악화 시에는 정상 요금을 기준으로 홀별 정산됩니다.</span>
               </li>
               <li className="flex items-start gap-1">
-                <span className="text-rose-300 mt-0.5 shrink-0">•</span>
+                <span className="text-gray-355 mt-0.5 shrink-0">•</span>
                 <span>본 특가는 기타 제휴 혜택 및 중복 할인이 적용되지 않습니다.</span>
               </li>
             </ul>
