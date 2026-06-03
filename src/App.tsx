@@ -241,7 +241,7 @@ function EveryGolfApp() {
       {[
         { id: 'home', icon: Home, label: '홈' },
         { id: 'booking', icon: CalendarCheck2, label: '부킹/조인' },
-        { id: 'community', icon: Users, label: '커뮤니티' },
+        { id: 'community', icon: Users, label: '동반자 찾기' },
         { id: 'mypage', icon: User, label: '마이페이지' },
       ].map((tab) => (
         <button 
@@ -4020,421 +4020,348 @@ function EveryGolfApp() {
     );
   };
 
-    const CommunityTabView = ({ subTab, setSubTab }: { subTab: string; setSubTab: (tab: string) => void }) => {
-      const ageMatch = (postAge: string, userAge: number) => {
-        if (postAge === '무관') return true;
-        const match = postAge.match(/(\d+)(?:~(\d+))?대/);
-        if (match) {
-          const start = parseInt(match[1], 10);
-          const end = match[2] ? parseInt(match[2], 10) : start;
-          const userGen = Math.floor(userAge / 10) * 10;
-          return userGen >= start && userGen <= end;
-        }
-        return true;
-      };
+    const CommunityTabView = () => {
+    const ageMatch = (postAge: string, userAge: number) => {
+      if (postAge === '무관') return true;
+      const match = postAge.match(/(\d+)(?:~(\d+))?대/);
+      if (match) {
+        const start = parseInt(match[1], 10);
+        const end = match[2] ? parseInt(match[2], 10) : start;
+        const userGen = Math.floor(userAge / 10) * 10;
+        return userGen >= start && userGen <= end;
+      }
+      return true;
+    };
 
-      const getAgeDecades = (ageStr: string): number[] => {
-        if (ageStr === '전체' || ageStr === '무관') return [20, 30, 40, 50];
-        if (ageStr === '50대 이상') return [50, 60, 70];
-        const decades: number[] = [];
-        const match = ageStr.match(/(\d+)(?:~(\d+))?대/);
-        if (match) {
-          const start = parseInt(match[1], 10);
-          const end = match[2] ? parseInt(match[2], 10) : start;
-          for (let i = start; i <= end; i += 10) {
-            decades.push(i);
-          }
+    const getAgeDecades = (ageStr: string): number[] => {
+      if (ageStr === '전체' || ageStr === '무관') return [20, 30, 40, 50];
+      if (ageStr === '50대 이상') return [50, 60, 70];
+      const decades: number[] = [];
+      const match = ageStr.match(/(\d+)(?:~(\d+))?대/);
+      if (match) {
+        const start = parseInt(match[1], 10);
+        const end = match[2] ? parseInt(match[2], 10) : start;
+        for (let i = start; i <= end; i += 10) {
+          decades.push(i);
         }
-        return decades;
-      };
+      }
+      return decades;
+    };
 
-      const isAgeFilterMatch = (filterAge: string, partnerAge: string) => {
-        if (filterAge === '전체' || partnerAge === '무관') return true;
-        const filterDecades = getAgeDecades(filterAge);
-        const partnerDecades = getAgeDecades(partnerAge);
-        return filterDecades.some(d => partnerDecades.includes(d));
-      };
+    const isAgeFilterMatch = (filterAge: string, partnerAge: string) => {
+      if (filterAge === '전체' || partnerAge === '무관') return true;
+      const filterDecades = getAgeDecades(filterAge);
+      const partnerDecades = getAgeDecades(partnerAge);
+      return filterDecades.some(d => partnerDecades.includes(d));
+    };
 
-      const isRegionFilterMatch = (filterRegion: string, partnerLocation: string) => {
-        if (filterRegion === '전체') return true;
-        if (filterRegion === '경기') {
-          return partnerLocation.includes('경기');
-        }
-        if (filterRegion === '충청') {
-          return partnerLocation.includes('충청') || partnerLocation.includes('충남') || partnerLocation.includes('충북') || partnerLocation.includes('세종');
-        }
-        if (filterRegion === '경상') {
-          return partnerLocation.includes('경상') || partnerLocation.includes('경남') || partnerLocation.includes('경북') || partnerLocation.includes('대구') || partnerLocation.includes('부산') || partnerLocation.includes('울산');
-        }
-        if (filterRegion === '전라') {
-          return partnerLocation.includes('전라') || partnerLocation.includes('전남') || partnerLocation.includes('전북') || partnerLocation.includes('광주');
-        }
-        return partnerLocation.includes(filterRegion);
-      };
+    const isRegionFilterMatch = (filterRegion: string, partnerLocation: string) => {
+      if (filterRegion === '전체') return true;
+      if (filterRegion === '경기') {
+        return partnerLocation.includes('경기');
+      }
+      if (filterRegion === '충청') {
+        return partnerLocation.includes('충청') || partnerLocation.includes('충남') || partnerLocation.includes('충북') || partnerLocation.includes('세종');
+      }
+      if (filterRegion === '경상') {
+        return partnerLocation.includes('경상') || partnerLocation.includes('경남') || partnerLocation.includes('경북') || partnerLocation.includes('대구') || partnerLocation.includes('부산') || partnerLocation.includes('울산');
+      }
+      if (filterRegion === '전라') {
+        return partnerLocation.includes('전라') || partnerLocation.includes('전남') || partnerLocation.includes('전북') || partnerLocation.includes('광주');
+      }
+      return partnerLocation.includes(filterRegion);
+    };
 
-      const filteredPartners = partnerList.filter(partner => {
-        // 1. 스마트 매칭 프로필 필터 (유저 프로필 정보가 입력되어 있을 때)
-        if (userProfile) {
-          if (partner.gender !== '무관' && partner.gender !== userProfile.gender) return false;
-          if (!ageMatch(partner.age, userProfile.age)) return false;
-          if ((partner as any).smoke === '비흡연' && userProfile.smoke !== '비흡연') return false;
-          if ((partner as any).license === '보유' && userProfile.license !== '보유') return false;
-          if (userProfile.handicap > ((partner as any).maxHandicap || 120)) return false;
-        }
+    const filteredPartners = partnerList.filter(partner => {
+      // 1. 스마트 매칭 프로필 필터 (유저 프로필 정보가 입력되어 있을 때)
+      if (userProfile) {
+        if (partner.gender !== '무관' && partner.gender !== userProfile.gender) return false;
+        if (!ageMatch(partner.age, userProfile.age)) return false;
+        if ((partner as any).smoke === '비흡연' && userProfile.smoke !== '비흡연') return false;
+        if ((partner as any).license === '보유' && userProfile.license !== '보유') return false;
+        if (userProfile.handicap > ((partner as any).maxHandicap || 120)) return false;
+      }
 
-        // 2. 상세 조건 필터 (partnerFilters)
-        const pCost = (partner as any).cost;
-        const pDate = (partner as any).date;
-        if (partnerFilters.cost !== '전체' && pCost !== partnerFilters.cost) return false;
-        if (partnerFilters.gender !== '전체' && partner.gender !== partnerFilters.gender) return false;
-        if (!isAgeFilterMatch(partnerFilters.age, partner.age)) return false;
-        if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
-        if (partnerFilters.date !== '전체' && pDate !== partnerFilters.date) return false;
+      // 2. 상세 조건 필터 (partnerFilters)
+      const pCost = (partner as any).cost;
+      const pDate = (partner as any).date;
+      if (partnerFilters.cost !== '전체' && pCost !== partnerFilters.cost) return false;
+      if (partnerFilters.gender !== '전체' && partner.gender !== partnerFilters.gender) return false;
+      if (!isAgeFilterMatch(partnerFilters.age, partner.age)) return false;
+      if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
+      if (partnerFilters.date !== '전체' && pDate !== partnerFilters.date) return false;
 
-        return true;
-      });
+      return true;
+    });
 
-      return (
+    return (
       <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden">
         <div className="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm shrink-0">
-          <div className="px-5 pt-12 pb-2 flex justify-between items-center">
-             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">커뮤니티</h2>
+          <div className="px-5 pt-12 pb-4 flex justify-between items-center">
+             <h2 className="text-2xl font-black text-gray-900 tracking-tight">동반자 찾기</h2>
              <button 
                onClick={() => {
-                 if (subTab === 'partner') {
-                   pushView('empty', { type: 'partnerWrite', title: '동반자 모집글 작성' });
-                 } else {
-                   pushView('empty', { type: 'default', title: '새 글 작성' });
-                 }
+                 pushView('empty', { type: 'partnerWrite', title: '동반자 모집글 작성' });
                }} 
                className="text-gray-900 bg-gray-50 w-9 h-9 shrink-0 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white transition-colors shadow-sm"
              >
                <Plus size={20} />
              </button>
           </div>
-          <div className="flex px-5 gap-6 mt-2">
-            <button onClick={() => setSubTab('ggram')} className={`pb-3 text-sm font-bold border-b-[3px] transition-colors relative whitespace-nowrap ${subTab === 'ggram' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'}`}>전체 피드 (SNS)</button>
-            <button onClick={() => setSubTab('partner')} className={`pb-3 text-sm font-bold border-b-[3px] transition-colors relative whitespace-nowrap ${subTab === 'partner' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'}`}>동반자 구하기 전용</button>
-          </div>
         </div>
 
-        <div className="p-0 flex-1 w-full overflow-hidden">
-          <AnimatePresence mode="wait">
-            {subTab === 'ggram' ? (
-               <motion.div key="ggram" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="mt-2 w-full">
-                  {MOCK_COMMUNITY.map(post => (
-                    <div key={post.id} className="bg-white py-5 shadow-sm border-b border-gray-100 mb-2 w-full">
-                      <div className="flex items-center gap-3 px-5 mb-4 w-full">
-                        <img src={post.avatar} className="w-11 h-11 shrink-0 bg-gray-200 rounded-full object-cover shadow-sm border border-gray-100 cursor-pointer" onClick={() => showToast('유저 프로필을 불러옵니다.')}/>
-                        <div className="flex-1 min-w-0 cursor-pointer" onClick={() => pushView('postDetail', post)}>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-base text-gray-900 truncate">{post.author}</span>
-                            {post.role === '인플루언서' && <span className="text-[10px] shrink-0 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-0.5 rounded-full font-bold shadow-sm flex items-center gap-0.5"><ShieldCheck size={10}/> 인플루언서</span>}
-                            {post.role === 'PRO' && <span className="text-[10px] shrink-0 bg-gray-900 text-white px-2 py-0.5 rounded-full font-bold shadow-sm">PRO</span>}
-                          </div>
-                          <span className="text-xs text-gray-400 font-medium block truncate">{post.time}</span>
-                        </div>
-                        <button onClick={() => showToast('더보기 메뉴')} className="text-gray-400 shrink-0 hover:text-gray-800 p-2"><ChevronDown size={18}/></button>
-                      </div>
-                      
-                      {post.isRecruit ? (
-                         <div onClick={() => pushView('joinDetail', MOCK_JOINS[post.id % MOCK_JOINS.length])} className="mx-5 mb-4 p-5 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100 cursor-pointer hover:shadow-md transition-shadow">
-                           <div className="flex justify-between items-start mb-2">
-                             <span className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">동반자 모집글</span>
-                             <span className="text-xs text-gray-500 font-bold bg-white px-2 py-1 rounded shadow-sm">1/N 결제</span>
-                           </div>
-                           <h4 className="font-black text-lg text-gray-900 mb-2 leading-snug">{MOCK_JOINS[post.id % MOCK_JOINS.length].name} 급구!</h4>
-                           <div className="flex flex-wrap gap-2 mb-3">
-                             <span className="text-xs font-bold text-gray-600 bg-white border border-gray-200 px-2 py-1 rounded">그린피 {MOCK_JOINS[post.id % MOCK_JOINS.length].price}원</span>
-                             <span className="text-xs font-bold text-gray-600 bg-white border border-gray-200 px-2 py-1 rounded">{MOCK_JOINS[post.id % MOCK_JOINS.length].gender}</span>
-                             <span className="text-xs font-bold text-gray-600 bg-white border border-gray-200 px-2 py-1 rounded">{MOCK_JOINS[post.id % MOCK_JOINS.length].age}</span>
-                           </div>
-                           <button className="w-full bg-green-600 text-white font-bold py-2.5 rounded-xl shadow-sm text-sm">자세히 보기</button>
-                         </div>
-                      ) : (
-                        <div className="w-full aspect-[4/5] bg-gray-100 mb-4 relative cursor-pointer group shrink-0" onDoubleClick={() => toggleLike(post.id)}>
-                           <img src={post.image} className="w-full h-full object-cover" />
-                           <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                              <Heart size={64} className="text-white drop-shadow-lg scale-0 group-hover:scale-100 transition-transform duration-300" fill="rgba(255,255,255,0.5)"/>
-                           </div>
-                        </div>
-                      )}
-                      
-                      <div className="px-5 w-full">
-                        <div className="flex gap-5 text-gray-800 mb-3">
-                          <button onClick={() => toggleLike(post.id)} className={`flex items-center gap-1.5 text-sm font-medium transition-colors shrink-0 ${likedPosts.includes(post.id) ? 'text-red-500' : 'text-gray-800'}`}>
-                            <Heart size={26} fill={likedPosts.includes(post.id) ? "currentColor" : "none"} strokeWidth={1.5}/>
-                          </button>
-                          <button onClick={() => pushView('postDetail', post)} className="flex items-center gap-1.5 text-sm font-medium hover:text-gray-500 shrink-0"><MessageSquare size={26} strokeWidth={1.5}/></button>
-                          <button onClick={() => showToast('공유하기')} className="flex items-center gap-1.5 text-sm font-medium ml-auto hover:text-gray-500 shrink-0"><Share2 size={24} strokeWidth={1.5}/></button>
-                        </div>
-                        <p className="text-sm font-bold text-gray-900 mb-2 truncate">좋아요 {likedPosts.includes(post.id) ? post.likes + 1 : post.likes}개</p>
-                        <p className="text-sm text-gray-800 mb-2 leading-relaxed break-words whitespace-pre-wrap">
-                          <span className="font-bold mr-2 cursor-pointer" onClick={() => showToast('유저 프로필을 불러옵니다.')}>{post.author}</span>
-                          {post.content}
-                        </p>
-                        <p onClick={() => pushView('postDetail', post)} className="text-sm text-gray-400 font-medium cursor-pointer mt-3 hover:text-gray-600 transition-colors inline-block">댓글 {post.comments}개 모두 보기</p>
-                      </div>
+        <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
+          {/* 매칭 프로필 설정 상태 안내 */}
+          <div className="bg-white border border-gray-100 p-4.5 rounded-2xl shadow-sm flex items-center justify-between gap-3 shrink-0 w-full">
+            <div className="flex items-center gap-3">
+              <div className={"w-10 h-10 rounded-full flex items-center justify-center shrink-0 " + (userProfile ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400')}>
+                {userProfile ? <Sparkles size={18} /> : <User size={18} />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-black text-gray-900">
+                  {userProfile ? '스마트 프로필 매칭 적용 중' : '내 프로필 매칭 설정'}
+                </h4>
+                <p className="text-[11px] text-gray-500 font-bold mt-0.5 truncate">
+                  {userProfile 
+                    ? (userProfile.gender + ' · ' + userProfile.age + '세 · ' + userProfile.handicap + '타 · ' + userProfile.smoke + ' · ' + (userProfile.license === '보유' ? '자격증있음' : '자격증없음'))
+                    : '프로필을 등록하고 나에게 맞는 모집글만 보세요.'}
+                </p>
+              </div>
+            </div>
+            <button 
+              onClick={() => pushView('profileInput')} 
+              className={"text-xs font-black px-3.5 py-2.5 rounded-xl transition-all shrink-0 " + (
+                userProfile 
+                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
+                  : 'bg-green-600 text-white shadow-sm hover:bg-green-700'
+              )}
+            >
+              {userProfile ? '수정' : '등록'}
+            </button>
+          </div>
+
+          <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full">
+             {/* 필터 즐겨찾기 영역 */}
+              <div className="flex justify-between items-center mb-3">
+                <p className="text-xs font-black text-gray-700 flex items-center gap-1.5">
+                  <Star size={14} className="text-amber-500 fill-amber-500 shrink-0"/> 필터 즐겨찾기
+                </p>
+                <button 
+                  onClick={() => {
+                    setFavNameInput('');
+                    setShowDetailedFilterModal(true);
+                  }} 
+                  className="text-[10px] shrink-0 text-amber-600 font-extrabold bg-amber-50 border border-amber-200/50 px-2 py-1 rounded-lg hover:bg-amber-100 transition-colors"
+                >
+                  ⭐ 필터 저장하기
+                </button>
+              </div>
+              
+              {/* 즐겨찾기 칩 목록 */}
+              {favoriteFilters.length === 0 ? (
+                <p className="text-[10px] text-gray-400 font-bold mb-4">자주 쓰는 조건 조합을 저장해보세요.</p>
+              ) : (
+                <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 w-full snap-x">
+                  {favoriteFilters.map((fav) => (
+                    <div 
+                      key={fav.id}
+                      onClick={() => {
+                        setPartnerFilters(fav.filters);
+                        showToast("즐겨찾기 '" + fav.name + "' 조건이 일괄 적용되었습니다.");
+                      }}
+                      className="flex items-center gap-1 bg-amber-50/60 border border-amber-100 hover:bg-amber-100 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
+                    >
+                      <span>{fav.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
+                          showToast("즐겨찾기 '" + fav.name + "'이 삭제되었습니다.");
+                        }}
+                        className="p-0.5 hover:bg-amber-200/80 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
+                      >
+                        <X size={10} strokeWidth={3} />
+                      </button>
                     </div>
                   ))}
-               </motion.div>
-            ) : (
-              <motion.div key="partner" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="p-5 flex flex-col gap-4 w-full">
-                 {/* 매칭 프로필 설정 상태 안내 */}
-                 <div className="bg-white border border-gray-100 p-4.5 rounded-2xl shadow-sm flex items-center justify-between gap-3 shrink-0 w-full">
-                   <div className="flex items-center gap-3">
-                     <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${userProfile ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
-                       {userProfile ? <Sparkles size={18} /> : <User size={18} />}
+                </div>
+              )}
+
+              {/* 구분선 */}
+              <div className="border-t border-gray-100 my-3"></div>
+
+              {/* 통합 상세 조건 설정 버튼 영역 */}
+              <div className="flex gap-2 mb-4 w-full">
+                <button
+                  type="button"
+                  onClick={() => setShowDetailedFilterModal(true)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 active:scale-[0.98] text-black font-black py-3 px-4 rounded-xl text-xs shadow-md transition-all animate-none"
+                >
+                  <Filter size={14} className="shrink-0" />
+                  <span>상세조건 설정</span>
+                  {(() => {
+                    const activeCount = Object.values(partnerFilters).filter(v => v !== '전체').length;
+                    return activeCount > 0 ? (
+                      <span className="bg-black text-white text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 font-extrabold ml-1 animate-pulse">
+                        {activeCount}
+                      </span>
+                    ) : null;
+                  })()}
+                </button>
+                
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setPartnerFilters({
+                      cost: '전체',
+                      gender: '전체',
+                      age: '전체',
+                      region: '전체',
+                      date: '전체'
+                    });
+                    showToast('상세 필터가 모두 초기화되었습니다.');
+                  }} 
+                  className="px-4 py-3 bg-gray-100 text-gray-700 hover:bg-gray-250 font-bold rounded-xl text-xs border border-gray-200/50 shrink-0 transition-colors"
+                >
+                  초기화
+                </button>
+              </div>
+          </div>
+          {filteredPartners.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
+              <p className="text-gray-400 font-bold">매칭된 모집글이 없습니다.</p>
+              <p className="text-xs text-gray-400 mt-1">프로필 매칭 설정을 수정하거나 초기화해보세요.</p>
+              <button onClick={() => pushView('profileInput')} className="mt-4 bg-gray-900 text-white text-xs font-bold px-4 py-2 rounded-xl">매칭 설정 수정</button>
+            </div>
+          ) : (
+             filteredPartners.map((partner, i) => {
+               const isExpanded = expandedPartnerId === partner.id;
+               const hostInfo = partner.hostProfile || { gender: '남성', age: '30대', handicap: 95, smoke: '비흡연', license: '미보유' };
+               return (
+                 <motion.div 
+                   initial={{ opacity: 0, y: 10 }} 
+                   animate={{ opacity: 1, y: 0 }} 
+                   transition={{ delay: i * 0.05 }} 
+                   key={partner.id} 
+                   onClick={() => setExpandedPartnerId(isExpanded ? null : partner.id)} 
+                   className={"bg-white transition-all cursor-pointer flex flex-col " + (
+                     isExpanded 
+                       ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
+                       : 'p-3.5 border-b border-gray-100 rounded-none shadow-none hover:bg-gray-50/50'
+                   )}
+                 >
+                   <div className="flex justify-between items-center w-full py-1 text-left">
+                     {/* 1. 구장 정보 (좌측) */}
+                     <div className="flex flex-col gap-1 w-[32%] shrink-0">
+                       <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{partner.location}</h4>
+                       <span className="text-[10.5px] text-gray-500 font-bold flex items-center gap-0.5">
+                         <MapPin size={10} className="text-green-600 shrink-0" />
+                         <span>{partner.location.includes('인천') ? '인천' : partner.location.includes('경기') ? '경기' : '수도권'}</span>
+                       </span>
                      </div>
-                     <div className="min-w-0 flex-1">
-                       <h4 className="text-sm font-black text-gray-900">
-                         {userProfile ? '스마트 프로필 매칭 적용 중' : '내 프로필 매칭 설정'}
-                       </h4>
-                       <p className="text-[11px] text-gray-500 font-bold mt-0.5 truncate">
-                         {userProfile 
-                           ? `${userProfile.gender} · ${userProfile.age}세 · ${userProfile.handicap}타 · ${userProfile.smoke} · ${userProfile.license === '보유' ? '자격증있음' : '자격증없음'}`
-                           : '프로필을 등록하고 나에게 맞는 모집글만 보세요.'}
-                       </p>
+
+                     {/* 2. 일정 및 인적사항 (중앙) */}
+                     <div className="flex flex-col gap-1 items-center text-center w-[40%] shrink-0">
+                       <span className="text-[11.5px] text-gray-850 font-black">
+                         {partner.date || '이번주'} {partner.time.split(' ')[0]}
+                       </span>
+                       <span className="text-[10px] text-gray-500 font-bold truncate max-w-full">
+                         {hostInfo.gender} · {hostInfo.age} · {hostInfo.handicap}타
+                       </span>
+                     </div>
+
+                     {/* 3. 상태 및 비용 (우측) */}
+                     <div className="flex flex-col gap-1 items-end text-right w-[28%] shrink-0">
+                       <span className="text-[13px] text-green-600 font-black">
+                         {partner.price || '180,000'}원
+                       </span>
+                       <span className={"text-[8.5px] shrink-0 font-bold px-1.5 py-0.5 rounded border " + (
+                         partner.status === '모집중' 
+                           ? 'bg-green-50 text-green-600 border-green-100' 
+                           : partner.status === '마감임박' 
+                             ? 'bg-red-50 text-red-600 border-red-100' 
+                             : 'bg-gray-100 text-gray-500 border-gray-200'
+                       )}>
+                         {partner.status}
+                       </span>
                      </div>
                    </div>
-                   <button 
-                     onClick={() => pushView('profileInput')} 
-                     className={`text-xs font-black px-3.5 py-2.5 rounded-xl transition-all shrink-0 ${
-                       userProfile 
-                         ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
-                         : 'bg-green-600 text-white shadow-sm hover:bg-green-700'
-                     }`}
-                   >
-                     {userProfile ? '수정' : '등록'}
-                   </button>
-                 </div>
+                   
+                   {/* 드롭바 형식의 상세 공고글 영역 */}
+                   <AnimatePresence>
+                     {isExpanded && (
+                       <motion.div 
+                         initial={{ height: 0, opacity: 0 }}
+                         animate={{ height: 'auto', opacity: 1 }}
+                         exit={{ height: 0, opacity: 0 }}
+                         transition={{ duration: 0.2 }}
+                         className="overflow-hidden border-t border-gray-100 mt-3 pt-3.5 flex flex-col gap-3"
+                       >
+                         {/* 공고글 제목 */}
+                         <div className="bg-green-50/40 border border-green-100/50 p-3 rounded-xl">
+                           <h5 className="font-extrabold text-gray-900 text-xs leading-snug break-words">
+                             {partner.title}
+                           </h5>
+                         </div>
+                         
+                         {/* 공고글 사연/내용 */}
+                         <p className="text-xs text-gray-600 leading-relaxed font-bold bg-gray-50 p-3.5 rounded-xl border border-gray-100/80 whitespace-pre-wrap">
+                           {partner.description}
+                         </p>
 
-                  <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full">
-                     {/* 필터 즐겨찾기 영역 */}
-                      <div className="flex justify-between items-center mb-3">
-                        <p className="text-xs font-black text-gray-700 flex items-center gap-1.5">
-                          <Star size={14} className="text-amber-500 fill-amber-500 shrink-0"/> 필터 즐겨찾기
-                        </p>
-                        <button 
-                          onClick={() => {
-                            setFavNameInput('');
-                            setShowDetailedFilterModal(true);
-                          }} 
-                          className="text-[10px] shrink-0 text-amber-600 font-extrabold bg-amber-50 border border-amber-200/50 px-2 py-1 rounded-lg hover:bg-amber-100 transition-colors"
-                        >
-                          ⭐ 필터 저장하기
-                        </button>
-                      </div>
-                      
-                      {/* 즐겨찾기 칩 목록 */}
-                      {favoriteFilters.length === 0 ? (
-                        <p className="text-[10px] text-gray-400 font-bold mb-4">자주 쓰는 조건 조합을 저장해보세요.</p>
-                      ) : (
-                        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 w-full snap-x">
-                          {favoriteFilters.map((fav) => (
-                            <div 
-                              key={fav.id}
-                              onClick={() => {
-                                setPartnerFilters(fav.filters);
-                                showToast(`즐겨찾기 '${fav.name}' 조건이 일괄 적용되었습니다.`);
-                              }}
-                              className="flex items-center gap-1 bg-amber-50/60 border border-amber-100 hover:bg-amber-100 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
-                            >
-                              <span>{fav.name}</span>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
-                                  showToast(`즐겨찾기 '${fav.name}'이 삭제되었습니다.`);
-                                }}
-                                className="p-0.5 hover:bg-amber-200/80 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
-                              >
-                                <X size={10} strokeWidth={3} />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                         {/* 흡연/라이센스 세부 정보 및 작성자 프로필 */}
+                         <div className="flex items-center justify-between gap-2 bg-gray-50/50 p-2.5 rounded-xl border border-gray-100/50 text-[10px]">
+                           <div className="flex gap-1.5 text-gray-500 font-bold">
+                             <span>🚭 {hostInfo.smoke || '비흡연'}</span>
+                             <span>·</span>
+                             <span>🏌️‍♂️ 프로인증: {hostInfo.license === '보유' ? '유' : '무'}</span>
+                           </div>
+                           <div 
+                             onClick={(e) => { 
+                               e.stopPropagation(); 
+                               pushView('userProfileDetail', partner); 
+                             }} 
+                             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+                           >
+                             <img src={partner.avatar} className="w-5 h-5 bg-gray-100 rounded-full object-cover border border-gray-200"/>
+                             <span className="font-bold text-gray-800">{partner.author} 님 (조회 {partner.views})</span>
+                           </div>
+                         </div>
 
-                      {/* 구분선 */}
-                      <div className="border-t border-gray-100 my-3"></div>
-
-                      {/* 통합 상세 조건 설정 버튼 영역 */}
-                      <div className="flex gap-2 mb-4 w-full">
-                        <button
-                          type="button"
-                          onClick={() => setShowDetailedFilterModal(true)}
-                          className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 active:scale-[0.98] text-black font-black py-3 px-4 rounded-xl text-xs shadow-md transition-all animate-none"
-                        >
-                          <Filter size={14} className="shrink-0" />
-                          <span>상세조건 설정</span>
-                          {(() => {
-                            const activeCount = Object.values(partnerFilters).filter(v => v !== '전체').length;
-                            return activeCount > 0 ? (
-                              <span className="bg-black text-white text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 font-extrabold ml-1 animate-pulse">
-                                {activeCount}
-                              </span>
-                            ) : null;
-                          })()}
-                        </button>
-                        
-                        <button 
-                          type="button"
-                          onClick={() => {
-                            setPartnerFilters({
-                              cost: '전체',
-                              gender: '전체',
-                              age: '전체',
-                              region: '전체',
-                              date: '전체'
-                            });
-                            showToast('상세 필터가 모두 초기화되었습니다.');
-                          }} 
-                          className="px-4 py-3 bg-gray-100 text-gray-700 hover:bg-gray-250 font-bold rounded-xl text-xs border border-gray-200/50 shrink-0 transition-colors"
-                        >
-                          초기화
-                        </button>
-                      </div>
-                  </div>
-                 {filteredPartners.length === 0 ? (
-                   <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
-                     <p className="text-gray-400 font-bold">매칭된 모집글이 없습니다.</p>
-                     <p className="text-xs text-gray-400 mt-1">프로필 매칭 설정을 수정하거나 초기화해보세요.</p>
-                     <button onClick={() => pushView('profileInput')} className="mt-4 bg-gray-900 text-white text-xs font-bold px-4 py-2 rounded-xl">매칭 설정 수정</button>
-                   </div>
-                 ) : (
-                    filteredPartners.map((partner, i) => {
-                      const isExpanded = expandedPartnerId === partner.id;
-                      const hostInfo = partner.hostProfile || { gender: '남성', age: '30대', handicap: 95, smoke: '비흡연', license: '미보유' };
-                      return (
-                        <motion.div 
-                          initial={{ opacity: 0, y: 10 }} 
-                          animate={{ opacity: 1, y: 0 }} 
-                          transition={{ delay: i * 0.05 }} 
-                          key={partner.id} 
-                          onClick={() => setExpandedPartnerId(isExpanded ? null : partner.id)} 
-                          className={`bg-white transition-all cursor-pointer flex flex-col \${
-                            isExpanded 
-                              ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
-                              : 'p-3.5 border-b border-gray-100 rounded-none shadow-none hover:bg-gray-50/50'
-                          }`}
-                        >
-                          <div className="flex justify-between items-center w-full py-1 text-left">
-                            {/* 1. 구장 정보 (좌측) */}
-                            <div className="flex flex-col gap-1 w-[32%] shrink-0">
-                              <h4 className="font-bold text-gray-900 text-[14px] truncate leading-tight">{partner.location}</h4>
-                              <span className="text-[10.5px] text-gray-500 font-bold flex items-center gap-0.5">
-                                <MapPin size={10} className="text-green-600 shrink-0" />
-                                <span>{partner.location.includes('인천') ? '인천' : partner.location.includes('경기') ? '경기' : '수도권'}</span>
-                              </span>
-                            </div>
-
-                            {/* 2. 일정 및 인적사항 (중앙) */}
-                            <div className="flex flex-col gap-1 items-center text-center w-[40%] shrink-0">
-                              <span className="text-[11.5px] text-gray-800 font-black">
-                                {partner.date || '이번주'} {partner.time.split(' ')[0]}
-                              </span>
-                              <span className="text-[10px] text-gray-500 font-bold truncate max-w-full">
-                                {hostInfo.gender} · {hostInfo.age} · {hostInfo.handicap}타
-                              </span>
-                            </div>
-
-                            {/* 3. 상태 및 비용 (우측) */}
-                            <div className="flex flex-col gap-1 items-end text-right w-[28%] shrink-0">
-                              <span className="text-[13px] text-green-600 font-black">
-                                {partner.price || '180,000'}원
-                              </span>
-                              <span className={`text-[8.5px] shrink-0 font-bold px-1.5 py-0.5 rounded border \${
-                                partner.status === '모집중' 
-                                  ? 'bg-green-50 text-green-600 border-green-100' 
-                                  : partner.status === '마감임박' 
-                                    ? 'bg-red-50 text-red-600 border-red-100' 
-                                    : 'bg-gray-100 text-gray-500 border-gray-200'
-                              }`}>
-                                {partner.status}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          {/* 드롭바 형식의 상세 공고글 영역 */}
-                          <AnimatePresence>
-                            {isExpanded && (
-                              <motion.div 
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="overflow-hidden border-t border-gray-100 mt-3 pt-3.5 flex flex-col gap-3"
-                              >
-                                {/* 공고글 제목 */}
-                                <div className="bg-green-50/40 border border-green-100/50 p-3 rounded-xl">
-                                  <h5 className="font-extrabold text-gray-900 text-xs leading-snug break-words">
-                                    {partner.title}
-                                  </h5>
-                                </div>
-                                
-                                {/* 공고글 사연/내용 */}
-                                <p className="text-xs text-gray-600 leading-relaxed font-bold bg-gray-50 p-3.5 rounded-xl border border-gray-100/80 whitespace-pre-wrap">
-                                  {partner.description}
-                                </p>
-
-                                {/* 흡연/라이센스 세부 정보 및 작성자 프로필 */}
-                                <div className="flex items-center justify-between gap-2 bg-gray-50/50 p-2.5 rounded-xl border border-gray-100/50 text-[10px]">
-                                  <div className="flex gap-1.5 text-gray-500 font-bold">
-                                    <span>🚭 {hostInfo.smoke || '비흡연'}</span>
-                                    <span>·</span>
-                                    <span>🏌️‍♂️ 프로인증: {hostInfo.license === '보유' ? '유' : '무'}</span>
-                                  </div>
-                                  <div 
-                                    onClick={(e) => { 
-                                      e.stopPropagation(); 
-                                      pushView('userProfileDetail', partner); 
-                                    }} 
-                                    className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
-                                  >
-                                    <img src={partner.avatar} className="w-5 h-5 bg-gray-100 rounded-full object-cover border border-gray-200"/>
-                                    <span className="font-bold text-gray-800">{partner.author} 님 (조회 {partner.views})</span>
-                                  </div>
-                                </div>
-
-                                {/* 버튼 팩 */}
-                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                                  <button 
-                                    onClick={() => { 
-                                      if (!userProfile) {
-                                        showToast('매칭 프로필 설정 후 신청이 가능합니다.');
-                                        pushView('profileInput');
-                                      } else {
-                                        showToast(`${partner.author}님의 모집글에 동반자 신청을 완료했습니다! ⛳`);
-                                      }
-                                    }} 
-                                    className="flex-1 py-3 bg-green-600 text-white rounded-xl text-xs font-black shadow-md hover:bg-green-700 transition-colors"
-                                  >
-                                    신청하기
-                                  </button>
-                                  <button 
-                                    onClick={() => pushView('chat', partner)} 
-                                    className="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-black shadow-md hover:bg-gray-800 transition-colors"
-                                  >
-                                    1:1 채팅하기
-                                  </button>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </motion.div>
-                      );
-                    })
-                  )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                         {/* 버튼 팩 */}
+                         <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                           <button 
+                             onClick={() => { 
+                               if (!userProfile) {
+                                 showToast('매칭 프로필 설정 후 신청이 가능합니다.');
+                                 pushView('profileInput');
+                               } else {
+                                 showToast(partner.author + "님의 모집글에 동반자 신청을 완료했습니다! ⛳");
+                               }
+                             }} 
+                             className="flex-1 py-3 bg-green-600 text-white rounded-xl text-xs font-black shadow-md hover:bg-green-700 transition-colors"
+                           >
+                             신청하기
+                           </button>
+                           <button 
+                             onClick={() => pushView('chat', partner)} 
+                             className="flex-1 py-3 bg-gray-900 text-white rounded-xl text-xs font-black shadow-md hover:bg-gray-800 transition-colors"
+                           >
+                             1:1 채팅하기
+                           </button>
+                         </div>
+                       </motion.div>
+                     )}
+                   </AnimatePresence>
+                 </motion.div>
+               );
+             })
+          )}
         </div>
       </div>
     );
   };
-
-    const MyPageTabView = () => {
+const MyPageTabView = () => {
       const mannerTemperature = 38.2;
       const mannerPercent = ((mannerTemperature - 30) / (99 - 30)) * 100;
 
@@ -4592,7 +4519,7 @@ function EveryGolfApp() {
               <div ref={scrollRef} className="flex-1 w-full overflow-y-auto overflow-x-hidden hide-scrollbar">
                 <AnimatePresence mode="wait">
                   {activeTab === 'home' && <HomeView key="home" />}
-                  {activeTab === 'community' && <CommunityTabView key="community" subTab={communitySubTab} setSubTab={setCommunitySubTab} />}
+                  {activeTab === 'community' && <CommunityTabView key="community" />}
                   {activeTab === 'mypage' && <MyPageTabView key="mypage" />}
                 </AnimatePresence>
               </div>
