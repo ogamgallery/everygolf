@@ -2739,17 +2739,9 @@ function EveryGolfApp() {
       let rawData: any[] = bookingMode === '부킹' ? MOCK_BOOKINGS : MOCK_JOINS;
       
       // 날짜 변경 시 리스트 셔플링 시뮬레이션 (동적 효과 부여)
-      if (isDiscountSpecialOnly) {
-        const todayIdx = 3; // 05/28 (목)
-        const tomorrowIdx = 4; // 05/29 (금)
-        rawData = [...rawData].filter((_, idx) => 
-          ((idx + todayIdx) % 3 !== 2) || ((idx + tomorrowIdx) % 3 !== 2)
-        );
-      } else {
-        const dateIdx = dates.indexOf(selectedDate);
-        if (dateIdx !== -1) {
-          rawData = [...rawData].filter((_, idx) => (idx + dateIdx) % 3 !== 2);
-        }
+      const dateIdx = dates.indexOf(selectedDate);
+      if (dateIdx !== -1) {
+        rawData = [...rawData].filter((_, idx) => (idx + dateIdx) % 3 !== 2);
       }
 
       const filtered = rawData.filter(item => {
@@ -3330,7 +3322,7 @@ function EveryGolfApp() {
 
             {/* 가로 스크롤 캘린더 칩 (빠른 날짜 변경) */}
             <div className="bg-white border-b border-gray-100 relative overflow-visible">
-            <div className="flex overflow-x-auto hide-scrollbar px-2 py-1.5">
+            <div className="flex items-center overflow-x-auto hide-scrollbar px-2 py-1.5">
               <button 
                 onClick={() => {
                   setShowCalendarModal(prev => !prev);
@@ -3338,11 +3330,11 @@ function EveryGolfApp() {
                   setShowRegionFilter(false);
                   setShowSearchQueryDropdown(false);
                 }}
-                className="min-w-[48px] h-[52px] flex items-center justify-center bg-gray-50 border border-gray-200 rounded-xl mx-1 text-gray-600 hover:bg-gray-100 shrink-0"
+                className="min-w-[50px] h-[52px] flex items-center justify-center bg-white border border-gray-100 rounded-xl mx-0.5 text-gray-600 hover:bg-gray-50 shrink-0"
               >
                 <Calendar size={18} />
               </button>
-              {dates.map((date) => {
+              {(isDiscountSpecialOnly ? [dates[3], dates[4]] : dates).map((date) => {
                 const isSelected = selectedDate === date;
                 const isWeekend = date.includes('토') || date.includes('일');
                 return (
