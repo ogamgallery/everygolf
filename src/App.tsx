@@ -3302,17 +3302,48 @@ function EveryGolfApp() {
               </h1>
 
               {/* 우측: 부킹/조인 모드 전환 버튼 */}
-              <div className="flex gap-4 select-none">
+              <div className="flex gap-3.5 select-none items-center">
                 <button 
-                  onClick={() => setBookingMode('부킹')} 
-                  className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-1 active:scale-95 ${bookingMode === '부킹' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => {
+                    setBookingMode('부킹');
+                    setIsDiscountSpecialOnly(true);
+                    setSelectedDate('05/28 (목)');
+                    setShowSearchFilter(false);
+                    showToast('금일~익일 마감 임박 특가 티타임을 검색합니다. ⚡');
+                  }}
+                  className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-0.5 active:scale-95 ${
+                    (bookingMode === '부킹' && isDiscountSpecialOnly) 
+                      ? 'border-rose-500 text-rose-500' 
+                      : 'border-transparent text-gray-400 hover:text-gray-600'
+                  }`}
                 >
-                  <Flag size={14} className={bookingMode === '부킹' ? 'text-gray-900 fill-current' : 'text-gray-400'} />
+                  <Sparkles size={14} className={(bookingMode === '부킹' && isDiscountSpecialOnly) ? 'text-rose-500 fill-current' : 'text-gray-400'} />
+                  <span>특가티</span>
+                </button>
+                <button 
+                  onClick={() => {
+                    setBookingMode('부킹');
+                    setIsDiscountSpecialOnly(false);
+                  }} 
+                  className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-0.5 active:scale-95 ${
+                    (bookingMode === '부킹' && !isDiscountSpecialOnly) 
+                      ? 'border-gray-900 text-gray-900' 
+                      : 'border-transparent text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <Flag size={14} className={(bookingMode === '부킹' && !isDiscountSpecialOnly) ? 'text-gray-900 fill-current' : 'text-gray-400'} />
                   <span>부킹</span>
                 </button>
                 <button 
-                  onClick={() => setBookingMode('조인')} 
-                  className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-1 active:scale-95 ${bookingMode === '조인' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => {
+                    setBookingMode('조인');
+                    setIsDiscountSpecialOnly(false);
+                  }} 
+                  className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-0.5 active:scale-95 ${
+                    (bookingMode === '조인') 
+                      ? 'border-gray-900 text-gray-900' 
+                      : 'border-transparent text-gray-400 hover:text-gray-600'
+                  }`}
                 >
                   <UserPlus size={14} className={bookingMode === '조인' ? 'text-gray-900' : 'text-gray-400'} />
                   <span>조인</span>
