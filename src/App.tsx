@@ -3052,6 +3052,43 @@ function EveryGolfApp() {
             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4 overflow-visible">
               <h4 className="text-xs font-black text-green-600 uppercase tracking-wider mb-2">필수 입력 요소</h4>
               
+              {/* 서비스 구분 (부킹 / 조인 모드 선택) */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-gray-400">서비스 구분</span>
+                <div className="bg-gray-50 border border-gray-100 rounded-xl p-1.5 flex gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => { 
+                      setBookingMode('부킹'); 
+                      setIsDiscountSpecialOnly(false); 
+                      showToast('부킹 모드로 설정되었습니다.');
+                    }}
+                    className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
+                      bookingMode === '부킹' 
+                        ? 'bg-white text-gray-900 shadow-sm border border-gray-100' 
+                        : 'text-gray-400 hover:text-gray-600'
+                    }`}
+                  >
+                    부킹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { 
+                      setBookingMode('조인'); 
+                      setIsDiscountSpecialOnly(false); 
+                      showToast('조인 모드로 설정되었습니다.');
+                    }}
+                    className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
+                      bookingMode === '조인' 
+                        ? 'bg-white text-gray-900 shadow-sm border border-gray-100' 
+                        : 'text-gray-400 hover:text-gray-600'
+                    }`}
+                  >
+                    조인
+                  </button>
+                </div>
+              </div>
+
               {/* 1. 날짜 선택 */}
               <div className="space-y-1.5 relative">
                 <span className="text-xs font-bold text-gray-400">희망 날짜</span>
@@ -3161,42 +3198,7 @@ function EveryGolfApp() {
                 )}
               </div>
 
-              {/* 서비스 구분 (부킹 / 조인 모드 선택) */}
-              <div className="space-y-1.5">
-                <span className="text-xs font-bold text-gray-400">서비스 구분</span>
-                <div className="bg-gray-50 border border-gray-100 rounded-xl p-1.5 flex gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => { 
-                      setBookingMode('부킹'); 
-                      setIsDiscountSpecialOnly(false); 
-                      showToast('부킹 모드로 설정되었습니다.');
-                    }}
-                    className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
-                      bookingMode === '부킹' 
-                        ? 'bg-white text-gray-900 shadow-sm border border-gray-100' 
-                        : 'text-gray-400 hover:text-gray-600'
-                    }`}
-                  >
-                    부킹
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { 
-                      setBookingMode('조인'); 
-                      setIsDiscountSpecialOnly(false); 
-                      showToast('조인 모드로 설정되었습니다.');
-                    }}
-                    className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
-                      bookingMode === '조인' 
-                        ? 'bg-white text-gray-900 shadow-sm border border-gray-100' 
-                        : 'text-gray-400 hover:text-gray-600'
-                    }`}
-                  >
-                    조인
-                  </button>
-                </div>
-              </div>
+
 
               {/* 골프장명 직접 검색 */}
               <div className="space-y-1.5">
