@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Home, Calendar, Users, User, Bell, Search, MapPin, 
-  Clock, Sparkles, X, ChevronRight, MessageSquare, Heart, Share2, Filter, 
+  Clock, Sparkles, X, ChevronRight, MessageSquare, Heart, Share2, Filter, RotateCcw,
   Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2, AlertCircle, AlertTriangle,
   ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
@@ -4330,79 +4330,79 @@ function EveryGolfApp() {
 
         <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
 
-          <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full flex flex-col gap-3">
-              {/* 1. 상단: 통합 상세 조건 설정 버튼 영역 */}
-              <div className="flex gap-2 w-full">
-                <button
-                  type="button"
-                  onClick={() => setShowDetailedFilterModal(true)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 active:scale-[0.98] text-black font-black py-3 px-4 rounded-xl text-xs shadow-md transition-all animate-none"
-                >
-                  <Filter size={14} className="shrink-0" />
-                  <span>상세조건 설정</span>
-                  {(() => {
-                    const activeCount = Object.values(partnerFilters).filter(v => v !== '전체').length;
-                    return activeCount > 0 ? (
-                      <span className="bg-black text-white text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 font-extrabold ml-1 animate-pulse">
-                        {activeCount}
-                      </span>
-                    ) : null;
-                  })()}
-                </button>
-                
-                <button 
-                  type="button"
-                  onClick={() => {
-                    setPartnerFilters({
-                      cost: '전체',
-                      gender: '전체',
-                      age: '전체',
-                      region: '전체',
-                      date: '전체'
-                    });
-                    showToast('상세 필터가 모두 초기화되었습니다.');
-                  }} 
-                  className="px-4 py-3 bg-gray-100 text-gray-700 hover:bg-gray-250 font-bold rounded-xl text-xs border border-gray-200/50 shrink-0 transition-colors"
-                >
-                  초기화
-                </button>
-              </div>
+          <div className="bg-white px-3.5 py-2 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full flex items-center justify-between gap-3 h-11.5">
+            {/* 1. 상세조건 필터 버튼 (좌측 고정) */}
+            <button
+              type="button"
+              onClick={() => setShowDetailedFilterModal(true)}
+              className="flex items-center gap-1 bg-green-500 hover:bg-green-600 active:scale-[0.95] text-black font-black px-2.5 py-1.5 rounded-lg text-[10px] shadow-sm shrink-0 transition-all"
+            >
+              <Filter size={11} className="shrink-0" />
+              <span>상세조건</span>
+              {(() => {
+                const activeCount = Object.values(partnerFilters).filter(v => v !== '전체').length;
+                return activeCount > 0 ? (
+                  <span className="bg-black text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 font-black ml-0.5 animate-pulse">
+                    {activeCount}
+                  </span>
+                ) : null;
+              })()}
+            </button>
 
-              {/* 2. 하단: 필터 즐겨찾기 라인 */}
-              <div className="flex items-center gap-2.5 pt-2.5 border-t border-gray-50 w-full min-w-0">
-                <span className="text-[10.5px] font-black text-gray-700 shrink-0 flex items-center gap-1">
-                  ⭐ 필터 즐겨찾기
-                </span>
-                
-                <div className="flex-1 flex gap-2 overflow-x-auto hide-scrollbar snap-x w-full">
-                  {favoriteFilters.length === 0 ? (
-                    <span className="text-[9.5px] text-gray-400 font-bold py-1">저장된 즐겨찾기가 없습니다.</span>
-                  ) : (
-                    favoriteFilters.map((fav) => (
-                      <div 
-                        key={fav.id}
-                        onClick={() => {
-                          setPartnerFilters(fav.filters);
-                          showToast("즐겨찾기 '" + fav.name + "' 조건이 일괄 적용되었습니다.");
-                        }}
-                        className="flex items-center gap-1 bg-amber-50/60 border border-amber-100/70 hover:bg-amber-100 rounded-lg px-2.5 py-1 text-[10px] font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
-                      >
-                        <span>{fav.name}</span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
-                            showToast("즐겨찾기 '" + fav.name + "'이 삭제되었습니다.");
-                          }}
-                          className="p-0.5 hover:bg-amber-250/70 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
-                        >
-                          <X size={8.5} strokeWidth={3.5} />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+            {/* 2. 세로 구분선 */}
+            <div className="h-4 w-[1px] bg-gray-100 shrink-0"></div>
+
+            {/* 3. 필터 즐겨찾기 칩 목록 (가운데 flex-1 가로 스크롤) */}
+            <div className="flex-1 flex gap-1.5 overflow-x-auto hide-scrollbar snap-x min-w-0 py-0.5 items-center">
+              {favoriteFilters.length === 0 ? (
+                <span className="text-[9px] text-gray-400 font-bold whitespace-nowrap">⭐ 즐겨찾기 없음</span>
+              ) : (
+                favoriteFilters.map((fav) => (
+                  <div 
+                    key={fav.id}
+                    onClick={() => {
+                      setPartnerFilters(fav.filters);
+                      showToast("즐겨찾기 '" + fav.name + "' 적용!");
+                    }}
+                    className="flex items-center gap-1 bg-amber-50/60 border border-amber-100/70 hover:bg-amber-100 rounded-lg px-2 py-0.5 text-[9.5px] font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
+                  >
+                    <span>{fav.name}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
+                        showToast("즐겨찾기 '" + fav.name + "'이 삭제되었습니다.");
+                      }}
+                      className="p-0.5 hover:bg-amber-250/70 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
+                    >
+                      <X size={7.5} strokeWidth={4} />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* 4. 세로 구분선 */}
+            <div className="h-4 w-[1px] bg-gray-100 shrink-0"></div>
+
+            {/* 5. 초기화 버튼 (우측 고정) */}
+            <button 
+              type="button"
+              onClick={() => {
+                setPartnerFilters({
+                  cost: '전체',
+                  gender: '전체',
+                  age: '전체',
+                  region: '전체',
+                  date: '전체'
+                });
+                showToast('필터가 모두 초기화되었습니다.');
+              }} 
+              className="p-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 rounded-lg shrink-0 transition-colors inline-flex items-center justify-center shadow-sm"
+              title="필터 초기화"
+            >
+              <RotateCcw size={11} className="text-gray-600" />
+            </button>
           </div>
           {filteredPartners.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
