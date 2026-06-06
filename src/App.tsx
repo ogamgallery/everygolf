@@ -60,6 +60,9 @@ interface PartnerFilters {
   date: string;
 }
 
+const timeOptions = ['전체 시간', '1부 (06:00~08:00)', '2부 (11:00~14:00)', '3부/야간 (16:00~)'];
+const regionOptions = ['전체 지역', '서울/경기', '강원', '충청', '전라', '경상', '제주'];
+
 interface FavoriteFilter {
   id: string;
   name: string;
@@ -2748,8 +2751,7 @@ function EveryGolfApp() {
 
 
 
-    const timeOptions = ['전체 시간', '1부 (06:00~08:00)', '2부 (11:00~14:00)', '3부/야간 (16:00~)'];
-    const regionOptions = ['전체 지역', '서울/경기', '강원', '충청', '전라', '경상', '제주'];
+    // 전역 상수 timeOptions, regionOptions 참조 사용
 
     // 실시간 필터링 로직 (선택된 날짜, 시간대, 지역, 검색어, 가격 상한선, 캐디 조건 매칭)
     const getFilteredItems = () => {
