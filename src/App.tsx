@@ -4293,13 +4293,10 @@ function EveryGolfApp() {
     };
 
     const filteredPartners = partnerList.filter(partner => {
-      // 1. 스마트 매칭 프로필 필터 (유저 프로필 정보가 입력되어 있을 때)
+      // 1. 스마트 매칭 프로필 필터 완화 (유저 성별 및 연령 매칭만 기본 권장으로 적용)
       if (userProfile) {
         if (partner.gender !== '무관' && partner.gender !== userProfile.gender) return false;
         if (!ageMatch(partner.age, userProfile.age)) return false;
-        if ((partner as any).smoke === '비흡연' && userProfile.smoke !== '비흡연') return false;
-        if ((partner as any).license === '보유' && userProfile.license !== '보유') return false;
-        if (userProfile.handicap > ((partner as any).maxHandicap || 120)) return false;
       }
 
       // 2. 상세 조건 필터 (partnerFilters)
@@ -4458,14 +4455,6 @@ function EveryGolfApp() {
             >
               <Filter size={11} className="shrink-0" />
               <span>상세조건</span>
-              {(() => {
-                const activeCount = Object.values(partnerFilters).filter(v => v !== '전체').length;
-                return activeCount > 0 ? (
-                  <span className="bg-black text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 font-black ml-0.5 animate-pulse">
-                    {activeCount}
-                  </span>
-                ) : null;
-              })()}
             </button>
 
             {/* 2. 세로 구분선 */}

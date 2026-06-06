@@ -44,7 +44,22 @@ export const MOCK_JOINS = [
   { id: 17, name: '마이다스밸리 청평', location: '경기 가평', time: '08:20', price: '205,000', needed: 1, age: '무관', gender: '남성', host: '캐디와니', status: '마감임박' },
   { id: 18, name: '더플레이어스 GC', location: '강원 춘천', time: '10:00', price: '160,000', needed: 2, age: '20대', gender: '무관', host: '엠지골퍼', status: '모집중' },
   { id: 19, name: '라데나 GC', location: '강원 춘천', time: '13:45', price: '195,000', needed: 1, age: '30~50대', gender: '여성', host: '레이디스', status: '마감임박' },
-  { id: 20, name: '소노펠리체 CC', location: '강원 홍천', time: '07:45', price: '235,000', needed: 2, age: '40대', gender: '남성', host: '가을바람', status: '모집중' }
+  { id: 20, name: '소노펠리체 CC', location: '강원 홍천', time: '07:45', price: '235,000', needed: 2, age: '40대', gender: '남성', host: '가을바람', status: '모집중' },
+  { id: 21, name: '클럽디 금강', location: '전북 익산', time: '07:20', price: '145,000', needed: 1, age: '30~40대', gender: '남성', host: '익산샷', status: '모집중' },
+  { id: 22, name: '해운대비치 CC', location: '부산', time: '08:40', price: '245,000', needed: 2, age: '20~40대', gender: '무관', host: '부산사나이', status: '모집중' },
+  { id: 23, name: '제주 엘리시안 CC', location: '제주', time: '13:00', price: '210,000', needed: 1, age: '무관', gender: '여성', host: '제주바람', status: '모집중' },
+  { id: 24, name: '한림광릉 CC', location: '경기 남양주', time: '09:50', price: '165,000', needed: 2, age: '30대', gender: '무관', host: '광릉싱글', status: '마감임박' },
+  { id: 25, name: '웰리힐리 CC', location: '강원 횡성', time: '06:40', price: '150,000', needed: 1, age: '40대', gender: '남성', host: '강원골퍼', status: '모집중' },
+  { id: 26, name: '골프존카운티 선운', location: '전북 고창', time: '08:15', price: '135,000', needed: 3, age: '무관', gender: '무관', host: '명랑골프', status: '모집중' },
+  { id: 27, name: '스톤게이트 CC', location: '부산 기장', time: '14:20', price: '190,000', needed: 1, age: '30~40대', gender: '여성', host: '버디러브', status: '마감임박' },
+  { id: 28, name: '테디밸리 CC', location: '제주 서귀포', time: '11:30', price: '225,000', needed: 2, age: '무관', gender: '무관', host: '테디베어', status: '모집중' },
+  { id: 29, name: '동촌 GC', location: '충북 충주', time: '07:10', price: '160,000', needed: 1, age: '40~50대', gender: '남성', host: '싱글고수', status: '모집중' },
+  { id: 30, name: '핀크스 GC', location: '제주', time: '08:50', price: '260,000', needed: 1, age: '30대', gender: '무관', host: '핀크스최고', status: '모집중' },
+  { id: 31, name: '스카이72 CC', location: '인천', time: '06:15', price: '175,000', needed: 1, age: '30대', gender: '무관', host: '인천송도', status: '모집중' },
+  { id: 32, name: '레이크사이드 CC', location: '경기 용인', time: '07:45', price: '230,000', needed: 2, age: '무관', gender: '여성', host: '레이디스골프', status: '모집중' },
+  { id: 33, name: '써닝포인트 CC', location: '경기 용인', time: '08:20', price: '195,000', needed: 1, age: '40대', gender: '남성', host: '써닝파크', status: '모집중' },
+  { id: 34, name: '골프존카운티 안성H', location: '경기 안성', time: '09:05', price: '150,000', needed: 2, age: '20~30대', gender: '무관', host: '안성피플', status: '모집중' },
+  { id: 35, name: '힐데스하임 CC', location: '충북 제천', time: '12:30', price: '140,000', needed: 3, age: '무관', gender: '무관', host: '제천골퍼', status: '모집중' }
 ];
 
 export const MOCK_COMMUNITY = [
@@ -79,7 +94,7 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
   const license = index % 5 === 0 ? '보유' : '무관';
   const maxHandicap = index % 4 === 0 ? 90 : (index % 4 === 1 ? 100 : 120);
   const cost = index % 2 === 0 ? '1/N 결제' : '호스트 부담';
-  const date = index % 3 === 0 ? '05/28 (목)' : (index % 3 === 1 ? '05/29 (금)' : '05/30 (토)');
+  const date = index % 5 === 4 ? '05/30 (토)' : (index % 2 === 0 ? '05/28 (목)' : '05/29 (금)');
   const description = `${join.host}님이 올린 동반자 모집 공고글입니다. 매너 좋고 명랑한 라운딩을 함께 하실 동반자분 구해요! 끝나고 편하게 인사 나누실 분들 환영합니다. ⛳`;
   const hostProfile = {
     gender: index % 2 === 0 ? '남성' : '여성',
