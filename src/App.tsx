@@ -242,7 +242,7 @@ function EveryGolfApp() {
       {[
         { id: 'home', icon: Home, label: '홈' },
         { id: 'booking', icon: CalendarCheck, label: '부킹/조인' },
-        { id: 'community', icon: Users, label: '동반자 찾기' },
+        { id: 'community', icon: Users, label: '나 홀로 조인' },
         { id: 'chat', icon: MessageSquare, label: '채팅' },
         { id: 'mypage', icon: User, label: '마이페이지' },
       ].map((tab) => (
@@ -4314,7 +4314,7 @@ function EveryGolfApp() {
       <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden">
         <div className="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm shrink-0">
           <div className="px-5 pt-12 pb-4 flex justify-between items-center">
-             <h2 className="text-2xl font-black text-gray-900 tracking-tight">동반자 찾기</h2>
+             <h2 className="text-2xl font-black text-gray-900 tracking-tight">나 홀로 조인</h2>
              <button 
                onClick={() => {
                  pushView('empty', { type: 'partnerWrite', title: '동반자 모집글 작성' });
@@ -4327,34 +4327,6 @@ function EveryGolfApp() {
         </div>
 
         <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
-          {/* 매칭 프로필 설정 상태 안내 */}
-          <div className="bg-white border border-gray-100 p-4.5 rounded-2xl shadow-sm flex items-center justify-between gap-3 shrink-0 w-full">
-            <div className="flex items-center gap-3">
-              <div className={"w-10 h-10 rounded-full flex items-center justify-center shrink-0 " + (userProfile ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400')}>
-                {userProfile ? <Sparkles size={18} /> : <User size={18} />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <h4 className="text-sm font-black text-gray-900">
-                  {userProfile ? '스마트 프로필 매칭 적용 중' : '내 프로필 매칭 설정'}
-                </h4>
-                <p className="text-[11px] text-gray-500 font-bold mt-0.5 truncate">
-                  {userProfile 
-                    ? (userProfile.gender + ' · ' + userProfile.age + '세 · ' + userProfile.handicap + '타 · ' + userProfile.smoke + ' · ' + (userProfile.license === '보유' ? '자격증있음' : '자격증없음'))
-                    : '프로필을 등록하고 나에게 맞는 모집글만 보세요.'}
-                </p>
-              </div>
-            </div>
-            <button 
-              onClick={() => pushView('profileInput')} 
-              className={"text-xs font-black px-3.5 py-2.5 rounded-xl transition-all shrink-0 " + (
-                userProfile 
-                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
-                  : 'bg-green-600 text-white shadow-sm hover:bg-green-700'
-              )}
-            >
-              {userProfile ? '수정' : '등록'}
-            </button>
-          </div>
 
           <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full">
              {/* 필터 즐겨찾기 영역 */}
