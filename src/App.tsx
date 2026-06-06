@@ -3416,8 +3416,14 @@ function EveryGolfApp() {
                       isDiscountSpecialOnly ? 'flex-1' : 'min-w-[50px] shrink-0'
                     } ${isSelected ? 'bg-gray-900 text-white shadow-md' : 'bg-white hover:bg-gray-50 border border-gray-100'} ${isWeekend && !isSelected ? 'text-red-500' : 'text-gray-500'}`}
                   >
-                    <span className="text-[9.5px] font-medium leading-none mb-1">{date.split(' ')[0]}</span>
-                    <span className={`text-[11px] font-black leading-none ${isSelected ? 'text-white' : 'text-gray-900'} ${isWeekend && !isSelected ? 'text-red-500' : ''}`}>{date.split(' ')[1]}</span>
+                    <span className={`font-black leading-none ${isDiscountSpecialOnly ? 'text-xs' : 'text-[9.5px] font-medium mb-1'}`}>
+                      {isDiscountSpecialOnly ? (date === dates[3] ? '오늘' : '내일') : date.split(' ')[0]}
+                    </span>
+                    {!isDiscountSpecialOnly && (
+                      <span className={`text-[11px] font-black leading-none ${isSelected ? 'text-white' : 'text-gray-900'} ${isWeekend && !isSelected ? 'text-red-500' : ''}`}>
+                        {date.split(' ')[1]}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -4241,17 +4247,7 @@ function EveryGolfApp() {
         return dateVal;
       };
 
-      const ageMatch = (postAge: string, userAge: number) => {
-      if (postAge === '무관') return true;
-      const match = postAge.match(/(\d+)(?:~(\d+))?대/);
-      if (match) {
-        const start = parseInt(match[1], 10);
-        const end = match[2] ? parseInt(match[2], 10) : start;
-        const userGen = Math.floor(userAge / 10) * 10;
-        return userGen >= start && userGen <= end;
-      }
-      return true;
-    };
+      // ageMatch removed to resolve TS6133
 
     const getAgeDecades = (ageStr: string): number[] => {
       if (ageStr === '전체' || ageStr === '무관') return [20, 30, 40, 50];
