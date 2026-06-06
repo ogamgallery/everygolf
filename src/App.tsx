@@ -4330,58 +4330,9 @@ function EveryGolfApp() {
 
         <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
 
-          <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full">
-             {/* 필터 즐겨찾기 영역 */}
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-xs font-black text-gray-700 flex items-center gap-1.5">
-                  <Star size={14} className="text-amber-500 fill-amber-500 shrink-0"/> 필터 즐겨찾기
-                </p>
-                <button 
-                  onClick={() => {
-                    setFavNameInput('');
-                    setShowDetailedFilterModal(true);
-                  }} 
-                  className="text-[10px] shrink-0 text-amber-600 font-extrabold bg-amber-50 border border-amber-200/50 px-2 py-1 rounded-lg hover:bg-amber-100 transition-colors"
-                >
-                  ⭐ 필터 저장하기
-                </button>
-              </div>
-              
-              {/* 즐겨찾기 칩 목록 */}
-              {favoriteFilters.length === 0 ? (
-                <p className="text-[10px] text-gray-400 font-bold mb-4">자주 쓰는 조건 조합을 저장해보세요.</p>
-              ) : (
-                <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 w-full snap-x">
-                  {favoriteFilters.map((fav) => (
-                    <div 
-                      key={fav.id}
-                      onClick={() => {
-                        setPartnerFilters(fav.filters);
-                        showToast("즐겨찾기 '" + fav.name + "' 조건이 일괄 적용되었습니다.");
-                      }}
-                      className="flex items-center gap-1 bg-amber-50/60 border border-amber-100 hover:bg-amber-100 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
-                    >
-                      <span>{fav.name}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
-                          showToast("즐겨찾기 '" + fav.name + "'이 삭제되었습니다.");
-                        }}
-                        className="p-0.5 hover:bg-amber-200/80 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
-                      >
-                        <X size={10} strokeWidth={3} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* 구분선 */}
-              <div className="border-t border-gray-100 my-3"></div>
-
-              {/* 통합 상세 조건 설정 버튼 영역 */}
-              <div className="flex gap-2 mb-4 w-full">
+          <div className="bg-white p-4 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full flex flex-col gap-3">
+              {/* 1. 상단: 통합 상세 조건 설정 버튼 영역 */}
+              <div className="flex gap-2 w-full">
                 <button
                   type="button"
                   onClick={() => setShowDetailedFilterModal(true)}
@@ -4415,6 +4366,42 @@ function EveryGolfApp() {
                 >
                   초기화
                 </button>
+              </div>
+
+              {/* 2. 하단: 필터 즐겨찾기 라인 */}
+              <div className="flex items-center gap-2.5 pt-2.5 border-t border-gray-50 w-full min-w-0">
+                <span className="text-[10.5px] font-black text-gray-700 shrink-0 flex items-center gap-1">
+                  ⭐ 필터 즐겨찾기
+                </span>
+                
+                <div className="flex-1 flex gap-2 overflow-x-auto hide-scrollbar snap-x w-full">
+                  {favoriteFilters.length === 0 ? (
+                    <span className="text-[9.5px] text-gray-400 font-bold py-1">저장된 즐겨찾기가 없습니다.</span>
+                  ) : (
+                    favoriteFilters.map((fav) => (
+                      <div 
+                        key={fav.id}
+                        onClick={() => {
+                          setPartnerFilters(fav.filters);
+                          showToast("즐겨찾기 '" + fav.name + "' 조건이 일괄 적용되었습니다.");
+                        }}
+                        className="flex items-center gap-1 bg-amber-50/60 border border-amber-100/70 hover:bg-amber-100 rounded-lg px-2.5 py-1 text-[10px] font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
+                      >
+                        <span>{fav.name}</span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
+                            showToast("즐겨찾기 '" + fav.name + "'이 삭제되었습니다.");
+                          }}
+                          className="p-0.5 hover:bg-amber-250/70 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
+                        >
+                          <X size={8.5} strokeWidth={3.5} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
           </div>
           {filteredPartners.length === 0 ? (
