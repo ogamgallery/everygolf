@@ -4274,7 +4274,7 @@ function EveryGolfApp() {
     };
 
     const isRegionFilterMatch = (filterRegion: string, partnerLocation: string) => {
-      if (filterRegion === '전체') return true;
+      if (filterRegion === '전체' || filterRegion === '지역 전체' || filterRegion === '전체 지역' || filterRegion === '골프장 지역') return true;
       if (filterRegion === '경기') {
         return partnerLocation.includes('경기');
       }
@@ -4305,7 +4305,7 @@ function EveryGolfApp() {
         const dateMatch = partner.date && partner.date.includes(selectedDate.split(' ')[0]);
         if (!dateMatch) return false;
       }
-      if (selectedRegion && selectedRegion !== '전체' && selectedRegion !== '지역 전체' && selectedRegion !== '골프장 지역') {
+      if (selectedRegion && selectedRegion !== '전체' && selectedRegion !== '지역 전체' && selectedRegion !== '전체 지역' && selectedRegion !== '골프장 지역') {
         if (!isRegionFilterMatch(selectedRegion, partner.location)) return false;
       }
 
