@@ -3417,7 +3417,9 @@ function EveryGolfApp() {
                     } ${isSelected ? 'bg-gray-900 text-white shadow-md' : 'bg-white hover:bg-gray-50 border border-gray-100'} ${isWeekend && !isSelected ? 'text-red-500' : 'text-gray-500'}`}
                   >
                     <span className={`font-black leading-none ${isDiscountSpecialOnly ? 'text-xs' : 'text-[9.5px] font-medium mb-1'}`}>
-                      {isDiscountSpecialOnly ? (date === dates[3] ? '오늘' : '내일') : date.split(' ')[0]}
+                      {isDiscountSpecialOnly 
+                        ? (date === dates[3] ? `오늘(${date.split(' ')[0]})` : `내일(${date.split(' ')[0]})`) 
+                        : date.split(' ')[0]}
                     </span>
                     {!isDiscountSpecialOnly && (
                       <span className={`text-[11px] font-black leading-none ${isSelected ? 'text-white' : 'text-gray-900'} ${isWeekend && !isSelected ? 'text-red-500' : ''}`}>
