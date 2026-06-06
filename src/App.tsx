@@ -4309,6 +4309,15 @@ function EveryGolfApp() {
       if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
       if (partnerFilters.date !== '전체' && pDate !== partnerFilters.date) return false;
 
+      // 3. 상단 공통 필터 연동 (selectedDate, selectedRegion)
+      if (selectedDate && selectedDate !== '전체' && selectedDate !== '오늘' && selectedDate !== '내일' && selectedDate !== '금일 익일티' && selectedDate !== '희망 날짜') {
+        const dateMatch = partner.date && partner.date.includes(selectedDate.split(' ')[0]);
+        if (!dateMatch) return false;
+      }
+      if (selectedRegion && selectedRegion !== '전체' && selectedRegion !== '지역 전체' && selectedRegion !== '골프장 지역') {
+        if (!isRegionFilterMatch(selectedRegion, partner.location)) return false;
+      }
+
       return true;
     });
 
@@ -4328,7 +4337,115 @@ function EveryGolfApp() {
           </div>
         </div>
 
-        <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
+        <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-3">
+
+          {/* 상단 간편 날짜/시간/지역 필터 바 (부킹/조인 화면의 요소들을 콤팩트한 3열 칩으로 정제) */}
+          <div className="grid grid-cols-3 gap-2 shrink-0 w-full">
+            {/* 1. 희망 날짜 */}
+            <div className="relative">
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowCalendarModal(prev => !prev);
+                  setShowTimeFilter(false);
+                  setShowRegionFilter(false);
+                }}
+                className="w-full bg-white border border-gray-100/80 rounded-xl px-2.5 py-2 flex items-center justify-between text-[11px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <span className="flex items-center gap-1 truncate">
+                  <Calendar size={11} className="text-green-600 shrink-0"/>
+                  {selectedDate}
+                </span>
+                <ChevronDown size={10} className="text-gray-400 shrink-0"/>
+              </button>
+            </div>
+
+            {/* 2. 시간대 */}
+            <div className="relative">
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowTimeFilter(prev => !prev);
+                  setShowCalendarModal(false);
+                  setShowRegionFilter(false);
+                }}
+                className="w-full bg-white border border-gray-100/80 rounded-xl px-2.5 py-2 flex items-center justify-between text-[11px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <span className="flex items-center gap-1 truncate">
+                  <Clock size={11} className="text-green-600 shrink-0"/>
+                  {selectedTime}
+                </span>
+                <ChevronDown size={10} className="text-gray-400 shrink-0"/>
+              </button>
+              
+              {/* 시간대 드롭다운 */}
+              {showTimeFilter && (
+                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-100 rounded-xl shadow-2xl z-30 py-1 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                  {timeOptions.map(opt => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => {
+                        setSelectedTime(opt);
+                        setShowTimeFilter(false);
+                        showToast(`시간대: ${opt} 적용`);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-[10px] font-bold transition-colors flex items-center justify-between ${
+                        selectedTime === opt 
+                          ? 'bg-green-50 text-green-600' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                    >
+                      <span>{opt}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 3. 골프장 지역 */}
+            <div className="relative">
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowRegionFilter(prev => !prev);
+                  setShowCalendarModal(false);
+                  setShowTimeFilter(false);
+                }}
+                className="w-full bg-white border border-gray-100/80 rounded-xl px-2.5 py-2 flex items-center justify-between text-[11px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <span className="flex items-center gap-1 truncate">
+                  <MapPin size={11} className="text-green-600 shrink-0"/>
+                  {selectedRegion}
+                </span>
+                <ChevronDown size={10} className="text-gray-400 shrink-0"/>
+              </button>
+
+              {/* 지역 드롭다운 */}
+              {showRegionFilter && (
+                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-100 rounded-xl shadow-2xl z-30 py-1 overflow-hidden max-h-48 overflow-y-auto hide-scrollbar animate-in fade-in slide-in-from-top-1 duration-150">
+                  {regionOptions.map(opt => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => {
+                        setSelectedRegion(opt);
+                        setShowRegionFilter(false);
+                        showToast(`지역: ${opt} 적용`);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-[10px] font-bold transition-colors flex items-center justify-between ${
+                        selectedRegion === opt 
+                          ? 'bg-green-50 text-green-600' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                    >
+                      <span>{opt}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="bg-white px-3.5 py-2 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full flex items-center justify-between gap-3 h-11.5">
             {/* 1. 상세조건 필터 버튼 (좌측 고정) */}
