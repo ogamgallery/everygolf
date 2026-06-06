@@ -2550,11 +2550,8 @@ function EveryGolfApp() {
       </div>
 
       <div className="px-5 mt-5">
-        <div className="flex justify-between items-end mb-3">
-          <h2 className="text-lg font-black text-gray-900 flex items-center gap-2">인플루언서와 함께 라운딩</h2>
-        </div>
-        
         <div 
+
           onClick={() => pushView('influencerList')}
           className="w-full bg-gradient-to-br from-green-600 via-emerald-600 to-teal-800 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden cursor-pointer group active:scale-[0.99] transition-all flex flex-col justify-between aspect-[21/9]"
         >
