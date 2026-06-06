@@ -4293,13 +4293,7 @@ function EveryGolfApp() {
     };
 
     const filteredPartners = partnerList.filter(partner => {
-      // 1. 스마트 매칭 프로필 필터 완화 (유저 성별 및 연령 매칭만 기본 권장으로 적용)
-      if (userProfile) {
-        if (partner.gender !== '무관' && partner.gender !== userProfile.gender) return false;
-        if (!ageMatch(partner.age, userProfile.age)) return false;
-      }
-
-      // 2. 상세 조건 필터 (partnerFilters)
+      // 1. 상세 조건 필터 (partnerFilters)
       const pCost = (partner as any).cost;
       const pDate = (partner as any).date;
       if (partnerFilters.cost !== '전체' && pCost !== partnerFilters.cost) return false;
