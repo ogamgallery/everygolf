@@ -89,7 +89,7 @@ export const MOCK_COMMUNITY = [
   image: `https://picsum.photos/seed/post${index}/400/500`
 }));
 
-export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
+const mappedPartners = MOCK_JOINS.map((join, index) => {
   const smoke = index % 3 === 0 ? '비흡연' : '무관';
   const license = index % 5 === 0 ? '보유' : '무관';
   const maxHandicap = index % 4 === 0 ? 90 : (index % 4 === 1 ? 100 : 120);
@@ -139,6 +139,70 @@ export const MOCK_PARTNERS = MOCK_JOINS.map((join, index) => {
     applicants
   };
 });
+
+export const MOCK_PARTNERS = [
+  {
+    id: 99,
+    title: '[인천] 베어즈베스트 청라 GC 2명 급구합니다! (여성 1/N)',
+    author: '여성골퍼A',
+    time: '07:15 티오프',
+    location: '인천',
+    name: '베어즈베스트 청라 GC',
+    needed: 2,
+    gender: '여성',
+    age: '30대',
+    status: '모집중',
+    views: 124,
+    avatar: 'https://picsum.photos/seed/user99/100/100',
+    smoke: '비흡연',
+    license: '무관',
+    maxHandicap: 100,
+    cost: '1/N 결제',
+    date: '05/28 (목)',
+    price: '210,000',
+    description: '베어즈베스트 청라 GC에서 여성 30대 동반자 2명 구합니다. 매너 좋으시고 즐겁게 명랑 라운딩 하실 분들 오세요! 그린피 카트비 N분의 1 결제입니다. ⛳',
+    hostProfile: {
+      gender: '여성',
+      age: '30대',
+      handicap: 92,
+      smoke: '비흡연',
+      license: '미보유'
+    },
+    applicants: [
+      { id: 1, name: '버디찬스', avatar: 'https://picsum.photos/seed/app2/100/100', handicap: 90, gender: '여성', age: '20대', experience: '구력 2년', status: '대기중' }
+    ]
+  },
+  {
+    id: 100,
+    title: '[인천] 클럽72 CC 하늘코스 여성 조인 1명 모집!',
+    author: '골프소녀',
+    time: '08:30 티오프',
+    location: '인천',
+    name: '클럽72 CC',
+    needed: 1,
+    gender: '여성',
+    age: '30대',
+    status: '모집중',
+    views: 98,
+    avatar: 'https://picsum.photos/seed/user100/100/100',
+    smoke: '무관',
+    license: '무관',
+    maxHandicap: 120,
+    cost: '1/N 결제',
+    date: '05/28 (목)',
+    price: '185,000',
+    description: '클럽72 하늘코스에서 5월 28일 오전 08:30 조인하실 여성 1분 모십니다! 그린피 N분의 1 결제이고 초보 환영합니다. 함께 재미있게 쳐요 ⛳',
+    hostProfile: {
+      gender: '여성',
+      age: '30대',
+      handicap: 98,
+      smoke: '비흡연',
+      license: '미보유'
+    },
+    applicants: []
+  },
+  ...mappedPartners
+];
 
 export const MOCK_INFLUENCERS = [
   {
