@@ -2584,16 +2584,7 @@ function EveryGolfApp() {
         </div>
       </div>
       
-      <div className="px-5 mt-4">
-        <div onClick={() => pushView('login')} className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-4 text-white shadow-md relative overflow-hidden cursor-pointer flex justify-between items-center group">
-          <div>
-            <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold">신규 가입 혜택</span>
-            <h3 className="font-bold text-sm mt-1 mb-0.5">무료 라운딩 응모권 1매 + 첫 부킹 할인 쿠폰</h3>
-            <p className="text-[10px] text-blue-100">가입 즉시 100% 지급! 지금 혜택받기</p>
-          </div>
-          <ChevronRight size={20} className="text-white/80 group-hover:translate-x-1 transition-transform" />
-        </div>
-      </div>
+
 
       <div className="px-5 mt-6 grid grid-cols-4 gap-3 w-full">
         {[
