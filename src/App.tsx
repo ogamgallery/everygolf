@@ -602,6 +602,158 @@ function EveryGolfApp() {
   // --- [Data-Filled Dummy Views] ---
 
   const EmptyStateView = ({ payload }: { payload: { type: string, title?: string } }) => {
+    if (payload.type === 'drawEvent') {
+      const [tickets, setTickets] = useState(3);
+      const [appliedGifts, setAppliedGifts] = useState<Record<string, boolean>>({});
+
+      const handleApply = (giftName: string) => {
+        if (tickets <= 0) {
+          showToast('보유하신 응모권이 부족합니다.');
+          return;
+        }
+        if (appliedGifts[giftName]) {
+          showToast('이미 응모 완료된 상품입니다.');
+          return;
+        }
+        setTickets(prev => prev - 1);
+        setAppliedGifts(prev => ({ ...prev, [giftName]: true }));
+        showToast(`'${giftName}' 경품 응모에 100% 성공하였습니다!`);
+      };
+
+      return (
+        <div className="w-full h-full bg-gray-50 flex flex-col">
+          <TopBarNav title="데일리 경품 응모" />
+          
+          <div className="flex-1 overflow-y-auto pb-24 hide-scrollbar">
+            {/* 1. 상단 프로모션 배너 */}
+            <div className="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-700 text-white px-5 py-6 flex flex-col gap-1 shadow-sm">
+              <span className="bg-white/20 backdrop-blur-sm px-2.5 py-0.5 rounded text-[9.5px] font-black w-fit mb-1 shadow-sm">
+                DAILY DRAW EVENT 🎁
+              </span>
+              <h2 className="text-xl font-black leading-snug tracking-tight">
+                매일매일 100% 무료 경품 추첨!<br/>원하는 상품에 즉시 응모하세요
+              </h2>
+              <p className="text-[10.5px] text-indigo-100/90 font-medium mt-1">
+                매일 지급되는 무료 응모권으로 행운의 주인공이 되어보세요.
+              </p>
+            </div>
+
+            {/* 2. 유저 정보 영역 */}
+            <div className="px-5 mt-4">
+              <div className="bg-white p-4.5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-gray-500 font-bold mb-0.5">나의 응모 가능 횟수</p>
+                  <p className="text-sm text-gray-800 font-black">에브리골프 가입 회원 혜택</p>
+                </div>
+                <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl">
+                  <span className="text-xs font-black text-indigo-600">보유 응모권</span>
+                  <span className="text-lg font-black text-indigo-700">{tickets}매</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. 경품 상품 라인업 목록 */}
+            <div className="px-5 mt-5 space-y-4">
+              <h3 className="text-sm font-black text-gray-900 flex items-center gap-1.5 mb-1">
+                <span className="text-indigo-600">●</span> 오늘의 골프 경품 라인업
+              </h3>
+
+              {[
+                {
+                  id: 'gift-1',
+                  name: '보이스캐디 TL1 GPS 레이저 거리측정기',
+                  brand: '보이스캐디 (Voice Caddie)',
+                  desc: '초정밀 0.1초 거리 측정, 핀 어시스트 및 슬로프 오토 보정 탑재로 정확한 비거리를 보장합니다.',
+                  count: '1명',
+                  applicants: '1,542명',
+                  bg: 'from-blue-500 to-indigo-600',
+                  img: 'https://picsum.photos/seed/voicecaddie/150/150'
+                },
+                {
+                  id: 'gift-2',
+                  name: '테일러메이드 로켓볼즈(RocketBallz) 3피스 공 1더즌',
+                  brand: '테일러메이드 (TaylorMade)',
+                  desc: '폭발적인 비거리 상승과 명확한 궤적 스핀 컨트롤을 지원하는 3피스 최고급 골프공 세트.',
+                  count: '5명',
+                  applicants: '3,214명',
+                  bg: 'from-emerald-500 to-teal-600',
+                  img: 'https://picsum.photos/seed/rocketballz/150/150'
+                },
+                {
+                  id: 'gift-3',
+                  name: '타이틀리스트 PRO V1 골프공 3구 패키지',
+                  brand: '타이틀리스트 (Titleist)',
+                  desc: '세계 프로 골퍼 1위 점유율! 극강의 부드러운 타구감과 탁월한 스핀 유지력을 선물합니다.',
+                  count: '10명',
+                  applicants: '4,890명',
+                  bg: 'from-rose-500 to-red-600',
+                  img: 'https://picsum.photos/seed/prov1/150/150'
+                }
+              ].map(gift => {
+                const isApplied = appliedGifts[gift.name];
+                return (
+                  <div key={gift.id} className="bg-white rounded-2.5xl border border-gray-100 shadow-sm overflow-hidden flex flex-col p-4 gap-4">
+                    <div className="flex gap-4">
+                      {/* 썸네일 이미지 */}
+                      <div className="w-20 h-20 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100 flex items-center justify-center relative">
+                        <span className="absolute top-1 left-1 bg-black/60 text-white text-[8px] font-bold px-1 py-0.5 rounded">
+                          {gift.count} 추첨
+                        </span>
+                        <img src={gift.img} alt={gift.name} className="w-full h-full object-cover" />
+                      </div>
+                      
+                      {/* 경품 텍스트 */}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
+                          {gift.brand}
+                        </span>
+                        <h4 className="font-black text-gray-900 text-sm mt-1 leading-snug truncate">
+                          {gift.name}
+                        </h4>
+                        <p className="text-[11px] text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                          {gift.desc}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 실시간 응모 현황 및 응모 버튼 */}
+                    <div className="flex items-center justify-between pt-3.5 border-t border-gray-50 w-full gap-4">
+                      <div className="text-[11px] font-bold text-gray-400">
+                        실시간 응모 현황: <span className="text-gray-700 font-extrabold">{gift.applicants}</span>
+                      </div>
+                      
+                      <button
+                        type="button"
+                        disabled={isApplied}
+                        onClick={() => handleApply(gift.name)}
+                        className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                          isApplied
+                            ? 'bg-gray-100 text-gray-400 cursor-default'
+                            : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.97] text-white shadow-sm'
+                        }`}
+                      >
+                        {isApplied ? '응모 완료 ✓' : '즉시 응모하기'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 4. 유의사항 영역 */}
+            <div className="px-5 mt-6">
+              <div className="bg-gray-100 p-4 rounded-xl text-[10.5px] text-gray-500 font-medium space-y-1">
+                <p className="font-extrabold text-gray-700 mb-1">■ 데일리 드로우 유의사항</p>
+                <p>• 데일리 드로우 응모권은 회원 등급 및 이벤트 미션 달성에 따라 차등 지급됩니다.</p>
+                <p>• 매일 자정에 당첨자 개별 알림 및 푸시 메시지가 발송되며 마이페이지에서 당첨을 확인하실 수 있습니다.</p>
+                <p>• 부정한 방법으로 응모 시 당첨이 취소될 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     if (payload.type === 'notifications') {
         return (
           <div className="w-full h-full bg-white flex flex-col">
