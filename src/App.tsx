@@ -99,6 +99,15 @@ function EveryGolfApp() {
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
   const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
 
+  // 홈 화면 캐러셀 자동 슬라이드 배너 상태 (5초 주기)
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveBannerIndex(prev => (prev === 0 ? 1 : 0));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   const [favNameInput, setFavNameInput] = useState('');
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
   const [chatRooms, setChatRooms] = useState<any[]>(MOCK_CHAT_ROOMS);
@@ -2550,33 +2559,83 @@ function EveryGolfApp() {
       </div>
 
       <div className="px-5 mt-5">
-        <div 
+        <div className="relative w-full aspect-[16/9.5] rounded-3xl overflow-hidden shadow-lg select-none">
+          <AnimatePresence mode="wait">
+            {activeBannerIndex === 0 ? (
+              <motion.div
+                key="banner-influencer"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                onClick={() => pushView('influencerList')}
+                className="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-600 to-teal-800 p-5 text-white flex flex-col justify-between cursor-pointer group active:scale-[0.99] transition-all"
+              >
+                <div className="absolute right-[-20px] bottom-[-20px] w-36 h-36 bg-white/10 rounded-full border border-white/10 shrink-0"></div>
+                <div className="absolute right-[40px] bottom-[-40px] w-24 h-24 bg-white/5 rounded-full shrink-0"></div>
+                
+                <div className="relative z-10">
+                  <span className="inline-block bg-white/20 backdrop-blur-md text-white text-[9px] font-black px-2 py-0.5 rounded mb-2.5 shadow-sm">
+                    스페셜 매칭 EVENT ⛳
+                  </span>
+                  <h3 className="text-lg font-black leading-snug tracking-tight">
+                    인플루언서 & 프로와 함께하는<br/>100% 무료 라운딩 매칭!
+                  </h3>
+                  <p className="text-[10.5px] text-green-100 font-bold mt-2.5 opacity-90">
+                    인플루언서 공고 확인하고 지금 사연을 응모하세요!
+                  </p>
+                </div>
+                
+                <div className="relative z-10 flex justify-between items-center mt-3 pt-2.5 border-t border-white/10">
+                  <span className="text-[9.5px] text-white/80 font-extrabold flex items-center gap-1">
+                    에브리골프 단독 특별 혜택
+                  </span>
+                  <span className="text-[10.5px] font-black text-white flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+                    공고 보러가기 <ChevronRight size={13} />
+                  </span>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="banner-prize"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                onClick={() => pushView('empty', { type: 'drawEvent', title: '데일리 경품 응모' })}
+                className="absolute inset-0 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-800 p-5 text-white flex flex-col justify-between cursor-pointer group active:scale-[0.99] transition-all"
+              >
+                <div className="absolute right-[-10px] bottom-[-15px] w-40 h-40 bg-white/10 rounded-full border border-white/5 shrink-0"></div>
+                <div className="absolute right-[50px] bottom-[-30px] w-20 h-20 bg-white/5 rounded-full shrink-0"></div>
+                
+                <div className="relative z-10">
+                  <span className="inline-block bg-white/20 backdrop-blur-md text-white text-[9px] font-black px-2 py-0.5 rounded mb-2.5 shadow-sm">
+                    데일리 경품 DRAW 🎁
+                  </span>
+                  <h3 className="text-lg font-black leading-snug tracking-tight">
+                    매일매일 쏟아지는 골프 경품!<br/>거리측정기 & 프리미엄 골프공
+                  </h3>
+                  <p className="text-[10.5px] text-indigo-100 font-bold mt-2.5 opacity-90">
+                    보유하신 응모권으로 매일 즉시 응모하세요!
+                  </p>
+                </div>
+                
+                <div className="relative z-10 flex justify-between items-center mt-3 pt-2.5 border-t border-white/10">
+                  <span className="text-[9.5px] text-white/80 font-extrabold flex items-center gap-1">
+                    매일 새로운 경품 100% 추첨
+                  </span>
+                  <span className="text-[10.5px] font-black text-white flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+                    응모하러 가기 <ChevronRight size={13} />
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          onClick={() => pushView('influencerList')}
-          className="w-full bg-gradient-to-br from-green-600 via-emerald-600 to-teal-800 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden cursor-pointer group active:scale-[0.99] transition-all flex flex-col justify-between aspect-[21/9]"
-        >
-          <div className="absolute right-[-20px] bottom-[-20px] w-36 h-36 bg-white/10 rounded-full border border-white/10 shrink-0"></div>
-          <div className="absolute right-[40px] bottom-[-40px] w-24 h-24 bg-white/5 rounded-full shrink-0"></div>
-          
-          <div className="relative z-10">
-            <span className="inline-block bg-white/20 backdrop-blur-md text-white text-[9px] font-black px-2 py-0.5 rounded mb-2.5 shadow-sm">
-              스페셜 매칭 EVENT ⛳
-            </span>
-            <h3 className="text-base font-black leading-snug tracking-tight">
-              인플루언서 & 프로와 함께하는<br/>100% 무료 라운딩 매칭!
-            </h3>
-            <p className="text-[10px] text-green-100 font-bold mt-1.5 opacity-90">
-              인플루언서 공고 확인하고 지금 사연을 응모하세요!
-            </p>
-          </div>
-          
-          <div className="relative z-10 flex justify-between items-center mt-3 pt-2.5 border-t border-white/10">
-            <span className="text-[9.5px] text-white/80 font-extrabold flex items-center gap-1">
-              에브리골프 단독 특별 혜택
-            </span>
-            <span className="text-[10.5px] font-black text-white flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
-              공고 보러가기 <ChevronRight size={13} />
-            </span>
+          {/* 슬라이드 Indicator Dots */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none">
+            <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeBannerIndex === 0 ? 'bg-white scale-125' : 'bg-white/40'}`}></span>
+            <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeBannerIndex === 1 ? 'bg-white scale-125' : 'bg-white/40'}`}></span>
           </div>
         </div>
       </div>
