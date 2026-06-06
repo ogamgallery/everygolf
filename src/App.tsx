@@ -5223,7 +5223,7 @@ const MyPageTabView = () => {
 
             {/* 2분할 카드 (무료 응모권 & 받은 후기) */}
             <div className="flex gap-3 w-full">
-              <div onClick={() => pushView('empty', { type: 'default', title: '무료 응모권' })} className="flex-1 min-w-0 bg-gray-50 border border-gray-100 p-4 rounded-2xl text-center cursor-pointer hover:bg-white hover:border-green-300 hover:shadow-md transition-all">
+              <div onClick={() => pushView('empty', { type: 'drawEvent', title: '데일리 경품 응모' })} className="flex-1 min-w-0 bg-gray-50 border border-gray-100 p-4 rounded-2xl text-center cursor-pointer hover:bg-white hover:border-green-300 hover:shadow-md transition-all">
                 <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1.5 truncate">무료 응모권</p>
                 <p className="font-black text-xl sm:text-2xl text-green-600 truncate">3<span className="text-xs sm:text-sm font-medium text-gray-500 ml-0.5">매</span></p>
               </div>
