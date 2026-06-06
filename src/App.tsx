@@ -4341,13 +4341,13 @@ function EveryGolfApp() {
                   setShowTimeFilter(false);
                   setShowRegionFilter(false);
                 }}
-                className="w-full bg-white border border-gray-100/80 rounded-xl px-2.5 py-2 flex items-center justify-between text-[11px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                className="w-full bg-white border border-gray-100/80 rounded-xl px-2 py-1.5 flex items-center justify-between text-[10.5px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
               >
                 <span className="flex items-center gap-1 truncate">
-                  <Calendar size={11} className="text-green-600 shrink-0"/>
+                  <Calendar size={9.5} className="text-green-600 shrink-0"/>
                   {selectedDate}
                 </span>
-                <ChevronDown size={10} className="text-gray-400 shrink-0"/>
+                <ChevronDown size={8.5} className="text-gray-400 shrink-0"/>
               </button>
             </div>
 
@@ -4360,13 +4360,13 @@ function EveryGolfApp() {
                   setShowCalendarModal(false);
                   setShowRegionFilter(false);
                 }}
-                className="w-full bg-white border border-gray-100/80 rounded-xl px-2.5 py-2 flex items-center justify-between text-[11px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                className="w-full bg-white border border-gray-100/80 rounded-xl px-2 py-1.5 flex items-center justify-between text-[10.5px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
               >
                 <span className="flex items-center gap-1 truncate">
-                  <Clock size={11} className="text-green-600 shrink-0"/>
+                  <Clock size={9.5} className="text-green-600 shrink-0"/>
                   {selectedTime}
                 </span>
-                <ChevronDown size={10} className="text-gray-400 shrink-0"/>
+                <ChevronDown size={8.5} className="text-gray-400 shrink-0"/>
               </button>
               
               {/* 시간대 드롭다운 */}
@@ -4403,13 +4403,13 @@ function EveryGolfApp() {
                   setShowCalendarModal(false);
                   setShowTimeFilter(false);
                 }}
-                className="w-full bg-white border border-gray-100/80 rounded-xl px-2.5 py-2 flex items-center justify-between text-[11px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                className="w-full bg-white border border-gray-100/80 rounded-xl px-2 py-1.5 flex items-center justify-between text-[10.5px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
               >
                 <span className="flex items-center gap-1 truncate">
-                  <MapPin size={11} className="text-green-600 shrink-0"/>
+                  <MapPin size={9.5} className="text-green-600 shrink-0"/>
                   {selectedRegion}
                 </span>
-                <ChevronDown size={10} className="text-gray-400 shrink-0"/>
+                <ChevronDown size={8.5} className="text-gray-400 shrink-0"/>
               </button>
 
               {/* 지역 드롭다운 */}
