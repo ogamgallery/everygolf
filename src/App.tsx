@@ -3926,7 +3926,14 @@ function EveryGolfApp() {
           {/* 실시간 필터 매칭 결과 목록 (골팡 스타일 적용) */}
           <div className="bg-white px-5 py-4 shadow-sm min-h-[400px]">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-black text-gray-900 text-base">실시간 티타임 목록 ({filteredItems.length}건)</h3>
+              {(() => {
+                const uniqueCoursesCount = new Set(filteredItems.map(item => item.name.split(' ')[0])).size;
+                return (
+                  <h3 className="font-black text-gray-900 text-base">
+                    실시간 티타임 목록 ({uniqueCoursesCount}개 골프장 · {filteredItems.length}개 티타임)
+                  </h3>
+                );
+              })()}
               {/* 우측: 2열에서 이동 장착된 골프장별보기 토글 스위치 (캡슐형) */}
               <button
                 type="button"
