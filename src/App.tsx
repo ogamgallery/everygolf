@@ -3553,31 +3553,33 @@ function EveryGolfApp() {
                   </div>
 
                   {/* 플레이 인원 (단일 선택형) */}
-                  <div className="space-y-2 pt-2">
-                    <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
-                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
-                      {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
-                        const isSelected = selectedMinPlayers === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedMinPlayers(opt);
-                              showToast(`인원: ${opt} 적용`);
-                            }}
-                            className={`flex-1 py-2 rounded-lg text-[10px] font-black transition-all ${
-                              isSelected 
-                                ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
-                                : 'text-gray-500 hover:text-gray-900 border border-transparent'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
+                  {bookingMode !== '조인' && (
+                    <div className="space-y-2 pt-2">
+                      <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
+                      <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
+                        {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
+                          const isSelected = selectedMinPlayers === opt;
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => {
+                                setSelectedMinPlayers(opt);
+                                showToast(`인원: ${opt} 적용`);
+                              }}
+                              className={`flex-1 py-2 rounded-lg text-[10px] font-black transition-all ${
+                                isSelected 
+                                  ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
+                                  : 'text-gray-500 hover:text-gray-900 border border-transparent'
+                              }`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* 추가 필터 옵션 (아이콘 연계, 다중 선택형) */}
                   <div className="space-y-2 pt-2">
@@ -5605,34 +5607,7 @@ const MyPageTabView = () => {
                     </div>
                   </div>
 
-                  {/* 2. 시간대 선택 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">시간대 선택</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {timeOptions.map(opt => {
-                        const isSel = selectedTime === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedTime(opt);
-                              showToast(`시간: ${opt} 선택`);
-                            }}
-                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
-                              isSel 
-                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 3. 캐디 형태 선택 */}
+                  {/* 2. 캐디 형태 선택 */}
                   <div className="space-y-2 text-left">
                     <span className="text-xs font-bold text-gray-400">캐디 형태 선택</span>
                     <div className="grid grid-cols-3 gap-2">
@@ -5659,34 +5634,36 @@ const MyPageTabView = () => {
                     </div>
                   </div>
 
-                  {/* 4. 플레이 인원 설정 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
-                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
-                      {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
-                        const isSelected = selectedMinPlayers === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedMinPlayers(opt);
-                              showToast(`인원: ${opt} 선택`);
-                            }}
-                            className={`flex-1 py-2 rounded-lg text-[10.5px] font-black transition-all ${
-                              isSelected 
-                                ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
-                                : 'text-gray-500 hover:text-gray-900 border border-transparent'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
+                  {/* 3. 플레이 인원 설정 */}
+                  {bookingMode !== '조인' && (
+                    <div className="space-y-2 text-left">
+                      <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
+                      <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
+                        {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
+                          const isSelected = selectedMinPlayers === opt;
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => {
+                                setSelectedMinPlayers(opt);
+                                showToast(`인원: ${opt} 선택`);
+                              }}
+                              className={`flex-1 py-2 rounded-lg text-[10.5px] font-black transition-all ${
+                                isSelected 
+                                  ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
+                                  : 'text-gray-500 hover:text-gray-900 border border-transparent'
+                              }`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* 5. 추가 조건 선택 (식사포함, 양잔디 등) */}
+                  {/* 4. 추가 조건 선택 (식사포함, 양잔디 등) */}
                   <div className="space-y-2 text-left">
                     <span className="text-xs font-bold text-gray-400">추가 혜택/조건 선택 (중복 가능)</span>
                     <div className="grid grid-cols-2 gap-2">
@@ -5722,7 +5699,7 @@ const MyPageTabView = () => {
                     </div>
                   </div>
 
-                  {/* 6. 골프장명 직접 검색 */}
+                  {/* 5. 골프장명 직접 검색 */}
                   <div className="space-y-2 text-left">
                     <span className="text-xs font-bold text-gray-400">골프장명 직접 검색</span>
                     <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 flex items-center justify-between text-sm text-gray-800 focus-within:border-gray-300">
