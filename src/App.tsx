@@ -3233,7 +3233,7 @@ function EveryGolfApp() {
 
 
     return (
-      <div className={`bg-gray-50 flex flex-col w-full relative ${showSearchFilter ? 'pb-16 min-h-full overflow-y-auto' : 'flex-1 min-h-0 overflow-hidden'}`}>
+      <div className={`bg-white flex flex-col w-full relative ${showSearchFilter ? 'pb-16 min-h-full overflow-y-auto' : 'flex-1 min-h-0 overflow-hidden'}`}>
         {showSearchFilter ? (
           <>
           {/* 상단 타이틀 */}
@@ -3576,7 +3576,7 @@ function EveryGolfApp() {
           </div>
         </>
       ) : (
-        <div ref={scrollRef} className="flex-1 w-full overflow-y-auto hide-scrollbar bg-gray-50 flex flex-col pb-32">
+        <div ref={scrollRef} className="flex-1 w-full overflow-y-auto hide-scrollbar bg-white flex flex-col pb-32">
           {/* 상단 헤더 영역 (탭 + 날짜 + 시간대/조인) */}
           <div className="bg-white flex flex-col shrink-0">
              
@@ -3757,7 +3757,7 @@ function EveryGolfApp() {
           </div>
 
           {/* 목록 및 필터 바 영역 (스크롤 없이 통합) */}
-          <div className="flex-1 w-full bg-gray-50 flex flex-col min-h-0">
+          <div className="flex-1 w-full bg-white flex flex-col min-h-0">
 
           {/* 필터 및 정렬 바 (1열 & 2열 구조) */}
           <div className="bg-white border-b border-gray-100 px-4 py-3 space-y-2.5 overflow-visible">
@@ -4514,7 +4514,7 @@ function EveryGolfApp() {
     });
 
     return (
-      <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden">
+      <div className="pb-32 bg-white min-h-full flex flex-col w-full overflow-hidden">
         <div className="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm shrink-0">
           <div className="px-5 pt-12 pb-4 flex justify-between items-center">
              <h2 className="text-2xl font-black text-gray-900 tracking-tight">나 홀로 조인</h2>
@@ -4870,7 +4870,7 @@ function EveryGolfApp() {
     const filteredRooms = chatRooms.filter(room => room.type === 'partner');
 
     return (
-      <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden animate-in fade-in duration-150">
+      <div className="pb-32 bg-white min-h-full flex flex-col w-full overflow-hidden animate-in fade-in duration-150">
         {/* Header */}
         <div className="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm shrink-0">
           <div className="px-5 pt-12 pb-4">
@@ -5103,7 +5103,7 @@ const MyPageTabView = () => {
       ];
 
       return (
-        <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden">
+        <div className="pb-32 bg-white min-h-full flex flex-col w-full overflow-hidden">
           {/* Header */}
           <div className="bg-white px-5 pt-12 pb-4 border-b border-gray-100 shadow-sm sticky top-0 z-10 flex justify-between items-center shrink-0">
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">마이페이지</h2>
