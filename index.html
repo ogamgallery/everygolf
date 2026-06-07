@@ -2,6 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Vite HMR의 자동 새로고침(WebSocket 끊김 시 리로드) 오작동 억제 패치
+      (function() {
+        window.location.reload = function(force) {
+          console.warn('[EveryGolf Patch] Prevented automatic page reload by Vite HMR WebSocket connection loss.');
+        };
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>golf</title>
