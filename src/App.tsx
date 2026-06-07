@@ -53,21 +53,16 @@ interface UserProfile {
 }
 
 interface PartnerFilters {
-  cost: number;
+  region: string;
+  needed: string;
   gender: string;
   age: string;
-  region: string;
+  handicap: string;
   smoke: string;
 }
 
 const timeOptions = ['전체 시간', '1부 (06:00~08:00)', '2부 (11:00~14:00)', '3부/야간 (16:00~)'];
 const regionOptions = ['전체 지역', '서울/경기', '강원', '충청', '전라', '경상', '제주'];
-
-interface FavoriteFilter {
-  id: string;
-  name: string;
-  filters: PartnerFilters;
-}
 
 function EveryGolfApp() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -76,26 +71,13 @@ function EveryGolfApp() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const [partnerFilters, setPartnerFilters] = useState<PartnerFilters>({
-    cost: 350000,
+    region: '전체',
+    needed: '전체',
     gender: '전체',
     age: '전체',
-    region: '전체',
+    handicap: '전체',
     smoke: '전체'
   });
-  
-  const [favoriteFilters, setFavoriteFilters] = useState<FavoriteFilter[]>([
-    {
-      id: 'fav-1',
-      name: '⛳ 인천 여성 1/N',
-      filters: { cost: 250000, gender: '여성', age: '전체', region: '인천', smoke: '전체' }
-    },
-    {
-      id: 'fav-2',
-      name: '🏌️‍♂️ 경기 30대 명랑',
-      filters: { cost: 350000, gender: '무관', age: '30대', region: '경기', smoke: '전체' }
-    }
-  ]);
-  if (false as boolean) console.log(favoriteFilters);
   
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
   const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
@@ -115,7 +97,6 @@ function EveryGolfApp() {
     return () => clearInterval(timer);
   }, [activeTab]);
 
-  const [favNameInput, setFavNameInput] = useState('');
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
   const [chatRooms, setChatRooms] = useState<any[]>(MOCK_CHAT_ROOMS);
   const [expandedPartnerId, setExpandedPartnerId] = useState<number | null>(null);
@@ -2602,51 +2583,36 @@ function EveryGolfApp() {
 
     const filterOptions = [
       {
-        key: 'cost',
-        label: '비용 부담',
-        options: ['전체', '1/N 결제', '호스트 부담']
+        key: 'region',
+        label: '지역',
+        options: ['전체', '서울', '인천', '경기', '강원', '충청', '경상', '전라', '제주']
+      },
+      {
+        key: 'needed',
+        label: '모집인원(1~3자리)',
+        options: ['전체', '1명', '2명', '3명']
       },
       {
         key: 'gender',
-        label: '모집 성별',
+        label: '성별',
         options: ['전체', '남성', '여성', '무관']
       },
       {
         key: 'age',
-        label: '모집 연령대',
+        label: '연령대',
         options: ['전체', '20대', '30대', '40대', '50대 이상', '20~30대', '30~40대', '40~50대']
       },
       {
-        key: 'region',
-        label: '선호 지역',
-        options: ['전체', '서울', '인천', '경기', '강원', '충청', '경상', '전라', '제주']
+        key: 'handicap',
+        label: '타수',
+        options: ['전체', '80타 이하', '90타 이하', '100타 이하', '110타 이하', '120타 이하']
       },
       {
         key: 'smoke',
-        label: '흡연 여부',
+        label: '흡연여부',
         options: ['전체', '비흡연', '흡연']
       }
     ];
-
-    const handleSaveFavorite = () => {
-      if (!favNameInput.trim()) {
-        showToast('즐겨찾기 이름을 입력해주세요.');
-        return;
-      }
-      const hasActiveFilter = Object.values(partnerFilters).some(v => v !== '전체');
-      if (!hasActiveFilter) {
-        showToast('최소 한 개의 필터 조건을 지정해야 저장할 수 있습니다.');
-        return;
-      }
-      const newFav = {
-        id: `fav-${Date.now()}`,
-        name: favNameInput.trim(),
-        filters: { ...partnerFilters }
-      };
-      setFavoriteFilters(prev => [newFav, ...prev]);
-      showToast(`'${favNameInput}' 조건이 즐겨찾기에 추가되었습니다! ⭐`);
-      setFavNameInput('');
-    };
 
     return (
       <AnimatePresence>
@@ -2684,85 +2650,29 @@ function EveryGolfApp() {
                     {group.label}
                   </h4>
                   
-                  {group.key === 'cost' ? (
-                    <div className="space-y-3 pt-1 w-full bg-gray-50/50 border border-gray-100 rounded-2xl p-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold text-gray-500">라운딩 비용 (금액 한도)</span>
-                        <span className="text-sm font-black text-green-600">
-                          {partnerFilters.cost >= 300000 ? '30만원 이상 (전체)' : `${(partnerFilters.cost / 10000).toLocaleString()}만원 이하`}
-                        </span>
-                      </div>
-                      <input 
-                        type="range"
-                        min="50000"
-                        max="300000"
-                        step="10000"
-                        value={partnerFilters.cost > 300000 ? 300000 : partnerFilters.cost}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value, 10);
-                          setPartnerFilters(prev => ({
-                            ...prev,
-                            cost: val === 300000 ? 350000 : val
-                          }));
-                        }}
-                        className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600 focus:outline-none"
-                      />
-                      <div className="flex justify-between text-[9px] text-gray-400 font-black px-0.5">
-                        <span>5만원</span>
-                        <span>15만원</span>
-                        <span>30만원+</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-wrap gap-1.5">
-                      {group.options.map((opt) => {
-                        const isSelected = partnerFilters[group.key as keyof PartnerFilters] === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setPartnerFilters(prev => ({ ...prev, [group.key as keyof PartnerFilters]: opt }));
-                            }}
-                            className={`px-3 py-2 rounded-xl font-bold text-[11px] border transition-all ${
-                              isSelected 
-                                ? 'border-green-600 bg-green-50 text-green-600 font-extrabold shadow-sm scale-[1.02]' 
-                                : 'border-gray-100 bg-gray-50/50 text-gray-500 hover:bg-gray-50'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.options.map((opt) => {
+                      const isSelected = partnerFilters[group.key as keyof PartnerFilters] === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setPartnerFilters(prev => ({ ...prev, [group.key as keyof PartnerFilters]: opt }));
+                          }}
+                          className={`px-3 py-2 rounded-xl font-bold text-[11px] border transition-all ${
+                            isSelected 
+                              ? 'border-green-600 bg-green-50 text-green-600 font-extrabold shadow-sm scale-[1.02]' 
+                              : 'border-gray-100 bg-gray-50/50 text-gray-500 hover:bg-gray-50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
-
-              {/* 필터 즐겨찾기 저장 내장 섹션 */}
-              <div className="bg-amber-50/40 border border-amber-100/50 rounded-2xl p-4 mt-6 space-y-3">
-                <h4 className="text-xs font-black text-amber-800 flex items-center gap-1.5">
-                  <Star size={14} className="text-amber-500 fill-amber-500 shrink-0" />
-                  <span>현재 설정으로 즐겨찾기 등록</span>
-                </h4>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="예: 경기 30대 1/N"
-                    value={favNameInput}
-                    onChange={e => setFavNameInput(e.target.value)}
-                    className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-medium outline-none focus:border-green-500 bg-white"
-                    maxLength={15}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleSaveFavorite}
-                    className="bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-black px-4 py-2.5 rounded-xl transition-all shadow-sm shrink-0"
-                  >
-                    등록
-                  </button>
-                </div>
-              </div>
             </div>
 
             {/* 하단 제어 버튼 팩 */}
@@ -2771,10 +2681,11 @@ function EveryGolfApp() {
                 type="button"
                 onClick={() => {
                   setPartnerFilters({
-                    cost: 350000,
+                    region: '전체',
+                    needed: '전체',
                     gender: '전체',
                     age: '전체',
-                    region: '전체',
+                    handicap: '전체',
                     smoke: '전체'
                   });
                   showToast('필터 조건이 전체 초기화되었습니다.');
@@ -4420,30 +4331,33 @@ function EveryGolfApp() {
     const CommunityTabView = () => {
       const hasActivePartnerFilters = () => {
         return (
-          partnerFilters.cost < 300000 ||
+          partnerFilters.region !== '전체' ||
+          partnerFilters.needed !== '전체' ||
           partnerFilters.gender !== '전체' ||
           partnerFilters.age !== '전체' ||
-          partnerFilters.region !== '전체' ||
+          partnerFilters.handicap !== '전체' ||
           partnerFilters.smoke !== '전체'
         );
       };
 
       const getActivePartnerFilterCount = () => {
         let count = 0;
-        if (partnerFilters.cost < 300000) count++;
+        if (partnerFilters.region !== '전체') count++;
+        if (partnerFilters.needed !== '전체') count++;
         if (partnerFilters.gender !== '전체') count++;
         if (partnerFilters.age !== '전체') count++;
-        if (partnerFilters.region !== '전체') count++;
+        if (partnerFilters.handicap !== '전체') count++;
         if (partnerFilters.smoke !== '전체') count++;
         return count;
       };
 
       const getActivePartnerFilterSummary = () => {
         const summary: string[] = [];
-        if (partnerFilters.cost < 300000) summary.push(`${partnerFilters.cost / 10000}만 이하`);
+        if (partnerFilters.region !== '전체') summary.push(partnerFilters.region);
+        if (partnerFilters.needed !== '전체') summary.push(partnerFilters.needed);
         if (partnerFilters.gender !== '전체') summary.push(partnerFilters.gender);
         if (partnerFilters.age !== '전체') summary.push(partnerFilters.age);
-        if (partnerFilters.region !== '전체') summary.push(partnerFilters.region);
+        if (partnerFilters.handicap !== '전체') summary.push(partnerFilters.handicap);
         if (partnerFilters.smoke !== '전체') summary.push(partnerFilters.smoke);
         return summary;
       };
@@ -4555,15 +4469,20 @@ function EveryGolfApp() {
 
     const filteredPartners = partnerList.filter(partner => {
       // 1. 상세 조건 필터 (partnerFilters)
-      // 비용 필터링 (슬라이더 수치 비교)
-      if (partnerFilters.cost < 300000) {
-        const priceStr = partner.price ? partner.price.replace(/,/g, '') : '0';
-        const partnerPrice = parseInt(priceStr, 10);
-        if (partnerPrice > partnerFilters.cost) return false;
+      if (partnerFilters.region !== '전체') {
+        if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
+      }
+      if (partnerFilters.needed !== '전체') {
+        const neededNum = parseInt(partnerFilters.needed.replace('명', ''), 10);
+        if (partner.needed !== neededNum) return false;
       }
       if (partnerFilters.gender !== '전체' && partner.gender !== partnerFilters.gender) return false;
       if (!isAgeFilterMatch(partnerFilters.age, partner.age)) return false;
-      if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
+      if (partnerFilters.handicap !== '전체') {
+        const maxHandicapLimit = parseInt(partnerFilters.handicap.replace('타 이하', ''), 10);
+        const hostHandicap = partner.hostProfile?.handicap ?? 95;
+        if (hostHandicap > maxHandicapLimit) return false;
+      }
       if (partnerFilters.smoke !== '전체' && (partner as any).smoke !== partnerFilters.smoke) return false;
 
       // 3. 상단 공통 필터 연동 (selectedDate, selectedRegion)
@@ -4709,10 +4628,11 @@ function EveryGolfApp() {
                   type="button"
                   onClick={() => {
                     setPartnerFilters({
-                      cost: 350000,
+                      region: '전체',
+                      needed: '전체',
                       gender: '전체',
                       age: '전체',
-                      region: '전체',
+                      handicap: '전체',
                       smoke: '전체'
                     });
                     showToast('필터가 모두 초기화되었습니다.');
