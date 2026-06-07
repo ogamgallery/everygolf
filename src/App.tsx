@@ -98,6 +98,7 @@ function EveryGolfApp() {
   
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
   const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
+  const [userBalls, setUserBalls] = useState(1000);
 
   const [activeTab, setActiveTab] = useState('home');
 
@@ -661,21 +662,26 @@ function EveryGolfApp() {
 
   const EmptyStateView = ({ payload }: { payload: { type: string, title?: string } }) => {
     if (payload.type === 'drawEvent') {
-      const [tickets, setTickets] = useState(3);
       const [appliedGifts, setAppliedGifts] = useState<Record<string, boolean>>({});
 
+      const getGiftCost = (name: string) => {
+        if (name.includes('거리측정기')) return 200;
+        return 50;
+      };
+
       const handleApply = (giftName: string) => {
-        if (tickets <= 0) {
-          showToast('보유하신 응모권이 부족합니다.');
+        const cost = getGiftCost(giftName);
+        if (userBalls < cost) {
+          showToast(`보유하신 응모볼이 부족합니다. (${cost}볼 필요)`);
           return;
         }
         if (appliedGifts[giftName]) {
           showToast('이미 응모 완료된 상품입니다.');
           return;
         }
-        setTickets(prev => prev - 1);
+        setUserBalls(prev => prev - cost);
         setAppliedGifts(prev => ({ ...prev, [giftName]: true }));
-        showToast(`'${giftName}' 경품 응모에 100% 성공하였습니다!`);
+        showToast(`'${giftName}' 경품 응모에 성공하였습니다! (${cost}볼 사용)`);
       };
 
       return (
@@ -692,7 +698,7 @@ function EveryGolfApp() {
                 매일매일 100% 무료 경품 추첨!<br/>원하는 상품에 즉시 응모하세요
               </h2>
               <p className="text-[10.5px] text-indigo-100/90 font-medium mt-1">
-                매일 지급되는 무료 응모권으로 행운의 주인공이 되어보세요.
+                매일 지급되는 무료 응모볼로 행운의 주인공이 되어보세요.
               </p>
             </div>
 
@@ -700,12 +706,12 @@ function EveryGolfApp() {
             <div className="px-5 mt-4">
               <div className="bg-white p-4.5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-500 font-bold mb-0.5">나의 응모 가능 횟수</p>
+                  <p className="text-xs text-gray-500 font-bold mb-0.5">나의 응모 가능 볼</p>
                   <p className="text-sm text-gray-800 font-black">에브리골프 가입 회원 혜택</p>
                 </div>
-                <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl">
-                  <span className="text-xs font-black text-indigo-600">보유 응모권</span>
-                  <span className="text-lg font-black text-indigo-700">{tickets}매</span>
+                <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-4 py-2 rounded-xl">
+                  <span className="text-xs font-black text-amber-600">보유 응모볼</span>
+                  <span className="text-lg font-black text-amber-700">{userBalls}볼</span>
                 </div>
               </div>
             </div>
@@ -762,9 +768,14 @@ function EveryGolfApp() {
                       
                       {/* 경품 텍스트 */}
                       <div className="flex-1 min-w-0">
-                        <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
-                          {gift.brand}
-                        </span>
+                        <div className="flex gap-1.5 items-center flex-wrap">
+                          <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
+                            {gift.brand}
+                          </span>
+                          <span className="text-[9.5px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100 flex items-center gap-0.5">
+                            🟡 {getGiftCost(gift.name)}볼 사용
+                          </span>
+                        </div>
                         <h4 className="font-black text-gray-900 text-sm mt-1 leading-snug truncate">
                           {gift.name}
                         </h4>
@@ -802,7 +813,7 @@ function EveryGolfApp() {
             <div className="px-5 mt-6">
               <div className="bg-gray-100 p-4 rounded-xl text-[10.5px] text-gray-500 font-medium space-y-1">
                 <p className="font-extrabold text-gray-700 mb-1">■ 데일리 드로우 유의사항</p>
-                <p>• 데일리 드로우 응모권은 회원 등급 및 이벤트 미션 달성에 따라 차등 지급됩니다.</p>
+                <p>• 데일리 드로우 응모볼은 회원 등급 및 이벤트 미션 달성에 따라 차등 지급됩니다.</p>
                 <p>• 매일 자정에 당첨자 개별 알림 및 푸시 메시지가 발송되며 마이페이지에서 당첨을 확인하실 수 있습니다.</p>
                 <p>• 부정한 방법으로 응모 시 당첨이 취소될 수 있습니다.</p>
               </div>
@@ -949,6 +960,7 @@ function EveryGolfApp() {
     switch (payload.title) {
       case '월간 BEST 스크린 골프 대회':
       case '무료 응모권':
+      case '무료 응모볼':
       case '할인 쿠폰':
         return (
           <div className="w-full h-full bg-white flex flex-col">
@@ -2121,11 +2133,16 @@ function EveryGolfApp() {
         showToast('개인정보 제공에 동의해 주세요.');
         return;
       }
-      showToast('사연 및 라운딩 신청이 완료되었습니다.');
+      if (userBalls < 300) {
+        showToast('보유하신 응모볼이 부족합니다. (300볼 필요)');
+        return;
+      }
+      setUserBalls(prev => prev - 300);
+      showToast('300볼이 사용되어 신청이 접수되었습니다. ⚡');
       setTimeout(() => {
         pushView('success', { 
           message: '라운딩 신청 완료!', 
-          subMessage: `${data.name} 프로암 라운딩 신청과 함께 작성하신 정성스러운 사연이 제출되었습니다. 인플루언서 매칭 시 작성하신 연락처(${phone})로 개별 안내드리겠습니다.` 
+          subMessage: `${data.name} 프로암 라운딩 신청과 함께 작성하신 정성스러운 사연이 제출되었습니다. 응모 신청으로 300볼이 차감되었습니다. 인플루언서 매칭 시 작성하신 연락처(${phone})로 개별 안내드리겠습니다.` 
         });
       }, 500);
     };
@@ -2147,7 +2164,10 @@ function EveryGolfApp() {
           <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-green-950 rounded-2xl p-4 text-white shadow-md relative overflow-hidden flex items-center gap-4">
             <img src={data.avatar} className="w-16 h-16 rounded-full border-2 border-white object-cover shadow-sm bg-white shrink-0" />
             <div className="z-10">
-              <span className="text-[9px] bg-green-500 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider">신청 대상</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] bg-green-500 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider">신청 대상</span>
+                <span className="text-[9px] bg-amber-500 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider">🟡 300볼 사용</span>
+              </div>
               <h2 className="text-base font-bold mt-1 leading-tight">{data.name} 프로</h2>
               <p className="text-[11px] text-gray-300 font-medium truncate max-w-[200px] mt-0.5">{data.schedule.location}</p>
             </div>
@@ -2410,7 +2430,7 @@ function EveryGolfApp() {
         setTimeout(() => {
           pushView('success', { 
             message: '웰컴 혜택 지급 완료!', 
-            subMessage: '신규 가입 혜택으로 무료 라운딩 응모권 1매와 첫 부킹 1만원 할인 쿠폰이 발급되었습니다. 마이페이지에서 확인해보세요!' 
+            subMessage: '신규 가입 혜택으로 무료 응모볼 1,000볼과 첫 부킹 1만원 할인 쿠폰이 발급되었습니다. 마이페이지에서 확인해보세요!' 
           });
         }, 300);
       }, 1500);
@@ -2858,7 +2878,7 @@ function EveryGolfApp() {
                     매일매일 쏟아지는 골프 경품!<br/>거리측정기 & 프리미엄 골프공
                   </h3>
                   <p className="text-[10.5px] text-indigo-100 font-bold mt-2.5 opacity-90">
-                    보유하신 응모권으로 매일 즉시 응모하세요!
+                    보유하신 응모볼로 매일 즉시 응모하세요!
                   </p>
                 </div>
                 
@@ -5218,8 +5238,8 @@ const MyPageTabView = () => {
             {/* 2분할 카드 (무료 응모권 & 받은 후기) */}
             <div className="flex gap-3 w-full">
               <div onClick={() => pushView('empty', { type: 'drawEvent', title: '데일리 경품 응모' })} className="flex-1 min-w-0 bg-gray-50 border border-gray-100 p-4 rounded-2xl text-center cursor-pointer hover:bg-white hover:border-green-300 hover:shadow-md transition-all">
-                <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1.5 truncate">무료 응모권</p>
-                <p className="font-black text-xl sm:text-2xl text-green-600 truncate">3<span className="text-xs sm:text-sm font-medium text-gray-500 ml-0.5">매</span></p>
+                <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1.5 truncate">보유 응모볼</p>
+                <p className="font-black text-xl sm:text-2xl text-green-600 truncate">{userBalls}<span className="text-xs sm:text-sm font-medium text-gray-500 ml-0.5">볼</span></p>
               </div>
               <div onClick={() => pushView('empty', { type: 'default', title: '매너 평가 후기' })} className="flex-1 min-w-0 bg-gray-50 border border-gray-100 p-4 rounded-2xl text-center cursor-pointer hover:bg-white hover:border-green-300 hover:shadow-md transition-all">
                 <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1.5 truncate">받은 매너 후기</p>
