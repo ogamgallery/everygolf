@@ -187,6 +187,25 @@ function EveryGolfApp() {
       return summary;
     };
 
+    const resetFilters = () => {
+      setSelectedTime('전체 시간');
+      setSelectedRegion('전체 지역');
+      setSearchQuery('');
+      setSelectedDate('05/28 (목)');
+      setSelectedCaddieType('전체');
+      setSelectedJoinFilter('전체');
+
+      
+      setSortBy('추천순');
+      setSortOrder('asc');
+      setSelectedFeatures([]);
+      setSelectedMinPlayers('전체');
+      setGroupByGolfCourse(false);
+      setExpandedGroup(null);
+      showToast('필터가 초기화되었습니다.');
+    };
+
+
     // 화면 전환 시 부모 스크롤 최상단 리셋
     useEffect(() => {
       if (scrollRef.current) {
@@ -3269,23 +3288,6 @@ function EveryGolfApp() {
 
 
 
-    const resetFilters = () => {
-      setSelectedTime('전체 시간');
-      setSelectedRegion('전체 지역');
-      setSearchQuery('');
-      setSelectedDate('05/28 (목)');
-      setSelectedCaddieType('전체');
-      setSelectedJoinFilter('전체');
-
-      
-      setSortBy('추천순');
-      setSortOrder('asc');
-      setSelectedFeatures([]);
-      setSelectedMinPlayers('전체');
-      setGroupByGolfCourse(false);
-      setExpandedGroup(null);
-      showToast('필터가 초기화되었습니다.');
-    };
 
 
     return (
@@ -4241,219 +4243,6 @@ function EveryGolfApp() {
 
 
 
-        {/* 상세 필터 통합 바텀 시트 */}
-        <AnimatePresence>
-          {showDetailFilterSection && (
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-200"
-              onClick={() => setShowDetailFilterSection(false)}
-            >
-              <motion.div 
-                initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-                className="w-full bg-white rounded-t-[30px] p-6 shadow-2xl max-h-[85vh] flex flex-col"
-                onClick={e => e.stopPropagation()}
-              >
-                <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5 shrink-0"></div>
-                
-                <div className="flex justify-between items-center mb-5 shrink-0">
-                  <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
-                    <SlidersHorizontal size={18} className="text-green-600" />
-                    <span>상세 검색 필터</span>
-                  </h3>
-                  <button onClick={() => setShowDetailFilterSection(false)} className="p-1 text-gray-400 hover:text-gray-650">
-                    <X size={18} />
-                  </button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto space-y-5 pr-1 hide-scrollbar">
-                  {/* 1. 지역 선택 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">지역 선택</span>
-                    <div className="grid grid-cols-3 gap-2">
-                      {regionOptions.map(opt => {
-                        const isSel = selectedRegion === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedRegion(opt);
-                              showToast(`지역: ${opt} 선택`);
-                            }}
-                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
-                              isSel 
-                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 2. 시간대 선택 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">시간대 선택</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {timeOptions.map(opt => {
-                        const isSel = selectedTime === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedTime(opt);
-                              showToast(`시간: ${opt} 선택`);
-                            }}
-                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
-                              isSel 
-                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 3. 캐디 형태 선택 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">캐디 형태 선택</span>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['전체', '노캐디', '일반캐디', '드라이빙캐디', '인턴캐디'].map(opt => {
-                        const isSel = selectedCaddieType === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedCaddieType(opt);
-                              showToast(`캐디: ${opt} 선택`);
-                            }}
-                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
-                              isSel 
-                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 4. 플레이 인원 설정 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
-                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
-                      {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
-                        const isSelected = selectedMinPlayers === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => {
-                              setSelectedMinPlayers(opt);
-                              showToast(`인원: ${opt} 선택`);
-                            }}
-                            className={`flex-1 py-2 rounded-lg text-[10.5px] font-black transition-all ${
-                              isSelected 
-                                ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
-                                : 'text-gray-500 hover:text-gray-900 border border-transparent'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 5. 추가 조건 선택 (식사포함, 양잔디 등) */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">추가 혜택/조건 선택 (중복 가능)</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { icon: 'Award', label: '식사포함' },
-                        { icon: 'Sparkles', label: '양잔디' }
-                      ].map(feat => {
-                        const isSelected = selectedFeatures.includes(feat.label);
-                        const IconComponent = feat.icon === 'Award' ? Award : Sparkles;
-                        return (
-                          <button
-                            key={feat.label}
-                            type="button"
-                            onClick={() => {
-                              setSelectedFeatures(prev => 
-                                prev.includes(feat.label) 
-                                  ? prev.filter(f => f !== feat.label) 
-                                  : [...prev, feat.label]
-                              );
-                              showToast(`옵션: ${feat.label} ${!isSelected ? '선택' : '해제'}`);
-                            }}
-                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border text-xs font-black transition-all ${
-                              isSelected 
-                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                : 'bg-white text-gray-655 border-gray-100 hover:bg-gray-50'
-                            }`}
-                          >
-                            <IconComponent size={13} className={isSelected ? 'text-white' : 'text-gray-400'} />
-                            <span>{feat.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 6. 골프장명 직접 검색 */}
-                  <div className="space-y-2 text-left">
-                    <span className="text-xs font-bold text-gray-400">골프장명 직접 검색</span>
-                    <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 flex items-center justify-between text-sm text-gray-800 focus-within:border-gray-300">
-                      <input 
-                        type="text" 
-                        placeholder="골프장 이름 입력 (예: 스카이72)" 
-                        value={searchQuery} 
-                        onChange={e => setSearchQuery(e.target.value)} 
-                        className="bg-transparent border-none outline-none w-full font-bold text-gray-850 placeholder:text-gray-400 min-w-0" 
-                      />
-                      <Search size={16} className="text-gray-450 shrink-0"/>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 하단 액션 버튼 그룹 */}
-                <div className="pt-4 border-t border-gray-100 flex gap-2.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      resetFilters();
-                      setShowDetailFilterSection(false);
-                    }}
-                    className="flex-1 py-3.5 bg-gray-50 hover:bg-gray-100 active:scale-[0.98] text-gray-600 font-extrabold text-sm rounded-xl transition-all"
-                  >
-                    필터 초기화
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowDetailFilterSection(false);
-                      showToast('상세 필터가 적용되었습니다.');
-                    }}
-                    className="flex-[2] py-3.5 bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white font-black text-sm rounded-xl transition-all shadow-md shadow-green-150"
-                  >
-                    검색 결과 적용
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* 티 상세 정보 바텀 시트 (골팡 스타일) */}
         <AnimatePresence>
@@ -5739,6 +5528,219 @@ const MyPageTabView = () => {
       </AnimatePresence>
       <FilterSelectorModal />
       <SaveFavoriteModal />
+        {/* 상세 필터 통합 바텀 시트 */}
+        <AnimatePresence>
+          {showDetailFilterSection && (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-200"
+              onClick={() => setShowDetailFilterSection(false)}
+            >
+              <motion.div 
+                initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+                className="w-full bg-white rounded-t-[30px] p-6 shadow-2xl max-h-[85vh] flex flex-col"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5 shrink-0"></div>
+                
+                <div className="flex justify-between items-center mb-5 shrink-0">
+                  <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
+                    <SlidersHorizontal size={18} className="text-green-600" />
+                    <span>상세 검색 필터</span>
+                  </h3>
+                  <button onClick={() => setShowDetailFilterSection(false)} className="p-1 text-gray-400 hover:text-gray-650">
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto space-y-5 pr-1 hide-scrollbar">
+                  {/* 1. 지역 선택 */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-xs font-bold text-gray-400">지역 선택</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      {regionOptions.map(opt => {
+                        const isSel = selectedRegion === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setSelectedRegion(opt);
+                              showToast(`지역: ${opt} 선택`);
+                            }}
+                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
+                              isSel 
+                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
+                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 2. 시간대 선택 */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-xs font-bold text-gray-400">시간대 선택</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {timeOptions.map(opt => {
+                        const isSel = selectedTime === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setSelectedTime(opt);
+                              showToast(`시간: ${opt} 선택`);
+                            }}
+                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
+                              isSel 
+                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
+                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. 캐디 형태 선택 */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-xs font-bold text-gray-400">캐디 형태 선택</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['전체', '노캐디', '일반캐디', '드라이빙캐디', '인턴캐디'].map(opt => {
+                        const isSel = selectedCaddieType === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setSelectedCaddieType(opt);
+                              showToast(`캐디: ${opt} 선택`);
+                            }}
+                            className={`py-2.5 rounded-xl border text-xs font-black text-center transition-all ${
+                              isSel 
+                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
+                                : 'bg-gray-50 text-gray-655 border-gray-100 hover:bg-gray-100'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. 플레이 인원 설정 */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
+                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
+                      {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
+                        const isSelected = selectedMinPlayers === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setSelectedMinPlayers(opt);
+                              showToast(`인원: ${opt} 선택`);
+                            }}
+                            className={`flex-1 py-2 rounded-lg text-[10.5px] font-black transition-all ${
+                              isSelected 
+                                ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
+                                : 'text-gray-500 hover:text-gray-900 border border-transparent'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 5. 추가 조건 선택 (식사포함, 양잔디 등) */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-xs font-bold text-gray-400">추가 혜택/조건 선택 (중복 가능)</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { icon: 'Award', label: '식사포함' },
+                        { icon: 'Sparkles', label: '양잔디' }
+                      ].map(feat => {
+                        const isSelected = selectedFeatures.includes(feat.label);
+                        const IconComponent = feat.icon === 'Award' ? Award : Sparkles;
+                        return (
+                          <button
+                            key={feat.label}
+                            type="button"
+                            onClick={() => {
+                              setSelectedFeatures(prev => 
+                                prev.includes(feat.label) 
+                                  ? prev.filter(f => f !== feat.label) 
+                                  : [...prev, feat.label]
+                              );
+                              showToast(`옵션: ${feat.label} ${!isSelected ? '선택' : '해제'}`);
+                            }}
+                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border text-xs font-black transition-all ${
+                              isSelected 
+                                ? 'bg-green-600 text-white border-green-600 shadow-sm' 
+                                : 'bg-white text-gray-655 border-gray-100 hover:bg-gray-50'
+                            }`}
+                          >
+                            <IconComponent size={13} className={isSelected ? 'text-white' : 'text-gray-400'} />
+                            <span>{feat.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 6. 골프장명 직접 검색 */}
+                  <div className="space-y-2 text-left">
+                    <span className="text-xs font-bold text-gray-400">골프장명 직접 검색</span>
+                    <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 flex items-center justify-between text-sm text-gray-800 focus-within:border-gray-300">
+                      <input 
+                        type="text" 
+                        placeholder="골프장 이름 입력 (예: 스카이72)" 
+                        value={searchQuery} 
+                        onChange={e => setSearchQuery(e.target.value)} 
+                        className="bg-transparent border-none outline-none w-full font-bold text-gray-850 placeholder:text-gray-400 min-w-0" 
+                      />
+                      <Search size={16} className="text-gray-450 shrink-0"/>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 하단 액션 버튼 그룹 */}
+                <div className="pt-4 border-t border-gray-100 flex gap-2.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetFilters();
+                      setShowDetailFilterSection(false);
+                    }}
+                    className="flex-1 py-3.5 bg-gray-50 hover:bg-gray-100 active:scale-[0.98] text-gray-600 font-extrabold text-sm rounded-xl transition-all"
+                  >
+                    필터 초기화
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowDetailFilterSection(false);
+                      showToast('상세 필터가 적용되었습니다.');
+                    }}
+                    className="flex-[2] py-3.5 bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white font-black text-sm rounded-xl transition-all shadow-md shadow-green-150"
+                  >
+                    검색 결과 적용
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         </>
       )}
     </div>
