@@ -5057,9 +5057,8 @@ function EveryGolfApp() {
   };
 
   const ChatTabView = () => {
-    const [subTab, setSubTab] = useState<'agent' | 'partner'>('agent');
-
-    const filteredRooms = chatRooms.filter(room => room.type === subTab);
+    // 에이전트 상담이 삭제되고 동반자 채팅방 목록만 고정 노출
+    const filteredRooms = chatRooms.filter(room => room.type === 'partner');
 
     return (
       <div className="pb-32 bg-gray-50 min-h-full flex flex-col w-full overflow-hidden animate-in fade-in duration-150">
@@ -5068,25 +5067,7 @@ function EveryGolfApp() {
           <div className="px-5 pt-12 pb-4">
             <h2 className="text-2xl font-black text-gray-900 tracking-tight">메시지</h2>
           </div>
-          {/* Sub Tabs */}
-          <div className="flex px-5 gap-0 border-t border-gray-50">
-            <button 
-              onClick={() => setSubTab('agent')} 
-              className={`flex-1 py-3 text-sm font-bold border-b-[3px] transition-all relative text-center ${
-                subTab === 'agent' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-400'
-              }`}
-            >
-              에이전트 상담
-            </button>
-            <button 
-              onClick={() => setSubTab('partner')} 
-              className={`flex-1 py-3 text-sm font-bold border-b-[3px] transition-all relative text-center ${
-                subTab === 'partner' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-400'
-              }`}
-            >
-              동반자 채팅
-            </button>
-          </div>
+
         </div>
 
         {/* Room List */}
