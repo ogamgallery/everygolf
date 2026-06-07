@@ -3909,11 +3909,11 @@ function EveryGolfApp() {
                     const isGroupExpanded = expandedGroup === group.name;
                     const isGroupLiked = likedGolfCourses.includes(group.name);
                     return (
-                      <div key={i} className="border-b border-gray-100 pb-1 text-left">
+                      <div key={i} className="bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_-3px_rgba(0,0,0,0.06)] mb-3 text-left overflow-hidden transition-all hover:border-gray-200">
                         {/* 골프장 그룹 헤더 */}
                         <div 
                           onClick={() => setExpandedGroup(prev => prev === group.name ? null : group.name)}
-                          className="flex justify-between items-center py-3.5 px-1 hover:bg-gray-50/50 cursor-pointer transition-all"
+                          className="flex justify-between items-center py-3.5 px-4 hover:bg-gray-50/50 cursor-pointer transition-all"
                         >
                           {/* 좌측: 골프장명 + 거리 */}
                           <div className="flex flex-col text-left">
@@ -3967,7 +3967,7 @@ function EveryGolfApp() {
 
                         {/* 아코디언 확장 시 개별 티타임 목록 */}
                         {isGroupExpanded && (
-                          <div className="pl-4 pr-1 py-2 bg-gray-50/50 rounded-xl mt-1 space-y-2 border border-gray-100/50 animate-in fade-in slide-in-from-top-1 duration-200">
+                          <div className="px-4 pb-4 bg-gray-50/30 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200 border-t border-gray-50 pt-3">
                             {group.items.map((item, idx) => {
                               const itemKey = bookingMode === '부킹' ? `booking-${item.id}` : `join-${item.id}`;
                               const isExpanded = expandedItemId === itemKey;
@@ -3986,7 +3986,7 @@ function EveryGolfApp() {
                                   className={`bg-white transition-all cursor-pointer flex flex-col ${
                                     isExpanded 
                                       ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
-                                      : 'p-3 border-b border-gray-100/70 rounded-lg hover:bg-gray-100/50'
+                                      : 'p-3 border border-gray-100 rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.03)] hover:border-gray-200'
                                   }`}
                                 >
                                   <div className="flex justify-between items-center w-full py-0.5 text-left">
@@ -4054,7 +4054,7 @@ function EveryGolfApp() {
                           className={`bg-white transition-all cursor-pointer flex flex-col ${
                             isExpanded 
                               ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
-                              : 'p-3.5 border-b border-gray-100 rounded-none shadow-none hover:bg-gray-50/50'
+                              : 'p-3.5 border border-gray-100 rounded-2xl shadow-[0_2px_8px_-3px_rgba(0,0,0,0.06)] hover:border-gray-200 hover:shadow-[0_4px_12px_-3px_rgba(0,0,0,0.08)] mb-3'
                           }`}
                         >
                           {(() => {
@@ -4131,7 +4131,7 @@ function EveryGolfApp() {
                           className={`bg-white transition-all cursor-pointer flex flex-col ${
                             isExpanded 
                               ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
-                              : 'p-3.5 border-b border-gray-100 rounded-none shadow-none hover:bg-gray-50/50'
+                              : 'p-3.5 border border-gray-100 rounded-2xl shadow-[0_2px_8px_-3px_rgba(0,0,0,0.06)] hover:border-gray-200 hover:shadow-[0_4px_12px_-3px_rgba(0,0,0,0.08)] mb-3'
                           }`}
                         >
                           {(() => {
@@ -4682,7 +4682,7 @@ function EveryGolfApp() {
                    className={"bg-white transition-all cursor-pointer flex flex-col " + (
                      isExpanded 
                        ? 'p-4 border border-green-300 ring-1 ring-green-300 shadow-md rounded-2xl my-2' 
-                       : 'p-3.5 border-b border-gray-100 rounded-none shadow-none hover:bg-gray-50/50'
+                       : 'p-3.5 border border-gray-100 rounded-2xl shadow-[0_2px_8px_-3px_rgba(0,0,0,0.06)] hover:border-gray-200 hover:shadow-[0_4px_12px_-3px_rgba(0,0,0,0.08)] mb-3'
                    )}
                  >
                    <div className="flex justify-between items-center w-full py-1 text-left">
