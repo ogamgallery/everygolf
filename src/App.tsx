@@ -53,7 +53,7 @@ interface UserProfile {
 }
 
 interface PartnerFilters {
-  cost: string;
+  cost: number;
   gender: string;
   age: string;
   region: string;
@@ -76,7 +76,7 @@ function EveryGolfApp() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const [partnerFilters, setPartnerFilters] = useState<PartnerFilters>({
-    cost: '전체',
+    cost: 350000,
     gender: '전체',
     age: '전체',
     region: '전체',
@@ -87,12 +87,12 @@ function EveryGolfApp() {
     {
       id: 'fav-1',
       name: '⛳ 인천 여성 1/N',
-      filters: { cost: '1/N 결제', gender: '여성', age: '전체', region: '인천', smoke: '전체' }
+      filters: { cost: 250000, gender: '여성', age: '전체', region: '인천', smoke: '전체' }
     },
     {
       id: 'fav-2',
       name: '🏌️‍♂️ 경기 30대 명랑',
-      filters: { cost: '전체', gender: '무관', age: '30대', region: '경기', smoke: '전체' }
+      filters: { cost: 350000, gender: '무관', age: '30대', region: '경기', smoke: '전체' }
     }
   ]);
   
@@ -2600,27 +2600,59 @@ function EveryGolfApp() {
                   <h4 className="text-xs font-black text-gray-400 uppercase tracking-wider block">
                     {group.label}
                   </h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {group.options.map((opt) => {
-                      const isSelected = partnerFilters[group.key as keyof PartnerFilters] === opt;
-                      return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => {
-                            setPartnerFilters(prev => ({ ...prev, [group.key as keyof PartnerFilters]: opt }));
-                          }}
-                          className={`px-3 py-2 rounded-xl font-bold text-[11px] border transition-all ${
-                            isSelected 
-                              ? 'border-green-600 bg-green-50 text-green-600 font-extrabold shadow-sm scale-[1.02]' 
-                              : 'border-gray-100 bg-gray-50/50 text-gray-500 hover:bg-gray-50'
-                          }`}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  
+                  {group.key === 'cost' ? (
+                    <div className="space-y-3 pt-1 w-full bg-gray-50/50 border border-gray-100 rounded-2xl p-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-gray-500">라운딩 비용 (금액 한도)</span>
+                        <span className="text-sm font-black text-green-600">
+                          {partnerFilters.cost >= 300000 ? '30만원 이상 (전체)' : `${(partnerFilters.cost / 10000).toLocaleString()}만원 이하`}
+                        </span>
+                      </div>
+                      <input 
+                        type="range"
+                        min="50000"
+                        max="300000"
+                        step="10000"
+                        value={partnerFilters.cost > 300000 ? 300000 : partnerFilters.cost}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          setPartnerFilters(prev => ({
+                            ...prev,
+                            cost: val === 300000 ? 350000 : val
+                          }));
+                        }}
+                        className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600 focus:outline-none"
+                      />
+                      <div className="flex justify-between text-[9px] text-gray-400 font-black px-0.5">
+                        <span>5만원</span>
+                        <span>15만원</span>
+                        <span>30만원+</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5">
+                      {group.options.map((opt) => {
+                        const isSelected = partnerFilters[group.key as keyof PartnerFilters] === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setPartnerFilters(prev => ({ ...prev, [group.key as keyof PartnerFilters]: opt }));
+                            }}
+                            className={`px-3 py-2 rounded-xl font-bold text-[11px] border transition-all ${
+                              isSelected 
+                                ? 'border-green-600 bg-green-50 text-green-600 font-extrabold shadow-sm scale-[1.02]' 
+                                : 'border-gray-100 bg-gray-50/50 text-gray-500 hover:bg-gray-50'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               ))}
 
@@ -2656,7 +2688,7 @@ function EveryGolfApp() {
                 type="button"
                 onClick={() => {
                   setPartnerFilters({
-                    cost: '전체',
+                    cost: 350000,
                     gender: '전체',
                     age: '전체',
                     region: '전체',
@@ -4489,8 +4521,12 @@ function EveryGolfApp() {
 
     const filteredPartners = partnerList.filter(partner => {
       // 1. 상세 조건 필터 (partnerFilters)
-      const pCost = (partner as any).cost;
-      if (partnerFilters.cost !== '전체' && pCost !== partnerFilters.cost) return false;
+      // 비용 필터링 (슬라이더 수치 비교)
+      if (partnerFilters.cost < 300000) {
+        const priceStr = partner.price ? partner.price.replace(/,/g, '') : '0';
+        const partnerPrice = parseInt(priceStr, 10);
+        if (partnerPrice > partnerFilters.cost) return false;
+      }
       if (partnerFilters.gender !== '전체' && partner.gender !== partnerFilters.gender) return false;
       if (!isAgeFilterMatch(partnerFilters.age, partner.age)) return false;
       if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
@@ -4686,7 +4722,7 @@ function EveryGolfApp() {
               type="button"
               onClick={() => {
                 setPartnerFilters({
-                  cost: '전체',
+                  cost: 350000,
                   gender: '전체',
                   age: '전체',
                   region: '전체',
