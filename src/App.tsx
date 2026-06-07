@@ -3930,7 +3930,7 @@ function EveryGolfApp() {
                 const uniqueCoursesCount = new Set(filteredItems.map(item => item.name.split(' ')[0])).size;
                 return (
                   <h3 className="font-black text-gray-900 text-base">
-                    실시간 티타임 목록 ({uniqueCoursesCount}개 골프장 · {filteredItems.length}개 티타임)
+                    {uniqueCoursesCount}개 골프장 · {filteredItems.length}개 티타임
                   </h3>
                 );
               })()}
