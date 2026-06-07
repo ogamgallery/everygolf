@@ -203,7 +203,7 @@ function EveryGolfApp() {
       setSortOrder('asc');
       setSelectedFeatures([]);
       setSelectedMinPlayers('전체');
-      setGroupByGolfCourse(true);
+      setGroupByGolfCourse(!isDiscountSpecialOnly);
       setExpandedGroup(null);
       showToast('필터가 초기화되었습니다.');
     };
@@ -320,6 +320,7 @@ function EveryGolfApp() {
           onClick={() => { 
             if (tab.id === 'booking') {
               setIsDiscountSpecialOnly(false);
+              setGroupByGolfCourse(true);
               if (activeTab === 'booking') {
                 setSelectedTime('전체 시간');
                 setSelectedRegion('전체 지역');
@@ -2923,6 +2924,7 @@ function EveryGolfApp() {
               setBookingMode('부킹'); 
               setSelectedDate('05/28 (목)'); 
               setIsDiscountSpecialOnly(true);
+              setGroupByGolfCourse(false);
               setShowSearchFilter(false);
               showToast('금일~익일 마감 임박 특가 티타임을 검색합니다. ⚡'); 
             } 
@@ -3328,6 +3330,7 @@ function EveryGolfApp() {
                 <button 
                   onClick={() => {
                     setIsDiscountSpecialOnly(false);
+                    setGroupByGolfCourse(true);
                     showToast('일반 부킹 모드로 전환되었습니다.');
                   }}
                   className="bg-white/20 hover:bg-white/35 active:scale-95 text-white font-extrabold text-[9px] px-2.5 py-1.5 rounded-lg transition-all shrink-0"
@@ -3354,6 +3357,7 @@ function EveryGolfApp() {
                     onClick={() => { 
                       setBookingMode('부킹'); 
                       setIsDiscountSpecialOnly(false); 
+                      setGroupByGolfCourse(true);
                       showToast('부킹 모드로 설정되었습니다.');
                     }}
                     className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
@@ -3369,6 +3373,7 @@ function EveryGolfApp() {
                     onClick={() => { 
                       setBookingMode('조인'); 
                       setIsDiscountSpecialOnly(false); 
+                      setGroupByGolfCourse(true);
                       showToast('조인 모드로 설정되었습니다.');
                     }}
                     className={`flex-1 py-2.5 text-xs font-black rounded-lg transition-all text-center ${
@@ -3660,6 +3665,7 @@ function EveryGolfApp() {
                     setBookingMode('부킹');
                     setIsDiscountSpecialOnly(true);
                     setSelectedDate('05/28 (목)');
+                    setGroupByGolfCourse(false);
                     setShowSearchFilter(false);
                     showToast('금일~익일 마감 임박 특가 티타임을 검색합니다. ⚡');
                   }}
@@ -3676,6 +3682,7 @@ function EveryGolfApp() {
                   onClick={() => {
                     setBookingMode('부킹');
                     setIsDiscountSpecialOnly(false);
+                    setGroupByGolfCourse(true);
                   }} 
                   className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-0.5 active:scale-95 ${
                     (bookingMode === '부킹' && !isDiscountSpecialOnly) 
@@ -3690,6 +3697,7 @@ function EveryGolfApp() {
                   onClick={() => {
                     setBookingMode('조인');
                     setIsDiscountSpecialOnly(false);
+                    setGroupByGolfCourse(true);
                   }} 
                   className={`pb-3 text-sm font-black border-b-[3px] transition-all flex items-center gap-0.5 active:scale-95 ${
                     (bookingMode === '조인') 
