@@ -3812,110 +3812,116 @@ function EveryGolfApp() {
           {/* 필터 및 정렬 바 (1열 & 2열 구조) */}
           <div className="bg-white border-b border-gray-100 px-4 py-3 space-y-2.5 overflow-visible">
             {/* 1열: 통합 필터 및 정렬/지도로보기 통합 라인 (2열 제거로 화면 극적 확보) */}
-            <div className="flex items-center gap-2 w-full select-none pb-0.5 overflow-visible">
-              {/* 1. 단일 통합 필터 버튼 */}
-              <button
-                type="button"
-                onClick={() => setShowDetailFilterSection(true)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-black transition-all shrink-0 shadow-sm active:scale-[0.97] ${
-                  hasActiveFilters()
-                    ? 'bg-green-600 text-white border-green-600 font-extrabold'
-                    : 'bg-gray-50 text-gray-700 border-gray-150 hover:bg-gray-100'
-                }`}
-              >
-                <SlidersHorizontal size={11} className={hasActiveFilters() ? 'text-white' : 'text-gray-500'} />
-                <span>필터 {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}</span>
-              </button>
-
-              {/* 2. 추천순 정렬 드롭다운 */}
-              <div className="relative z-35">
+            <div className="flex items-center justify-between w-full select-none pb-0.5 overflow-visible gap-2">
+              {/* 좌측 영역: 필터 버튼 & 적용된 필터 요약 칩 */}
+              <div className="flex items-center gap-1.5 shrink min-w-0 overflow-visible">
                 <button
                   type="button"
-                  onClick={() => setShowSortDropdown(prev => !prev)}
-                  className="flex items-center gap-1 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] inline-flex text-[11px]"
+                  onClick={() => setShowDetailFilterSection(true)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-black transition-all shrink-0 shadow-sm active:scale-[0.97] ${
+                    hasActiveFilters()
+                      ? 'bg-green-600 text-white border-green-600 font-extrabold'
+                      : 'bg-gray-50 text-gray-700 border-gray-150 hover:bg-gray-100'
+                  }`}
                 >
-                  <SlidersHorizontal size={11} className="text-gray-500" />
-                  <span>{sortBy}</span>
-                  {sortBy !== '추천순' && (
-                    sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600" /> : <ArrowUp size={11} className="text-green-600" />
-                  )}
-                  <ChevronDown size={11} className={`text-gray-400 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`} />
+                  <SlidersHorizontal size={11} className={hasActiveFilters() ? 'text-white' : 'text-gray-500'} />
+                  <span>필터 {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}</span>
                 </button>
 
-                <AnimatePresence>
-                  {showSortDropdown && (
-                    <>
-                      {/* 드롭다운 닫기용 백드롭 */}
-                      <div className="fixed inset-0 z-40" onClick={() => setShowSortDropdown(false)}></div>
-                      
-                      <motion.div
-                        initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute left-0 mt-1.5 w-28 bg-white border border-gray-150 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden"
-                      >
-                        {['추천순', '거리순', '시간순', '금액순'].map((sortOption) => {
-                          const isSelected = sortBy === sortOption;
-                          return (
-                            <button
-                              key={sortOption}
-                              type="button"
-                              onClick={() => {
-                                if (isSelected && sortOption !== '추천순') {
-                                  const nextOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-                                  setSortOrder(nextOrder);
-                                  showToast(`${sortOption} ${nextOrder === 'asc' ? '낮은순' : '높은순'} 적용`);
-                                } else {
-                                  setSortBy(sortOption as any);
-                                  setSortOrder('asc');
-                                  showToast(`${sortOption} 적용`);
-                                }
-                                setShowSortDropdown(false);
-                              }}
-                              className={`w-full text-left px-3.5 py-2 text-xs font-bold transition-all flex items-center justify-between ${
-                                isSelected 
-                                  ? 'bg-green-50 text-green-600 font-black' 
-                                  : 'text-gray-600 hover:bg-gray-50'
-                              }`}
-                            >
-                              <span>{sortOption}</span>
-                              {isSelected && sortOption !== '추천순' && (
-                                sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600 shrink-0" /> : <ArrowUp size={11} className="text-green-600 shrink-0" />
-                              )}
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
+                {/* 적용된 필터 조건 요약 칩 바 */}
+                {hasActiveFilters() && (
+                  <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar text-[9px] font-bold text-gray-400 shrink min-w-0 whitespace-nowrap py-0.5 max-w-[120px]">
+                    {getActiveFilterSummary().map((sumText, sIdx) => (
+                      <span key={sIdx} className="bg-green-50 text-green-600 px-2 py-0.5 rounded-md border border-green-100 shrink-0">
+                        {sumText}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* 3. 지도로 보기 */}
-              <button 
-                onClick={() => {
-                  pushView('map', { type: activeTab });
-                  showToast('지도 뷰로 이동합니다.');
-                }}
-                className="flex items-center gap-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] shrink-0 inline-flex text-[11px] animate-in fade-in slide-in-from-right-1 duration-150"
-              >
-                <Map size={11} className="text-green-600" />
-                <span>지도로보기</span>
-              </button>
+              {/* 우측 영역: 추천순 정렬 & 지도로보기 */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* 2. 추천순 정렬 드롭다운 */}
+                <div className="relative z-35">
+                  <button
+                    type="button"
+                    onClick={() => setShowSortDropdown(prev => !prev)}
+                    className="flex items-center gap-1 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] inline-flex text-[11px]"
+                  >
+                    <SlidersHorizontal size={11} className="text-gray-500" />
+                    <span>{sortBy}</span>
+                    {sortBy !== '추천순' && (
+                      sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600" /> : <ArrowUp size={11} className="text-green-600" />
+                    )}
+                    <ChevronDown size={11} className={`text-gray-400 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`} />
+                  </button>
 
-              {/* 우측: 적용된 필터 조건들을 요약 노출해주는 가로 스크롤링 칩 */}
-              {hasActiveFilters() && (
-                <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar text-[9px] font-bold text-gray-400 ml-auto shrink min-w-0 whitespace-nowrap py-0.5 max-w-[150px]">
-                  {getActiveFilterSummary().map((sumText, sIdx) => (
-                    <span key={sIdx} className="bg-green-50 text-green-600 px-2 py-0.5 rounded-md border border-green-100 shrink-0">
-                      {sumText}
-                    </span>
-                  ))}
+                  <AnimatePresence>
+                    {showSortDropdown && (
+                      <>
+                        {/* 드롭다운 닫기용 백드롭 */}
+                        <div className="fixed inset-0 z-40" onClick={() => setShowSortDropdown(false)}></div>
+                        
+                        <motion.div
+                          initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 mt-1.5 w-28 bg-white border border-gray-150 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden"
+                        >
+                          {['추천순', '거리순', '시간순', '금액순'].map((sortOption) => {
+                            const isSelected = sortBy === sortOption;
+                            return (
+                              <button
+                                key={sortOption}
+                                type="button"
+                                onClick={() => {
+                                  if (isSelected && sortOption !== '추천순') {
+                                    const nextOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                                    setSortOrder(nextOrder);
+                                    showToast(`${sortOption} ${nextOrder === 'asc' ? '낮은순' : '높은순'} 적용`);
+                                  } else {
+                                    setSortBy(sortOption as any);
+                                    setSortOrder('asc');
+                                    showToast(`${sortOption} 적용`);
+                                  }
+                                  setShowSortDropdown(false);
+                                }}
+                                className={`w-full text-left px-3.5 py-2 text-xs font-bold transition-all flex items-center justify-between ${
+                                  isSelected 
+                                    ? 'bg-green-50 text-green-600 font-black' 
+                                    : 'text-gray-600 hover:bg-gray-50'
+                                }`}
+                              >
+                                <span>{sortOption}</span>
+                                {isSelected && sortOption !== '추천순' && (
+                                  sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600 shrink-0" /> : <ArrowUp size={11} className="text-green-600 shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
                 </div>
-              )}
+
+                {/* 3. 지도로 보기 */}
+                <button 
+                  onClick={() => {
+                    pushView('map', { type: activeTab });
+                    showToast('지도 뷰로 이동합니다.');
+                  }}
+                  className="flex items-center gap-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] shrink-0 inline-flex text-[11px] animate-in fade-in slide-in-from-right-1 duration-150"
+                >
+                  <Map size={11} className="text-green-600" />
+                  <span>지도로보기</span>
+                </button>
+              </div>
             </div>
           </div>
+
 
           {/* 실시간 필터 매칭 결과 목록 (골팡 스타일 적용) */}
           <div className="bg-white px-5 py-4 shadow-sm min-h-[400px]">
