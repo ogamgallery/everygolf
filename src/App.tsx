@@ -3776,8 +3776,8 @@ function EveryGolfApp() {
 
           {/* 필터 및 정렬 바 (1열 & 2열 구조) */}
           <div className="bg-white border-b border-gray-100 px-4 py-3 space-y-2.5 overflow-visible">
-            {/* 1열: 필터기능 (지역, 골프장직접선택, 캐디유무, 그린피) */}
-            <div className="flex flex-nowrap items-center gap-1.5 overflow-visible w-full">
+            {/* 1열: 필터기능 (지역, 골프장직접선택, 캐디유무, 그린피 등 가로 스크롤 적용) */}
+            <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar w-full whitespace-nowrap select-none py-0.5">
               {/* 지역 필터 */}
               <div className="relative">
                 <button 
@@ -3938,9 +3938,61 @@ function EveryGolfApp() {
                   </div>
                 )}
               </div>
+              {/* 플레이 인원 순환 필터 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const players = ['전체', '2인이상', '3인이상', '4인이상'] as const;
+                  const nextIdx = (players.indexOf(selectedMinPlayers) + 1) % players.length;
+                  setSelectedMinPlayers(players[nextIdx]);
+                  showToast(`인원: ${players[nextIdx]} 적용`);
+                }}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-[11px] font-black transition-all shrink-0 ${
+                  selectedMinPlayers !== '전체'
+                    ? 'bg-green-600 text-white border-green-600 shadow-sm'
+                    : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                <span>인원: {selectedMinPlayers}</span>
+              </button>
 
+              {/* 식사포함 토글 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const hasMeal = selectedFeatures.includes('식사포함');
+                  setSelectedFeatures(prev => 
+                    hasMeal ? prev.filter(f => f !== '식사포함') : [...prev, '식사포함']
+                  );
+                  showToast(`식사포함 옵션 ${!hasMeal ? '적용' : '해제'}`);
+                }}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-[11px] font-black transition-all shrink-0 ${
+                  selectedFeatures.includes('식사포함')
+                    ? 'bg-green-600 text-white border-green-600 shadow-sm'
+                    : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                <span>🍱 식사포함</span>
+              </button>
 
-
+              {/* 양잔디 토글 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const hasGrass = selectedFeatures.includes('양잔디');
+                  setSelectedFeatures(prev => 
+                    hasGrass ? prev.filter(f => f !== '양잔디') : [...prev, '양잔디']
+                  );
+                  showToast(`양잔디 옵션 ${!hasGrass ? '적용' : '해제'}`);
+                }}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-[11px] font-black transition-all shrink-0 ${
+                  selectedFeatures.includes('양잔디')
+                    ? 'bg-green-600 text-white border-green-600 shadow-sm'
+                    : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                <span>🌱 양잔디</span>
+              </button>
             </div>
 
             {/* 2열: 정렬 및 초기화 (좌측 골프장별보기 토글, 우측 정렬 칩들 및 초기화) */}
@@ -4041,82 +4093,6 @@ function EveryGolfApp() {
               </div>
             </div>
 
-            {/* 3열: 가로 드래그 필터 칩 바 */}
-            <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-2.5 px-5 border-t border-gray-50 bg-white select-none whitespace-nowrap">
-              {/* 1. 캐디 형태 순환 필터 칩 */}
-              <button
-                type="button"
-                onClick={() => {
-                  const caddies = ['전체', '노캐디', '일반캐디', '드라이빙캐디', '인턴캐디'];
-                  const nextIdx = (caddies.indexOf(selectedCaddieType) + 1) % caddies.length;
-                  setSelectedCaddieType(caddies[nextIdx]);
-                  showToast(`캐디: ${caddies[nextIdx]} 적용`);
-                }}
-                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
-                  selectedCaddieType !== '전체'
-                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
-                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
-                }`}
-              >
-                <span>🏌️‍♂️ 캐디: {selectedCaddieType}</span>
-              </button>
-
-              {/* 2. 플레이 인원 순환 필터 칩 */}
-              <button
-                type="button"
-                onClick={() => {
-                  const players = ['전체', '2인이상', '3인이상', '4인이상'] as const;
-                  const nextIdx = (players.indexOf(selectedMinPlayers) + 1) % players.length;
-                  setSelectedMinPlayers(players[nextIdx]);
-                  showToast(`인원: ${players[nextIdx]} 적용`);
-                }}
-                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
-                  selectedMinPlayers !== '전체'
-                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
-                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
-                }`}
-              >
-                <span>👥 인원: {selectedMinPlayers}</span>
-              </button>
-
-              {/* 3. 식사포함 토글 칩 */}
-              <button
-                type="button"
-                onClick={() => {
-                  const hasMeal = selectedFeatures.includes('식사포함');
-                  setSelectedFeatures(prev => 
-                    hasMeal ? prev.filter(f => f !== '식사포함') : [...prev, '식사포함']
-                  );
-                  showToast(`식사포함 옵션 ${!hasMeal ? '적용' : '해제'}`);
-                }}
-                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
-                  selectedFeatures.includes('식사포함')
-                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
-                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
-                }`}
-              >
-                <span>🍱 식사포함</span>
-              </button>
-
-              {/* 4. 양잔디 토글 칩 */}
-              <button
-                type="button"
-                onClick={() => {
-                  const hasGrass = selectedFeatures.includes('양잔디');
-                  setSelectedFeatures(prev => 
-                    hasGrass ? prev.filter(f => f !== '양잔디') : [...prev, '양잔디']
-                  );
-                  showToast(`양잔디 옵션 ${!hasGrass ? '적용' : '해제'}`);
-                }}
-                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
-                  selectedFeatures.includes('양잔디')
-                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
-                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
-                }`}
-              >
-                <span>🌱 양잔디</span>
-              </button>
-            </div>
           </div>
 
           {/* 실시간 필터 매칭 결과 목록 (골팡 스타일 적용) */}
