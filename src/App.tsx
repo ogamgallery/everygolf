@@ -95,10 +95,12 @@ function EveryGolfApp() {
       filters: { cost: 350000, gender: '무관', age: '30대', region: '경기', smoke: '전체' }
     }
   ]);
+  if (false as boolean) console.log(favoriteFilters);
   
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
   const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
   const [userBalls, setUserBalls] = useState(1000);
+  const dates = ['05/25 (월)', '05/26 (화)', '05/27 (수)', '05/28 (목)', '05/29 (금)', '05/30 (토)', '05/31 (일)', '06/01 (월)', '06/02 (화)', '06/03 (수)'];
 
   const [activeTab, setActiveTab] = useState('home');
 
@@ -3056,8 +3058,7 @@ function EveryGolfApp() {
 
 
 
-    // 달력 날짜 목록 (오늘 기준 7일 가로 스크롤용)
-    const dates = ['05/25 (월)', '05/26 (화)', '05/27 (수)', '05/28 (목)', '05/29 (금)', '05/30 (토)', '05/31 (일)', '06/01 (월)', '06/02 (화)', '06/03 (수)'];
+    // 달력 날짜 목록 (오늘 기준 7일 가로 스크롤용) - 참조 사용
 
 
 
@@ -4414,6 +4415,36 @@ function EveryGolfApp() {
   };
 
     const CommunityTabView = () => {
+      const hasActivePartnerFilters = () => {
+        return (
+          partnerFilters.cost < 300000 ||
+          partnerFilters.gender !== '전체' ||
+          partnerFilters.age !== '전체' ||
+          partnerFilters.region !== '전체' ||
+          partnerFilters.smoke !== '전체'
+        );
+      };
+
+      const getActivePartnerFilterCount = () => {
+        let count = 0;
+        if (partnerFilters.cost < 300000) count++;
+        if (partnerFilters.gender !== '전체') count++;
+        if (partnerFilters.age !== '전체') count++;
+        if (partnerFilters.region !== '전체') count++;
+        if (partnerFilters.smoke !== '전체') count++;
+        return count;
+      };
+
+      const getActivePartnerFilterSummary = () => {
+        const summary: string[] = [];
+        if (partnerFilters.cost < 300000) summary.push(`${partnerFilters.cost / 10000}만 이하`);
+        if (partnerFilters.gender !== '전체') summary.push(partnerFilters.gender);
+        if (partnerFilters.age !== '전체') summary.push(partnerFilters.age);
+        if (partnerFilters.region !== '전체') summary.push(partnerFilters.region);
+        if (partnerFilters.smoke !== '전체') summary.push(partnerFilters.smoke);
+        return summary;
+      };
+
       const handleAcceptApplicant = (partnerId: number, applicantId: number) => {
         setPartnerList(prev => prev.map(p => {
           if (p.id === partnerId) {
@@ -4540,6 +4571,20 @@ function EveryGolfApp() {
       if (selectedRegion && selectedRegion !== '전체' && selectedRegion !== '지역 전체' && selectedRegion !== '전체 지역' && selectedRegion !== '골프장 지역') {
         if (!isRegionFilterMatch(selectedRegion, partner.location)) return false;
       }
+      if (selectedTime && selectedTime !== '전체 시간') {
+        const timePart = partner.time || '';
+        const hourMatch = timePart.match(/(\d+):/);
+        if (hourMatch) {
+          const hour = parseInt(hourMatch[1], 10);
+          if (selectedTime.includes('오전') || selectedTime.includes('1부')) {
+            if (hour < 6 || hour >= 11) return false;
+          } else if (selectedTime.includes('오후') || selectedTime.includes('2부')) {
+            if (hour < 11 || hour >= 16) return false;
+          } else if (selectedTime.includes('야간') || selectedTime.includes('3부')) {
+            if (hour < 16) return false;
+          }
+        }
+      }
 
       return true;
     });
@@ -4550,192 +4595,136 @@ function EveryGolfApp() {
           <div className="px-5 pt-12 pb-4 flex justify-between items-center">
              <h2 className="text-2xl font-black text-gray-900 tracking-tight">나 홀로 조인</h2>
              <button 
-               onClick={() => {
-                 pushView('empty', { type: 'partnerWrite', title: '동반자 모집글 작성' });
-               }} 
-               className="text-gray-900 bg-gray-50 w-9 h-9 shrink-0 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white transition-colors shadow-sm"
-             >
-               <Plus size={20} />
-             </button>
+                onClick={() => {
+                  pushView('empty', { type: 'partnerWrite', title: '동반자 모집글 작성' });
+                }} 
+                className="text-gray-900 bg-gray-50 w-9 h-9 shrink-0 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white transition-colors shadow-sm"
+              >
+                <Plus size={20} />
+              </button>
           </div>
-        </div>
 
-        <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-3">
-
-          {/* 상단 간편 날짜/시간/지역 필터 바 (부킹/조인 화면의 요소들을 콤팩트한 3열 칩으로 정제) */}
-          <div className="grid grid-cols-3 gap-2 shrink-0 w-full">
-            {/* 1. 희망 날짜 */}
-            <div className="relative">
+          {/* 가로 스크롤 캘린더 칩 (빠른 날짜 변경) */}
+          <div className="bg-white border-b border-gray-100 relative overflow-visible">
+            <div className="flex items-center overflow-x-auto hide-scrollbar px-2 py-1.5 w-full">
               <button 
-                type="button"
                 onClick={() => {
                   setShowCalendarModal(prev => !prev);
                   setShowTimeFilter(false);
                   setShowRegionFilter(false);
                 }}
-                className="w-full bg-white border border-gray-100/80 rounded-xl px-2 py-1.5 flex items-center justify-between text-[10.5px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                className="min-w-[50px] h-[52px] flex items-center justify-center bg-white border border-gray-100 rounded-xl mx-0.5 text-gray-600 hover:bg-gray-50 shrink-0"
               >
-                <span className="flex items-center gap-1 truncate">
-                  <Calendar size={9.5} className="text-green-600 shrink-0"/>
-                  {selectedDate}
-                </span>
-                <ChevronDown size={8.5} className="text-gray-400 shrink-0"/>
+                <Calendar size={18} />
               </button>
-            </div>
-
-            {/* 2. 시간대 */}
-            <div className="relative">
-              <button 
-                type="button"
-                onClick={() => {
-                  setShowTimeFilter(prev => !prev);
-                  setShowCalendarModal(false);
-                  setShowRegionFilter(false);
-                }}
-                className="w-full bg-white border border-gray-100/80 rounded-xl px-2 py-1.5 flex items-center justify-between text-[10.5px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-              >
-                <span className="flex items-center gap-1 truncate">
-                  <Clock size={9.5} className="text-green-600 shrink-0"/>
-                  {selectedTime}
-                </span>
-                <ChevronDown size={8.5} className="text-gray-400 shrink-0"/>
-              </button>
-              
-              {/* 시간대 드롭다운 */}
-              {showTimeFilter && (
-                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-100 rounded-xl shadow-2xl z-30 py-1 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
-                  {timeOptions.map(opt => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => {
-                        setSelectedTime(opt);
-                        setShowTimeFilter(false);
-                        showToast(`시간대: ${opt} 적용`);
-                      }}
-                      className={`w-full text-left px-3 py-2 text-[10px] font-bold transition-colors flex items-center justify-between ${
-                        selectedTime === opt 
-                          ? 'bg-green-50 text-green-600' 
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      <span>{opt}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* 3. 골프장 지역 */}
-            <div className="relative">
-              <button 
-                type="button"
-                onClick={() => {
-                  setShowRegionFilter(prev => !prev);
-                  setShowCalendarModal(false);
-                  setShowTimeFilter(false);
-                }}
-                className="w-full bg-white border border-gray-100/80 rounded-xl px-2 py-1.5 flex items-center justify-between text-[10.5px] font-black text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-              >
-                <span className="flex items-center gap-1 truncate">
-                  <MapPin size={9.5} className="text-green-600 shrink-0"/>
-                  {selectedRegion}
-                </span>
-                <ChevronDown size={8.5} className="text-gray-400 shrink-0"/>
-              </button>
-
-              {/* 지역 드롭다운 */}
-              {showRegionFilter && (
-                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-100 rounded-xl shadow-2xl z-30 py-1 overflow-hidden max-h-48 overflow-y-auto hide-scrollbar animate-in fade-in slide-in-from-top-1 duration-150">
-                  {regionOptions.map(opt => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => {
-                        setSelectedRegion(opt);
-                        setShowRegionFilter(false);
-                        showToast(`지역: ${opt} 적용`);
-                      }}
-                      className={`w-full text-left px-3 py-2 text-[10px] font-bold transition-colors flex items-center justify-between ${
-                        selectedRegion === opt 
-                          ? 'bg-green-50 text-green-600' 
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      <span>{opt}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-white px-3.5 py-2 rounded-2xl shadow-sm mb-1 border border-gray-100 shrink-0 w-full flex items-center justify-between gap-3 h-11.5">
-            {/* 1. 상세조건 필터 버튼 (좌측 고정) */}
-            <button
-              type="button"
-              onClick={() => setShowDetailedFilterModal(true)}
-              className="flex items-center gap-1 bg-green-500 hover:bg-green-600 active:scale-[0.95] text-black font-black px-2.5 py-1.5 rounded-lg text-[10px] shadow-sm shrink-0 transition-all"
-            >
-              <Filter size={11} className="shrink-0" />
-              <span>상세조건</span>
-            </button>
-
-            {/* 2. 세로 구분선 */}
-            <div className="h-4 w-[1px] bg-gray-100 shrink-0"></div>
-
-            {/* 3. 필터 즐겨찾기 칩 목록 (가운데 flex-1 가로 스크롤) */}
-            <div className="flex-1 flex gap-1.5 overflow-x-auto hide-scrollbar snap-x min-w-0 py-0.5 items-center">
-              {favoriteFilters.length === 0 ? (
-                <span className="text-[9px] text-gray-400 font-bold whitespace-nowrap">⭐ 즐겨찾기 없음</span>
-              ) : (
-                favoriteFilters.map((fav) => (
-                  <div 
-                    key={fav.id}
-                    onClick={() => {
-                      setPartnerFilters(fav.filters);
-                      showToast("즐겨찾기 '" + fav.name + "' 적용!");
-                    }}
-                    className="flex items-center gap-1 bg-amber-50/60 border border-amber-100/70 hover:bg-amber-100 rounded-lg px-2 py-0.5 text-[9.5px] font-bold text-amber-800 whitespace-nowrap cursor-pointer transition-all shrink-0 snap-start shadow-sm"
+              {dates.map((date: string) => {
+                const isSelected = selectedDate === date;
+                const isWeekend = date.includes('토') || date.includes('일');
+                return (
+                  <button 
+                    key={date} 
+                    onClick={() => setSelectedDate(date)}
+                    className={`h-[52px] flex flex-col items-center justify-center rounded-xl mx-0.5 transition-all min-w-[50px] shrink-0 ${
+                      isSelected ? 'bg-gray-900 text-white shadow-md' : 'bg-white hover:bg-gray-50 border border-gray-100'
+                    } ${isWeekend && !isSelected ? 'text-red-500' : 'text-gray-500'}`}
                   >
-                    <span>{fav.name}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setFavoriteFilters(prev => prev.filter(f => f.id !== fav.id));
-                        showToast("즐겨찾기 '" + fav.name + "'이 삭제되었습니다.");
-                      }}
-                      className="p-0.5 hover:bg-amber-250/70 rounded-full text-amber-600 transition-colors inline-flex items-center justify-center"
-                    >
-                      <X size={7.5} strokeWidth={4} />
-                    </button>
-                  </div>
-                ))
-              )}
+                    <span className="font-black leading-none text-[9.5px] font-medium mb-1">
+                      {date.split(' ')[0]}
+                    </span>
+                    <span className={`text-[11px] font-black leading-none ${isSelected ? 'text-white' : 'text-gray-900'} ${isWeekend && !isSelected ? 'text-red-500' : ''}`}>
+                      {date.split(' ')[1]}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-
-            {/* 4. 세로 구분선 */}
-            <div className="h-4 w-[1px] bg-gray-100 shrink-0"></div>
-
-            {/* 5. 초기화 버튼 (우측 고정) */}
-            <button 
-              type="button"
-              onClick={() => {
-                setPartnerFilters({
-                  cost: 350000,
-                  gender: '전체',
-                  age: '전체',
-                  region: '전체',
-                  smoke: '전체'
-                });
-                showToast('필터가 모두 초기화되었습니다.');
-              }} 
-              className="p-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 rounded-lg shrink-0 transition-colors inline-flex items-center justify-center shadow-sm"
-              title="필터 초기화"
-            >
-              <RotateCcw size={11} className="text-gray-600" />
-            </button>
           </div>
+
+          {/* 시간대 빠른 선택 칩 바 */}
+          <div className="bg-white px-4 py-2.5 flex flex-col gap-2 border-b border-gray-50 shrink-0">
+            <div className="flex items-center gap-2">
+              {[
+                { label: '전체', value: '전체 시간' },
+                { label: '오전', value: '오전' },
+                { label: '오후', value: '오후' },
+                { label: '야간', value: '야간' }
+              ].map(item => {
+                const isSelected = selectedTime === item.value || (item.value === '전체 시간' && selectedTime === '전체 시간') || (item.value === '오전' && selectedTime.includes('1부')) || (item.value === '오전' && selectedTime.includes('오전')) || (item.value === '오후' && selectedTime.includes('2부')) || (item.value === '오후' && selectedTime.includes('오후')) || (item.value === '야간' && (selectedTime.includes('3부') || selectedTime.includes('야간')));
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => {
+                      setSelectedTime(item.value);
+                      showToast(`시간대: ${item.label} 적용`);
+                    }}
+                    className={`flex-1 py-2.5 rounded-xl border text-xs font-black transition-all text-center ${
+                      isSelected
+                        ? 'bg-green-600 text-white border-green-600 shadow-sm'
+                        : 'bg-gray-50 text-gray-700 border-gray-100 hover:bg-gray-100'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 필터 및 정렬 요약 바 */}
+          <div className="bg-white border-b border-gray-100 px-4 py-3 overflow-visible">
+            <div className="flex items-center justify-between w-full select-none pb-0.5 overflow-visible gap-2">
+              {/* 좌측 영역: 필터 버튼 & 적용된 필터 요약 칩 */}
+              <div className="flex items-center gap-1.5 shrink min-w-0 overflow-visible">
+                <button
+                  type="button"
+                  onClick={() => setShowDetailedFilterModal(true)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-black transition-all shrink-0 shadow-sm active:scale-[0.97] ${
+                    hasActivePartnerFilters()
+                      ? 'bg-green-600 text-white border-green-600 font-extrabold'
+                      : 'bg-gray-50 text-gray-700 border-gray-150 hover:bg-gray-100'
+                  }`}
+                >
+                  <SlidersHorizontal size={11} className={hasActivePartnerFilters() ? 'text-white' : 'text-gray-500'} />
+                  <span>필터 {getActivePartnerFilterCount() > 0 && `(${getActivePartnerFilterCount()})`}</span>
+                </button>
+
+                {/* 적용된 필터 조건 요약 칩 바 */}
+                {hasActivePartnerFilters() && (
+                  <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar text-[9px] font-bold text-gray-400 shrink min-w-0 whitespace-nowrap py-0.5 max-w-[200px]">
+                    {getActivePartnerFilterSummary().map((sumText: string) => (
+                      <span key={sumText} className="bg-green-50 text-green-600 px-2 py-0.5 rounded-md border border-green-100 shrink-0">
+                        {sumText}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 우측 영역: 초기화 버튼 */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setPartnerFilters({
+                      cost: 350000,
+                      gender: '전체',
+                      age: '전체',
+                      region: '전체',
+                      smoke: '전체'
+                    });
+                    showToast('필터가 모두 초기화되었습니다.');
+                  }} 
+                  className="p-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 rounded-xl shrink-0 transition-colors inline-flex items-center justify-center shadow-sm h-8 w-8"
+                  title="필터 초기화"
+                >
+                  <RotateCcw size={11} className="text-gray-655" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-3">
           {filteredPartners.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
               <p className="text-gray-400 font-bold">매칭된 모집글이 없습니다.</p>
