@@ -144,6 +144,7 @@ function EveryGolfApp() {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+    const [selectedMinPlayers, setSelectedMinPlayers] = useState<'전체' | '2인이상' | '3인이상' | '4인이상'>('전체');
     const [groupByGolfCourse, setGroupByGolfCourse] = useState<boolean>(false);
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
     const [likedGolfCourses, setLikedGolfCourses] = useState<string[]>([]);
@@ -3051,10 +3052,29 @@ function EveryGolfApp() {
           } else if (selectedJoinFilter === '커플') {
             // 커플은 남녀무관(무관)이면서 2명 구함
             if (item.needed !== 2 || item.gender !== '무관') return false;
-          }
         }
 
-        return true;
+        // 1. 플레이 인원 필터링 (selectedMinPlayers)
+        if (selectedMinPlayers !== '전체') {
+          const neededNum = item.needed || (item.id % 3 === 0 ? 2 : item.id % 3 === 1 ? 3 : 4);
+          const minRequired = selectedMinPlayers === '2인이상' ? 2 : selectedMinPlayers === '3인이상' ? 3 : 4;
+          if (neededNum < minRequired) return false;
+        }
+
+        // 2. 추가 혜택/조건 필터링 (selectedFeatures)
+        if (selectedFeatures.length > 0) {
+          for (const feat of selectedFeatures) {
+            if (feat === '식사포함') {
+              if (item.id % 2 !== 0) return false;
+            }
+            if (feat === '양잔디') {
+              if (item.id % 3 !== 0) return false;
+            }
+          }
+        }
+      }
+
+      return true;
       });
 
       return [...filtered].sort((a, b) => {
@@ -3225,9 +3245,10 @@ function EveryGolfApp() {
       setSelectedJoinFilter('전체');
       setShowSearchQueryDropdown(false);
       setShowCaddieFilter(false);
-      setSortBy('시간순');
+      setSortBy('추천순');
       setSortOrder('asc');
       setSelectedFeatures([]);
+      setSelectedMinPlayers('전체');
       setGroupByGolfCourse(false);
       setExpandedGroup(null);
       showToast('필터가 초기화되었습니다.');
@@ -3488,13 +3509,38 @@ function EveryGolfApp() {
                     </div>
                   </div>
 
+                  {/* 플레이 인원 (단일 선택형) */}
+                  <div className="space-y-2 pt-2">
+                    <span className="text-xs font-bold text-gray-400">플레이 인원 설정</span>
+                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
+                      {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
+                        const isSelected = selectedMinPlayers === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setSelectedMinPlayers(opt);
+                              showToast(`인원: ${opt} 적용`);
+                            }}
+                            className={`flex-1 py-2 rounded-lg text-[10px] font-black transition-all ${
+                              isSelected 
+                                ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
+                                : 'text-gray-500 hover:text-gray-900 border border-transparent'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* 추가 필터 옵션 (아이콘 연계, 다중 선택형) */}
                   <div className="space-y-2 pt-2">
                     <span className="text-xs font-bold text-gray-400">추가 옵션 선택 (중복 가능)</span>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        { icon: Users, label: '2인이상플레이' },
-                        { icon: Users, label: '3인이상플레이' },
                         { icon: Award, label: '식사포함' },
                         { icon: Sparkles, label: '양잔디' }
                       ].map(feat => {
