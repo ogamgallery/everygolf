@@ -3,7 +3,7 @@ import {
   Home, Calendar, Users, User, Bell, Search, MapPin, 
   Clock, Sparkles, X, ChevronRight, MessageSquare, Heart, Share2, Filter, RotateCcw,
   Star, ChevronDown, Award, Plus, CheckCircle2, AlertCircle, AlertTriangle,
-  ChevronLeft, Send, MoreHorizontal, Minus, Crosshair,
+  ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
   Flag, UserPlus, CalendarCheck
 } from 'lucide-react';
@@ -2660,7 +2660,7 @@ function EveryGolfApp() {
                     gender: '전체',
                     age: '전체',
                     region: '전체',
-                    date: '전체'
+                    smoke: '전체'
                   });
                   showToast('필터 조건이 전체 초기화되었습니다.');
                 }}
@@ -4490,7 +4490,6 @@ function EveryGolfApp() {
     const filteredPartners = partnerList.filter(partner => {
       // 1. 상세 조건 필터 (partnerFilters)
       const pCost = (partner as any).cost;
-      const pDate = (partner as any).date;
       if (partnerFilters.cost !== '전체' && pCost !== partnerFilters.cost) return false;
       if (partnerFilters.gender !== '전체' && partner.gender !== partnerFilters.gender) return false;
       if (!isAgeFilterMatch(partnerFilters.age, partner.age)) return false;
@@ -4691,7 +4690,7 @@ function EveryGolfApp() {
                   gender: '전체',
                   age: '전체',
                   region: '전체',
-                  date: '전체'
+                  smoke: '전체'
                 });
                 showToast('필터가 모두 초기화되었습니다.');
               }} 
