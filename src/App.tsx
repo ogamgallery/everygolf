@@ -89,13 +89,15 @@ function EveryGolfApp() {
   // 홈 화면 캐러셀 자동 슬라이드 배너 상태 (5초 주기, 홈 탭 활성화 시에만 동작하도록 최적화)
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
   useEffect(() => {
-    if (activeTab !== 'home') return;
+    // 홈 탭이 활성화되어 있고, 다른 풀스크린 뷰가 위에 떠있지 않을 때만 배너 자동 롤링 진행
+    const isMainHomeActive = activeTab === 'home' && viewStack.length === 1;
+    if (!isMainHomeActive) return;
     
     const timer = setInterval(() => {
       setActiveBannerIndex(prev => (prev === 0 ? 1 : 0));
     }, 5000);
     return () => clearInterval(timer);
-  }, [activeTab]);
+  }, [activeTab, viewStack.length]);
 
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
   const [chatRooms, setChatRooms] = useState<any[]>(MOCK_CHAT_ROOMS);
