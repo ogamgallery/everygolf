@@ -5,7 +5,7 @@ import {
   Star, ChevronDown, Award, Plus, CheckCircle2, AlertCircle, AlertTriangle,
   ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
-  Flag, UserPlus, CalendarCheck
+  Flag, UserPlus, CalendarCheck, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
@@ -82,6 +82,127 @@ function EveryGolfApp() {
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
   const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
   const [userBalls, setUserBalls] = useState(1000);
+  const [showApplyTermsModal, setShowApplyTermsModal] = useState<boolean>(false);
+  const [applyingPartnerId, setApplyingPartnerId] = useState<number | null>(null);
+
+  const handleConfirmApply = () => {
+    if (applyingPartnerId === null) return;
+    
+    setPartnerList(prev => prev.map(p => {
+      if (p.id === applyingPartnerId) {
+        const alreadyApplied = p.applicants.some((a: any) => a.name === '나(본인)');
+        if (alreadyApplied) {
+          showToast('이미 신청하신 라운딩입니다.');
+          return p;
+        }
+
+        if (p.needed === 0) {
+          showToast('이미 모집이 마감된 라운딩입니다.');
+          return p;
+        }
+
+        const newApp = {
+          id: Date.now(),
+          name: '나(본인)',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
+          gender: userProfile?.gender || '남성',
+          age: userProfile ? `${Math.floor(userProfile.age / 10) * 10}대` : '30대',
+          handicap: userProfile?.handicap || 95,
+          experience: '구력 3년',
+          status: '참여 확정'
+        };
+
+        const updatedApplicants = [...p.applicants, newApp];
+        const nextNeeded = Math.max(0, (p.needed || 1) - 1);
+        const nextStatus = nextNeeded === 0 ? '마감' : p.status;
+
+        showToast('동반자 신청이 완료되어 "참여 확정"되었습니다! ⛳');
+        return {
+          ...p,
+          applicants: updatedApplicants,
+          needed: nextNeeded,
+          status: nextStatus
+        };
+      }
+      return p;
+    }));
+
+    setShowApplyTermsModal(false);
+    setApplyingPartnerId(null);
+  };
+
+  const renderApplyTermsModal = () => {
+    if (!showApplyTermsModal || applyingPartnerId === null) return null;
+    
+    return (
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-[9999] flex items-end justify-center" onClick={() => { setShowApplyTermsModal(false); setApplyingPartnerId(null); }}>
+        <motion.div 
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+          className="w-full bg-white rounded-t-[30px] p-6 pb-8 flex flex-col gap-5 border-t border-gray-150 max-h-[85%] overflow-y-auto shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+            <div className="flex flex-col text-left">
+              <h3 className="text-base font-black text-gray-900 flex items-center gap-1.5">
+                <FileText size={18} className="text-green-600" />
+                <span>라운딩 신청 약관 동의</span>
+              </h3>
+              <p className="text-[10.5px] text-gray-400 font-bold mt-0.5">원활한 조인을 위해 아래 약관에 동의해 주세요.</p>
+            </div>
+            <button 
+              onClick={() => { setShowApplyTermsModal(false); setApplyingPartnerId(null); }}
+              className="p-1.5 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-400 transition-colors"
+            >
+              <X size={15} />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3.5 text-left text-xs text-gray-700 font-bold">
+            <div className="bg-green-50/30 border border-green-150/20 p-4 rounded-2xl flex flex-col gap-3">
+              <div className="flex gap-2.5 items-start">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-700 text-[10px] font-black shrink-0 mt-0.5">1</span>
+                <p className="leading-relaxed text-gray-800 text-[11.5px]">
+                  <strong>신청 후 즉시 참여 확정:</strong> 본 조인은 신청하는 즉시 별도의 승인 대기 없이 <strong>"참여 확정"</strong>으로 등록됩니다.
+                </p>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-700 text-[10px] font-black shrink-0 mt-0.5">2</span>
+                <p className="leading-relaxed text-gray-800 text-[11.5px]">
+                  <strong>노쇼 및 임의 취소 제한:</strong> 매칭 확정 후 사전 협의 없는 무단 노쇼나 일방적인 취소 시, 서비스 이용 제한 조치가 적용될 수 있습니다.
+                </p>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-700 text-[10px] font-black shrink-0 mt-0.5">3</span>
+                <p className="leading-relaxed text-gray-800 text-[11.5px]">
+                  <strong>매너 플레이 준수:</strong> 안전하고 명랑한 라운딩을 위해 동반자 간의 에티켓을 존중하고 준수해 주시기 바랍니다.
+                </p>
+              </div>
+            </div>
+            <p className="text-[10px] text-gray-400 font-bold text-center mt-1">※ 동의하고 신청 시 위의 모든 항목에 동의하는 것으로 간주됩니다.</p>
+          </div>
+
+          <div className="flex gap-3">
+            <button 
+              onClick={() => { setShowApplyTermsModal(false); setApplyingPartnerId(null); }}
+              className="flex-1 py-3.5 bg-gray-55 hover:bg-gray-100 active:scale-[0.98] text-gray-500 rounded-xl font-extrabold text-[12.5px] transition-all"
+            >
+              취소
+            </button>
+            <button 
+              onClick={handleConfirmApply}
+              className="flex-[2] py-3.5 bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white rounded-xl font-black text-[12.5px] transition-all shadow-md shadow-green-150"
+            >
+              동의하고 신청하기
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  };
+
   const dates = ['05/25 (월)', '05/26 (화)', '05/27 (수)', '05/28 (목)', '05/29 (금)', '05/30 (토)', '05/31 (일)', '06/01 (월)', '06/02 (화)', '06/03 (수)'];
 
   const [activeTab, setActiveTab] = useState('home');
@@ -4364,42 +4485,7 @@ function EveryGolfApp() {
         return summary;
       };
 
-      const handleAcceptApplicant = (partnerId: number, applicantId: number) => {
-        setPartnerList(prev => prev.map(p => {
-          if (p.id === partnerId) {
-            const updatedApplicants = p.applicants.map((a: any) => 
-              a.id === applicantId ? { ...a, status: '참여 확정' } : a
-            );
-            const nextNeeded = Math.max(0, (p.needed || 1) - 1);
-            const nextStatus = nextNeeded === 0 ? '마감' : p.status;
-            
-            showToast('지원자의 동반자 신청을 수락하였습니다! ⛳');
-            return { 
-              ...p, 
-              applicants: updatedApplicants,
-              needed: nextNeeded,
-              status: nextStatus
-            };
-          }
-          return p;
-        }));
-      };
 
-      const handleRejectApplicant = (partnerId: number, applicantId: number) => {
-        setPartnerList(prev => prev.map(p => {
-          if (p.id === partnerId) {
-            const updatedApplicants = p.applicants.map((a: any) => 
-              a.id === applicantId ? { ...a, status: '거절됨' } : a
-            );
-            showToast('지원자의 신청을 거절 처리하였습니다.');
-            return { 
-              ...p, 
-              applicants: updatedApplicants 
-            };
-          }
-          return p;
-        }));
-      };
 
       const getCCName = (partner: any) => {
         if (partner.name) return partner.name;
@@ -4661,7 +4747,7 @@ function EveryGolfApp() {
           </div>
         </div>
 
-        <div className="flex-1 w-full overflow-y-auto hide-scrollbar px-5 pt-2.5 pb-5 flex flex-col gap-3">
+        <div className="flex-1 w-full overflow-y-auto hide-scrollbar px-5 pt-2.5 pb-5 flex flex-col gap-0">
           {filteredPartners.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
               <p className="text-gray-400 font-bold">매칭된 모집글이 없습니다.</p>
@@ -4779,7 +4865,17 @@ function EveryGolfApp() {
                                  showToast('매칭 프로필 설정 후 신청이 가능합니다.');
                                  pushView('profileInput');
                                } else {
-                                 showToast(partner.author + "님의 모집글에 동반자 신청을 완료했습니다! ⛳");
+                                 const alreadyApplied = partner.applicants?.some((a: any) => a.name === '나(본인)');
+                                  if (alreadyApplied) {
+                                    showToast('이미 신청하신 라운딩입니다.');
+                                    return;
+                                  }
+                                  if (partner.needed === 0) {
+                                    showToast('이미 모집이 마감된 라운딩입니다.');
+                                    return;
+                                  }
+                                  setApplyingPartnerId(partner.id);
+                                  setShowApplyTermsModal(true);
                                }
                              }} 
                              className="flex-1 py-3 bg-green-600 text-white rounded-xl text-xs font-black shadow-md hover:bg-green-700 transition-colors"
@@ -4823,30 +4919,13 @@ function EveryGolfApp() {
                                     </div>
                                     
                                     <div className="flex items-center gap-1.5">
-                                      {app.status === '대기중' ? (
-                                        <>
-                                          <button 
-                                            onClick={() => handleAcceptApplicant(partner.id, app.id)}
-                                            className="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[9px] font-black transition-all shadow-sm"
-                                          >
-                                            수락
-                                          </button>
-                                          <button 
-                                            onClick={() => handleRejectApplicant(partner.id, app.id)}
-                                            className="px-2.5 py-1 bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 rounded-lg text-[9px] font-black transition-all shadow-sm"
-                                          >
-                                            거절
-                                          </button>
-                                        </>
-                                      ) : (
-                                        <span className={`text-[9px] font-black px-2 py-0.5 rounded ${
+                                      <span className={`text-[9px] font-black px-2 py-0.5 rounded ${
                                           app.status === '참여 확정' 
                                             ? 'bg-green-50 text-green-600 border border-green-100' 
                                             : 'bg-gray-100 text-gray-400 border border-gray-150'
                                         }`}>
                                           {app.status}
                                         </span>
-                                      )}
                                     </div>
                                   </div>
                                 ))}
@@ -5688,6 +5767,7 @@ const MyPageTabView = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        {renderApplyTermsModal()}
         </>
       )}
     </div>

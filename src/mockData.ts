@@ -107,11 +107,11 @@ const mappedPartners = MOCK_JOINS.map((join, index) => {
   const applicants = index % 3 === 0 
     ? [
         { id: 1, name: '캐디와니', avatar: 'https://picsum.photos/seed/app1/100/100', handicap: 85, gender: '남성', age: '30대', experience: '구력 5년', status: '참여 확정' },
-        { id: 2, name: '버디찬스', avatar: 'https://picsum.photos/seed/app2/100/100', handicap: 90, gender: '여성', age: '20대', experience: '구력 2년', status: '대기중' }
+        { id: 2, name: '버디찬스', avatar: 'https://picsum.photos/seed/app2/100/100', handicap: 90, gender: '여성', age: '20대', experience: '구력 2년', status: '참여 확정' }
       ]
     : index % 3 === 1
       ? [
-          { id: 1, name: '이글헌터', avatar: 'https://picsum.photos/seed/app3/100/100', handicap: 95, gender: '남성', age: '40대', experience: '구력 8년', status: '대기중' }
+          { id: 1, name: '이글헌터', avatar: 'https://picsum.photos/seed/app3/100/100', handicap: 95, gender: '남성', age: '40대', experience: '구력 8년', status: '참여 확정' }
         ]
       : [];
 
@@ -169,7 +169,7 @@ export const MOCK_PARTNERS = [
       license: '미보유'
     },
     applicants: [
-      { id: 1, name: '버디찬스', avatar: 'https://picsum.photos/seed/app2/100/100', handicap: 90, gender: '여성', age: '20대', experience: '구력 2년', status: '대기중' }
+      { id: 1, name: '버디찬스', avatar: 'https://picsum.photos/seed/app2/100/100', handicap: 90, gender: '여성', age: '20대', experience: '구력 2년', status: '참여 확정' }
     ]
   },
   {
