@@ -4530,7 +4530,7 @@ function EveryGolfApp() {
 
           {/* 가로 스크롤 캘린더 칩 (빠른 날짜 변경) */}
           <div className="bg-white border-b border-gray-100 relative overflow-visible">
-            <div className="flex items-center overflow-x-auto hide-scrollbar px-2 py-1.5 w-full">
+            <div className="flex items-center overflow-x-auto hide-scrollbar px-2 py-1 w-full">
               <button 
                 onClick={() => {
                   setShowCalendarModal(prev => !prev);
@@ -4565,7 +4565,7 @@ function EveryGolfApp() {
           </div>
 
           {/* 시간대 빠른 선택 칩 바 */}
-          <div className="bg-white px-4 py-2.5 flex flex-col gap-2 border-b border-gray-50 shrink-0">
+          <div className="bg-white px-4 pt-1.5 pb-2 flex flex-col gap-2 border-b border-gray-50 shrink-0">
             <div className="flex items-center gap-2">
               {[
                 { label: '전체', value: '전체 시간' },
@@ -4595,7 +4595,7 @@ function EveryGolfApp() {
           </div>
 
           {/* 필터 및 정렬 요약 바 */}
-          <div className="bg-white border-b border-gray-100 px-4 py-3 overflow-visible">
+          <div className="bg-white border-b border-gray-100 px-4 pt-2.5 pb-2 overflow-visible">
             <div className="flex items-center justify-between w-full select-none pb-0.5 overflow-visible gap-2">
               {/* 좌측 영역: 필터 버튼 & 적용된 필터 요약 칩 */}
               <div className="flex items-center gap-1.5 shrink min-w-0 overflow-visible">
@@ -4661,7 +4661,7 @@ function EveryGolfApp() {
           </div>
         </div>
 
-        <div className="flex-1 w-full overflow-y-auto hide-scrollbar p-5 flex flex-col gap-3">
+        <div className="flex-1 w-full overflow-y-auto hide-scrollbar px-5 pt-2.5 pb-5 flex flex-col gap-3">
           {filteredPartners.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm w-full py-16">
               <p className="text-gray-400 font-bold">매칭된 모집글이 없습니다.</p>
