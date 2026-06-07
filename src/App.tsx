@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Home, Calendar, Users, User, Bell, Search, MapPin, 
   Clock, Sparkles, X, ChevronRight, MessageSquare, Heart, Share2, Filter, RotateCcw,
-  Star, ChevronDown, Award, Plus,   ShieldCheck, CheckCircle2, AlertCircle, AlertTriangle,
-  ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
+  Star, ChevronDown, Award, Plus, CheckCircle2, AlertCircle, AlertTriangle,
+  ChevronLeft, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
   Flag, UserPlus, CalendarCheck
 } from 'lucide-react';
@@ -57,7 +57,7 @@ interface PartnerFilters {
   gender: string;
   age: string;
   region: string;
-  date: string;
+  smoke: string;
 }
 
 const timeOptions = ['전체 시간', '1부 (06:00~08:00)', '2부 (11:00~14:00)', '3부/야간 (16:00~)'];
@@ -80,19 +80,19 @@ function EveryGolfApp() {
     gender: '전체',
     age: '전체',
     region: '전체',
-    date: '전체'
+    smoke: '전체'
   });
   
   const [favoriteFilters, setFavoriteFilters] = useState<FavoriteFilter[]>([
     {
       id: 'fav-1',
       name: '⛳ 인천 여성 1/N',
-      filters: { cost: '1/N 결제', gender: '여성', age: '전체', region: '인천', date: '전체' }
+      filters: { cost: '1/N 결제', gender: '여성', age: '전체', region: '인천', smoke: '전체' }
     },
     {
       id: 'fav-2',
       name: '🏌️‍♂️ 경기 30대 명랑',
-      filters: { cost: '전체', gender: '무관', age: '30대', region: '경기', date: '전체' }
+      filters: { cost: '전체', gender: '무관', age: '30대', region: '경기', smoke: '전체' }
     }
   ]);
   
@@ -2539,9 +2539,9 @@ function EveryGolfApp() {
         options: ['전체', '서울', '인천', '경기', '강원', '충청', '경상', '전라', '제주']
       },
       {
-        key: 'date',
-        label: '라운딩 날짜',
-        options: ['전체', '오늘', '내일', '이번주 주말']
+        key: 'smoke',
+        label: '흡연 여부',
+        options: ['전체', '비흡연', '흡연']
       }
     ];
 
@@ -4495,7 +4495,7 @@ function EveryGolfApp() {
       if (partnerFilters.gender !== '전체' && partner.gender !== partnerFilters.gender) return false;
       if (!isAgeFilterMatch(partnerFilters.age, partner.age)) return false;
       if (!isRegionFilterMatch(partnerFilters.region, partner.location)) return false;
-      if (partnerFilters.date !== '전체' && pDate !== partnerFilters.date) return false;
+      if (partnerFilters.smoke !== '전체' && (partner as any).smoke !== partnerFilters.smoke) return false;
 
       // 3. 상단 공통 필터 연동 (selectedDate, selectedRegion)
       if (selectedDate && selectedDate !== '전체' && selectedDate !== '오늘' && selectedDate !== '내일' && selectedDate !== '금일 익일티' && selectedDate !== '희망 날짜') {
