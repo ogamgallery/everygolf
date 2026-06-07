@@ -99,20 +99,23 @@ function EveryGolfApp() {
   const [showDetailedFilterModal, setShowDetailedFilterModal] = useState(false);
   const [isDiscountSpecialOnly, setIsDiscountSpecialOnly] = useState(false);
 
-  // 홈 화면 캐러셀 자동 슬라이드 배너 상태 (5초 주기)
+  const [activeTab, setActiveTab] = useState('home');
+
+  // 홈 화면 캐러셀 자동 슬라이드 배너 상태 (5초 주기, 홈 탭 활성화 시에만 동작하도록 최적화)
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
   useEffect(() => {
+    if (activeTab !== 'home') return;
+    
     const timer = setInterval(() => {
       setActiveBannerIndex(prev => (prev === 0 ? 1 : 0));
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeTab]);
 
   const [favNameInput, setFavNameInput] = useState('');
   const [partnerList, setPartnerList] = useState<any[]>(MOCK_PARTNERS);
   const [chatRooms, setChatRooms] = useState<any[]>(MOCK_CHAT_ROOMS);
   const [expandedPartnerId, setExpandedPartnerId] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState('home');
   const [showSearchFilter, setShowSearchFilter] = useState(true);
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [aiChatStep, setAiChatStep] = useState(0);
