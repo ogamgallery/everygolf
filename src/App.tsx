@@ -3995,23 +3995,8 @@ function EveryGolfApp() {
               </button>
             </div>
 
-            {/* 2열: 정렬 및 초기화 (좌측 골프장별보기 토글, 우측 정렬 칩들 및 초기화) */}
-            <div className="flex items-center justify-between border-t border-gray-100 pt-2.5 overflow-visible">
-              {/* 좌측: 골프장별보기 토글 */}
-              <button
-                type="button"
-                onClick={() => {
-                  setGroupByGolfCourse(prev => !prev);
-                  setExpandedGroup(null);
-                  showToast(!groupByGolfCourse ? '골프장별 보기 적용' : '티타임별 보기 적용');
-                }}
-                className="flex items-center gap-1.5 text-[11px] font-bold text-gray-600 hover:text-gray-900 transition-all shrink-0 select-none"
-              >
-                <div className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 ease-in-out ${groupByGolfCourse ? 'bg-green-600' : 'bg-gray-200'}`}>
-                  <div className={`w-3 h-3 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out transform ${groupByGolfCourse ? 'translate-x-3' : 'translate-x-0'}`} />
-                </div>
-                <span>골프장별보기</span>
-              </button>
+            {/* 2열: 정렬 및 지도로보기 퀵 툴바 (골프장별보기 토글이 목록 헤더로 이전되어 쾌적해짐) */}
+            <div className="flex items-center justify-end border-t border-gray-100 pt-2.5 overflow-visible">
 
               {/* 우측: 정렬 칩 바 및 초기화 버튼 */}
               <div className="flex items-center gap-2.5 ml-auto text-[11px] select-none">
@@ -4099,7 +4084,21 @@ function EveryGolfApp() {
           <div className="bg-white px-5 py-4 shadow-sm min-h-[400px]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-black text-gray-900 text-base">실시간 티타임 목록 ({filteredItems.length}건)</h3>
-              <span className="text-xs text-gray-400 font-bold">{selectedDate} 기준</span>
+              {/* 우측: 2열에서 이동 장착된 골프장별보기 토글 스위치 (캡슐형) */}
+              <button
+                type="button"
+                onClick={() => {
+                  setGroupByGolfCourse(prev => !prev);
+                  setExpandedGroup(null);
+                  showToast(!groupByGolfCourse ? '골프장별 보기 적용' : '티타임별 보기 적용');
+                }}
+                className="flex items-center gap-1.5 text-[10px] font-bold text-gray-600 hover:text-gray-900 transition-all shrink-0 select-none bg-gray-50 border border-gray-150 px-2.5 py-1.5 rounded-xl shadow-sm hover:bg-gray-100 active:scale-[0.97]"
+              >
+                <div className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 ease-in-out ${groupByGolfCourse ? 'bg-green-600' : 'bg-gray-200'}`}>
+                  <div className={`w-3 h-3 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out transform ${groupByGolfCourse ? 'translate-x-3' : 'translate-x-0'}`} />
+                </div>
+                <span>골프장별보기</span>
+              </button>
             </div>
             
             {filteredItems.length > 0 ? (
