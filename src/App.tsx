@@ -1488,12 +1488,13 @@ function EveryGolfApp() {
 
   const MapView = ({ payload }: { payload?: any }) => {
     const isJoinMode = payload?.type === 'join';
+    const isCommunityMode = payload?.type === 'community';
     const [selectedPin, setSelectedPin] = useState<string | null>(null);
     const [scale, setScale] = useState(1);
     const mapRef = useRef<HTMLDivElement>(null);
     const controls = useAnimation();
 
-    const sourceData = isJoinMode ? MOCK_JOINS : MOCK_BOOKINGS;
+    const sourceData = isCommunityMode ? partnerList : (isJoinMode ? MOCK_JOINS : MOCK_BOOKINGS);
     
     const groupedMap = new globalThis.Map<string, { name: string; location: string; count: number; items: any[] }>();
     
@@ -1583,7 +1584,7 @@ function EveryGolfApp() {
             <span className="text-gray-900 font-extrabold text-sm">지도</span>
             <span className="text-gray-300">|</span>
             <span className="text-gray-500 font-medium text-[11px] truncate">
-              {isJoinMode ? '실시간 조인 골프장 검색' : '실시간 부킹 골프장 검색'}
+              {isCommunityMode ? '나홀로조인 동반자 검색' : (isJoinMode ? '실시간 조인 골프장 검색' : '실시간 부킹 골프장 검색')}
             </span>
           </div>
           <button className="p-2 text-[#2db400] hover:bg-green-50 rounded-full transition-colors mr-1">
@@ -1594,12 +1595,12 @@ function EveryGolfApp() {
         <div className="absolute top-28 inset-x-4 z-30 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-md border border-gray-100/80 flex items-center justify-between">
           <div>
             <span className="text-[9px] text-[#2db400] font-extrabold uppercase tracking-wider">
-              {isJoinMode ? '네이버 지도 조인 현황' : '네이버 지도 부킹 현황'}
+              {isCommunityMode ? '네이버 지도 동반자 모집 현황' : (isJoinMode ? '네이버 지도 조인 현황' : '네이버 지도 부킹 현황')}
             </span>
             <h3 className="text-xs font-black text-gray-800 leading-tight">
               골프장 <span className="text-[#2db400]">{totalGolfCourses}곳</span> 
-              {isJoinMode ? ' / 총 ' : ' / 총 '}<span className="text-[#2db400]">{totalTeetimes}개</span> 
-              {isJoinMode ? '매칭 대기' : '티타임 조회됨'}
+              {' / 총 '}<span className="text-[#2db400]">{totalTeetimes}개</span> 
+              {isCommunityMode ? '모집글 조회됨' : (isJoinMode ? '매칭 대기' : '티타임 조회됨')}
             </h3>
           </div>
           <div className="bg-[#2db400]/10 text-[#2db400] text-[9px] px-2 py-1 rounded-lg font-black border border-[#2db400]/20 flex items-center gap-1">
@@ -1694,10 +1695,10 @@ function EveryGolfApp() {
               <div className="flex justify-between items-start mb-3 gap-2 relative">
                 <div className="flex-1">
                   <span className="bg-[#2db400]/10 text-[#2db400] text-[10px] font-black px-2.5 py-1 rounded-lg inline-block border border-[#2db400]/20 mb-1.5">
-                    {isJoinMode ? '네이버 지도 조인 모집' : '네이버 지도 실시간 예약'}
+                    {isCommunityMode ? '네이버 지도 나홀로조인' : (isJoinMode ? '네이버 지도 조인 모집' : '네이버 지도 실시간 예약')}
                   </span>
                   <h4 className="font-extrabold text-gray-900 text-lg leading-tight">{activePinData.name}</h4>
-                  <p className="text-xs text-gray-400 font-bold mt-0.5">{activePinData.location} • 총 {activePinData.count}개 티타임 발견</p>
+                  <p className="text-xs text-gray-400 font-bold mt-0.5">{activePinData.location} • 총 {activePinData.count}개 {isCommunityMode ? '모집글' : '티타임'} 발견</p>
                 </div>
                 <button onClick={() => setSelectedPin(null)} className="p-1.5 text-gray-400 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"><X size={16}/></button>
               </div>
@@ -1709,16 +1710,20 @@ function EveryGolfApp() {
                     key={idx} 
                     onClick={() => {
                       setSelectedPin(null);
-                      pushView(isJoinMode ? 'joinDetail' : 'bookingDetail', item);
+                      pushView(isCommunityMode ? 'partnerDetail' : (isJoinMode ? 'joinDetail' : 'bookingDetail'), item);
                     }} 
                     className="p-3 bg-gray-50 hover:bg-green-50/50 hover:border-green-200 border border-gray-100 rounded-2xl flex justify-between items-center transition-all cursor-pointer group"
                   >
                     <div>
                       <span className="text-xs font-black text-gray-800 flex items-center gap-1.5">
                         <Clock size={12} className="text-gray-400" />
-                        {item.time} 티오프
+                        {isCommunityMode ? `${item.time}` : `${item.time} 티오프`}
                       </span>
-                      {isJoinMode ? (
+                      {isCommunityMode ? (
+                        <p className="text-[10px] text-gray-500 font-semibold mt-1">
+                          구함 {item.needed}명 • {item.gender} • {item.age}
+                        </p>
+                      ) : isJoinMode ? (
                         <p className="text-[10px] text-gray-500 font-semibold mt-1">
                           구함 {item.needed}명 • {item.gender} • {item.age}
                         </p>
@@ -1877,7 +1882,7 @@ function EveryGolfApp() {
                <MapPin size={18} className="text-gray-400 shrink-0"/><span className="text-sm font-bold text-gray-800">{partner.location}</span>
              </div>
              <div className="flex items-center gap-3">
-               <Calendar size={18} className="text-gray-400 shrink-0"/><span className="text-sm font-bold text-gray-800">이번주 토요일 오전</span>
+               <Calendar size={18} className="text-gray-400 shrink-0"/><span className="text-sm font-bold text-gray-800">{partner.date || '이번주 토요일'} {partner.time}</span>
              </div>
              <div className="flex items-center gap-3">
                <Users size={18} className="text-gray-400 shrink-0"/>
@@ -1887,10 +1892,8 @@ function EveryGolfApp() {
                </div>
              </div>
           </div>
-          <div className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
-            급하게 한 분 펑크가 나서 모십니다.<br/>
-            명랑 골프 지향하구요, 끝나고 식사 비용은 제가 쏘겠습니다!<br/>
-            편하게 연락 주세요~ ⛳️
+          <div className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap bg-gray-50 p-4 rounded-xl border border-gray-100/80">
+            {partner.description || '동반자 모집 상세 내용이 없습니다.'}
           </div>
         </div>
       </div>
@@ -4700,7 +4703,7 @@ function EveryGolfApp() {
                 )}
               </div>
 
-              {/* 우측 영역: 초기화 버튼 */}
+              {/* 우측 영역: 초기화 버튼 및 지도로보기 */}
               <div className="flex items-center gap-1.5 shrink-0">
                 <button 
                   type="button"
@@ -4718,6 +4721,18 @@ function EveryGolfApp() {
                   title="필터 초기화"
                 >
                   <RotateCcw size={11} className="text-gray-655" />
+                </button>
+
+                <button 
+                  type="button"
+                  onClick={() => {
+                    pushView('map', { type: activeTab });
+                    showToast('지도 뷰로 이동합니다.');
+                  }}
+                  className="flex items-center gap-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] shrink-0 inline-flex text-[11px] animate-in fade-in slide-in-from-right-1 duration-150"
+                >
+                  <Map size={11} className="text-green-600" />
+                  <span>지도로보기</span>
                 </button>
               </div>
             </div>
