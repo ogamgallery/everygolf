@@ -4040,6 +4040,83 @@ function EveryGolfApp() {
                 </button>
               </div>
             </div>
+
+            {/* 3열: 가로 드래그 필터 칩 바 */}
+            <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-2.5 px-5 border-t border-gray-50 bg-white select-none whitespace-nowrap">
+              {/* 1. 캐디 형태 순환 필터 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const caddies = ['전체', '노캐디', '일반캐디', '드라이빙캐디', '인턴캐디'];
+                  const nextIdx = (caddies.indexOf(selectedCaddieType) + 1) % caddies.length;
+                  setSelectedCaddieType(caddies[nextIdx]);
+                  showToast(`캐디: ${caddies[nextIdx]} 적용`);
+                }}
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
+                  selectedCaddieType !== '전체'
+                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
+                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
+                }`}
+              >
+                <span>🏌️‍♂️ 캐디: {selectedCaddieType}</span>
+              </button>
+
+              {/* 2. 플레이 인원 순환 필터 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const players = ['전체', '2인이상', '3인이상', '4인이상'] as const;
+                  const nextIdx = (players.indexOf(selectedMinPlayers) + 1) % players.length;
+                  setSelectedMinPlayers(players[nextIdx]);
+                  showToast(`인원: ${players[nextIdx]} 적용`);
+                }}
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
+                  selectedMinPlayers !== '전체'
+                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
+                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
+                }`}
+              >
+                <span>👥 인원: {selectedMinPlayers}</span>
+              </button>
+
+              {/* 3. 식사포함 토글 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const hasMeal = selectedFeatures.includes('식사포함');
+                  setSelectedFeatures(prev => 
+                    hasMeal ? prev.filter(f => f !== '식사포함') : [...prev, '식사포함']
+                  );
+                  showToast(`식사포함 옵션 ${!hasMeal ? '적용' : '해제'}`);
+                }}
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
+                  selectedFeatures.includes('식사포함')
+                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
+                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
+                }`}
+              >
+                <span>🍱 식사포함</span>
+              </button>
+
+              {/* 4. 양잔디 토글 칩 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const hasGrass = selectedFeatures.includes('양잔디');
+                  setSelectedFeatures(prev => 
+                    hasGrass ? prev.filter(f => f !== '양잔디') : [...prev, '양잔디']
+                  );
+                  showToast(`양잔디 옵션 ${!hasGrass ? '적용' : '해제'}`);
+                }}
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-[10px] font-black transition-all shrink-0 ${
+                  selectedFeatures.includes('양잔디')
+                    ? 'bg-green-50 text-green-600 border-green-200 font-extrabold shadow-sm'
+                    : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
+                }`}
+              >
+                <span>🌱 양잔디</span>
+              </button>
+            </div>
           </div>
 
           {/* 실시간 필터 매칭 결과 목록 (골팡 스타일 적용) */}
