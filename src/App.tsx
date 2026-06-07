@@ -3893,17 +3893,7 @@ function EveryGolfApp() {
                 )}
               </div>
 
-              {/* 지도로 보기 */}
-              <button 
-                onClick={() => {
-                  pushView('map', { type: activeTab });
-                  showToast('지도 뷰로 이동합니다.');
-                }}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full border text-[11px] font-black bg-white text-gray-700 border-gray-200 hover:bg-gray-50 transition-all shrink-0 ml-auto shadow-sm"
-              >
-                <Map size={11} className="text-green-600" />
-                <span>지도로보기</span>
-              </button>
+
 
             </div>
 
@@ -3991,15 +3981,17 @@ function EveryGolfApp() {
                   </AnimatePresence>
                 </div>
 
-                {/* 초기화 버튼 */}
-                {(selectedTime !== '전체 시간' || selectedRegion !== '전체 지역' || selectedCaddieType !== '전체' || searchQuery !== '' || sortBy !== '시간순' || groupByGolfCourse) && (
-                  <button 
-                    onClick={resetFilters}
-                    className="text-[10px] font-bold text-red-500 bg-red-50 hover:bg-red-100 px-2 py-1.5 rounded-md transition-all shrink-0 ml-1"
-                  >
-                    초기화
-                  </button>
-                )}
+                {/* 지도로 보기 */}
+                <button 
+                  onClick={() => {
+                    pushView('map', { type: activeTab });
+                    showToast('지도 뷰로 이동합니다.');
+                  }}
+                  className="flex items-center gap-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] shrink-0 ml-1 inline-flex animate-in fade-in slide-in-from-right-1 duration-150"
+                >
+                  <Map size={11} className="text-green-600" />
+                  <span>지도로보기</span>
+                </button>
               </div>
             </div>
           </div>
