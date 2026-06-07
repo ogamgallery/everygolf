@@ -148,7 +148,7 @@ function EveryGolfApp() {
     const [showSortDropdown, setShowSortDropdown] = useState(false);
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
     const [selectedMinPlayers, setSelectedMinPlayers] = useState<'전체' | '2인이상' | '3인이상' | '4인이상'>('전체');
-    const [groupByGolfCourse, setGroupByGolfCourse] = useState<boolean>(false);
+    const [groupByGolfCourse, setGroupByGolfCourse] = useState<boolean>(true);
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
     const [likedGolfCourses, setLikedGolfCourses] = useState<string[]>([]);
     
@@ -203,7 +203,7 @@ function EveryGolfApp() {
       setSortOrder('asc');
       setSelectedFeatures([]);
       setSelectedMinPlayers('전체');
-      setGroupByGolfCourse(false);
+      setGroupByGolfCourse(true);
       setExpandedGroup(null);
       showToast('필터가 초기화되었습니다.');
     };
@@ -330,7 +330,7 @@ function EveryGolfApp() {
                 setSortBy('시간순');
                 setSortOrder('asc');
                 setSelectedFeatures([]);
-                setGroupByGolfCourse(false);
+                setGroupByGolfCourse(true);
                 setExpandedGroup(null);
                 showToast('필터가 초기화되었습니다.');
               }
