@@ -3460,12 +3460,10 @@ function EveryGolfApp() {
                     <span className="text-xs font-bold text-gray-400">추가 옵션 선택 (중복 가능)</span>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        { icon: Award, label: '식사 포함' },
-                        { icon: CreditCard, label: '카트 포함' },
-                        { icon: Users, label: '2~3인 플레이' },
-                        { icon: ShieldCheck, label: '회원제 골프장' },
-                        { icon: Sparkles, label: '야간 라이트 양호' },
-                        { icon: Clock, label: '무료 취소 가능' }
+                        { icon: Users, label: '2인이상플레이' },
+                        { icon: Users, label: '3인이상플레이' },
+                        { icon: Award, label: '식사포함' },
+                        { icon: Sparkles, label: '양잔디' }
                       ].map(feat => {
                         const isSelected = selectedFeatures.includes(feat.label);
                         return (
