@@ -140,8 +140,9 @@ function EveryGolfApp() {
     const [showDetailFilterSection, setShowDetailFilterSection] = useState(false);
     const [selectedCaddieType, setSelectedCaddieType] = useState('전체');
     const [showSearchQueryDropdown, setShowSearchQueryDropdown] = useState(false);
-    const [sortBy, setSortBy] = useState<'거리순' | '시간순' | '금액순'>('시간순');
+    const [sortBy, setSortBy] = useState<'추천순' | '거리순' | '시간순' | '금액순'>('추천순');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [showSortDropdown, setShowSortDropdown] = useState(false);
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
     const [groupByGolfCourse, setGroupByGolfCourse] = useState<boolean>(false);
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
@@ -3926,44 +3927,69 @@ function EveryGolfApp() {
 
               {/* 우측: 정렬 칩 바 및 초기화 버튼 */}
               <div className="flex items-center gap-2.5 ml-auto text-[11px] select-none">
-                {[
-                  { label: '거리순', value: '거리순' },
-                  { label: '시간순', value: '시간순' },
-                  { label: '금액순', value: '금액순' }
-                ].map((item, idx) => {
-                  const isSelected = sortBy === item.value;
-                  return (
-                    <React.Fragment key={item.label}>
-                      {idx > 0 && <span className="text-gray-200">|</span>}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (sortBy === item.value) {
-                            const nextOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-                            setSortOrder(nextOrder);
-                            showToast(`${item.label} ${nextOrder === 'asc' ? '낮은순' : '높은순'} 적용`);
-                          } else {
-                            setSortBy(item.value as any);
-                            setSortOrder('asc');
-                            showToast(`${item.label} 적용`);
-                          }
-                        }}
-                        className={`transition-all flex items-center gap-0.5 py-1 ${
-                          isSelected
-                            ? 'text-green-600 font-black'
-                            : 'text-gray-400 font-bold hover:text-gray-600'
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                        {isSelected ? (
-                          sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600" /> : <ArrowUp size={11} className="text-green-600" />
-                        ) : (
-                          <ArrowDown size={11} className="text-gray-300 opacity-50" />
-                        )}
-                      </button>
-                    </React.Fragment>
-                  );
-                })}
+                <div className="relative z-30">
+                  <button
+                    type="button"
+                    onClick={() => setShowSortDropdown(prev => !prev)}
+                    className="flex items-center gap-1.5 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-3 py-1.5 rounded-xl text-gray-700 font-extrabold shadow-sm transition-all active:scale-[0.97] inline-flex"
+                  >
+                    <SlidersHorizontal size={11} className="text-gray-500" />
+                    <span>{sortBy}</span>
+                    {sortBy !== '추천순' && (
+                      sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600" /> : <ArrowUp size={11} className="text-green-600" />
+                    )}
+                    <ChevronDown size={11} className={`text-gray-400 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {showSortDropdown && (
+                      <>
+                        {/* 드롭다운 닫기용 백드롭 */}
+                        <div className="fixed inset-0 z-40" onClick={() => setShowSortDropdown(false)}></div>
+                        
+                        <motion.div
+                          initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 mt-1.5 w-28 bg-white border border-gray-150 rounded-2xl shadow-xl py-1.5 z-50 overflow-hidden"
+                        >
+                          {['추천순', '거리순', '시간순', '금액순'].map((sortOption) => {
+                            const isSelected = sortBy === sortOption;
+                            return (
+                              <button
+                                key={sortOption}
+                                type="button"
+                                onClick={() => {
+                                  if (isSelected && sortOption !== '추천순') {
+                                    const nextOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                                    setSortOrder(nextOrder);
+                                    showToast(`${sortOption} ${nextOrder === 'asc' ? '낮은순' : '높은순'} 적용`);
+                                  } else {
+                                    setSortBy(sortOption as any);
+                                    setSortOrder('asc');
+                                    showToast(`${sortOption} 적용`);
+                                  }
+                                  setShowSortDropdown(false);
+                                }}
+                                className={`w-full text-left px-3.5 py-2 text-xs font-bold transition-all flex items-center justify-between ${
+                                  isSelected 
+                                    ? 'bg-green-50 text-green-600 font-black' 
+                                    : 'text-gray-600 hover:bg-gray-50'
+                                }`}
+                              >
+                                <span>{sortOption}</span>
+                                {isSelected && sortOption !== '추천순' && (
+                                  sortOrder === 'asc' ? <ArrowDown size={11} className="text-green-600 shrink-0" /> : <ArrowUp size={11} className="text-green-600 shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
+                </div>
 
                 {/* 초기화 버튼 */}
                 {(selectedTime !== '전체 시간' || selectedRegion !== '전체 지역' || selectedCaddieType !== '전체' || searchQuery !== '' || sortBy !== '시간순' || groupByGolfCourse) && (
