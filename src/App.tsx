@@ -5538,7 +5538,7 @@ const MyPageTabView = () => {
             >
               <motion.div 
                 initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-                className="w-full bg-white rounded-t-[30px] p-6 shadow-2xl max-h-[85vh] flex flex-col"
+                className="w-full bg-white rounded-t-[30px] p-6 shadow-2xl max-h-[75vh] flex flex-col"
                 onClick={e => e.stopPropagation()}
               >
                 <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5 shrink-0"></div>
@@ -5548,8 +5548,8 @@ const MyPageTabView = () => {
                     <SlidersHorizontal size={18} className="text-green-600" />
                     <span>상세 검색 필터</span>
                   </h3>
-                  <button onClick={() => setShowDetailFilterSection(false)} className="p-1 text-gray-400 hover:text-gray-650">
-                    <X size={18} />
+                  <button onClick={() => setShowDetailFilterSection(false)} className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full transition-all active:scale-95 shrink-0 flex items-center justify-center">
+                    <X size={16} />
                   </button>
                 </div>
 
