@@ -45,11 +45,14 @@ const calendarDays = [
 ];
 
 interface UserProfile {
-  gender: '남성' | '여성';
-  handicap: number;
-  age: number;
-  smoke: '흡연' | '비흡연';
-  license: '보유' | '미보유';
+  gender?: '남성' | '여성';
+  handicap?: number;
+  age?: number;
+  smoke?: '흡연' | '비흡연';
+  license?: '보유' | '미보유';
+  name?: string;
+  role?: string;
+  avatar?: string;
 }
 
 interface PartnerFilters {
@@ -107,7 +110,7 @@ function EveryGolfApp() {
           name: '나(본인)',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
           gender: userProfile?.gender || '남성',
-          age: userProfile ? `${Math.floor(userProfile.age / 10) * 10}대` : '30대',
+          age: userProfile?.age ? `${Math.floor(userProfile.age / 10) * 10}대` : '30대',
           handicap: userProfile?.handicap || 95,
           experience: '구력 3년',
           status: '참여 확정'
@@ -352,8 +355,29 @@ function EveryGolfApp() {
   useEffect(() => {
     if (!isLoggedIn) {
       pushView('login');
+    } else {
+      const role = sessionStorage.getItem('user_role');
+      if (role === 'agent') {
+        setUserProfile({ 
+          name: '부킹 매니저 님', 
+          role: '에브리골프 에이전트', 
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80',
+          gender: '남성',
+          age: 35,
+          handicap: 80
+        });
+      } else {
+        setUserProfile({ 
+          name: '김골프 님', 
+          role: 'VIP 멤버십', 
+          avatar: 'https://picsum.photos/seed/myprofile/200/200',
+          gender: '남성',
+          age: 30,
+          handicap: 95
+        });
+      }
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const resetToHome = (tab = 'home') => {
     if (tab === 'booking') {
@@ -1237,7 +1261,7 @@ function EveryGolfApp() {
             description: description || `${courseName}에서 즐거운 명랑 라운딩 함께 하실 분들 구합니다!`,
             hostProfile: {
               gender: userProfile?.gender || '남성',
-              age: userProfile ? `${Math.floor(userProfile.age / 10) * 10}대` : '30대',
+              age: userProfile?.age ? `${Math.floor(userProfile.age / 10) * 10}대` : '30대',
               handicap: userProfile?.handicap || 95,
               smoke: userProfile?.smoke || '비흡연',
               license: userProfile?.license || '미보유'
@@ -2560,7 +2584,8 @@ function EveryGolfApp() {
         showToast('아이디와 비밀번호를 모두 입력해 주세요.');
         return;
       }
-      if (userId.trim() !== 'ogam' || password !== '1234') {
+      const trimmedId = userId.trim();
+      if ((trimmedId !== 'ogam' && trimmedId !== '5gam') || password !== '1234') {
         showToast('아이디 또는 비밀번호가 올바르지 않습니다.');
         return;
       }
@@ -2570,6 +2595,27 @@ function EveryGolfApp() {
         setIsLoading(false);
         setLoginType(null);
         sessionStorage.setItem('user_logged_in', 'true');
+        if (trimmedId === '5gam') {
+          sessionStorage.setItem('user_role', 'agent');
+          setUserProfile({ 
+            name: '부킹 매니저 님', 
+            role: '에브리골프 에이전트', 
+            avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80',
+            gender: '남성',
+            age: 35,
+            handicap: 80
+          });
+        } else {
+          sessionStorage.setItem('user_role', 'user');
+          setUserProfile({ 
+            name: '김골프 님', 
+            role: 'VIP 멤버십', 
+            avatar: 'https://picsum.photos/seed/myprofile/200/200',
+            gender: '남성',
+            age: 30,
+            handicap: 95
+          });
+        }
         setIsLoggedIn(true);
         showToast('로그인이 완료되었습니다!');
         popView();
@@ -5249,7 +5295,7 @@ const MyPageTabView = () => {
           <div className="bg-white p-6 mb-2 shadow-sm shrink-0 w-full space-y-6">
             <div className="flex items-center gap-5 cursor-pointer group" onClick={() => pushView('empty', { type: 'default', title: '프로필 편집' })}>
               <div className="relative shrink-0">
-                <img src="https://picsum.photos/seed/myprofile/200/200" className="w-14 h-14 shrink-0 bg-gray-200 rounded-full object-cover border-2 border-white shadow-md group-hover:border-green-100 transition-colors"/>
+                <img src={userProfile?.avatar || "https://picsum.photos/seed/myprofile/200/200"} className="w-14 h-14 shrink-0 bg-gray-200 rounded-full object-cover border-2 border-white shadow-md group-hover:border-green-100 transition-colors"/>
                 <div className="absolute -bottom-0.5 -right-0.5 bg-gray-900 text-white w-5 h-5 rounded-full border border-white flex items-center justify-center shadow-sm shrink-0">
                   <Star size={10} fill="currentColor" className="shrink-0"/>
                 </div>
@@ -5257,9 +5303,15 @@ const MyPageTabView = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-start gap-2">
                   <div className="min-w-0">
-                    <h3 className="font-bold text-lg text-gray-900 truncate">김골프 님</h3>
+                    <h3 className="font-bold text-lg text-gray-900 truncate">{userProfile?.name || '김골프 님'}</h3>
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                      <span className="text-[10px] shrink-0 font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2.5 py-0.5 rounded shadow-sm">VIP 멤버십</span>
+                      <span className={`text-[10px] shrink-0 font-bold px-2.5 py-0.5 rounded shadow-sm text-white ${
+                        (userProfile?.role || 'VIP 멤버십').includes('에이전트')
+                          ? 'bg-gradient-to-r from-orange-500 to-yellow-500'
+                          : 'bg-gradient-to-r from-green-500 to-emerald-500'
+                      }`}>
+                        {userProfile?.role || 'VIP 멤버십'}
+                      </span>
                       <span className="text-[10px] shrink-0 text-gray-400 font-bold hover:text-gray-700 transition-colors underline underline-offset-2">프로필 보기</span>
                     </div>
                   </div>
