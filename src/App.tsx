@@ -490,15 +490,6 @@ function EveryGolfApp() {
     </div>
   );
 
-  const AiAgentButton = () => (
-    <motion.button 
-      initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-      onClick={() => { setIsAiOpen(true); setAiChatStep(0); setAiInputVal(''); }}
-      className="absolute bottom-[90px] right-4 w-14 h-14 shrink-0 bg-gradient-to-tr from-green-500 to-emerald-400 rounded-full flex items-center justify-center text-white shadow-xl shadow-green-500/40 z-30"
-    >
-      <Sparkles size={28} className="animate-pulse shrink-0" />
-    </motion.button>
-  );
 
   const AiAgentModal = () => (
     <AnimatePresence>
@@ -5021,6 +5012,33 @@ function EveryGolfApp() {
 
         {/* Room List */}
         <div className="flex-1 overflow-y-auto p-4 space-y-2.5 hide-scrollbar">
+          
+          {/* AI 골프 비서 에이전트 카드 */}
+          <div 
+            onClick={() => { setIsAiOpen(true); setAiChatStep(0); setAiInputVal(''); }}
+            className="bg-gradient-to-r from-green-50/50 to-emerald-50/30 border border-green-200/60 p-4.5 rounded-2xl flex gap-3.5 cursor-pointer hover:border-green-300 hover:shadow-md hover:scale-[1.01] transition-all relative overflow-hidden group mb-2"
+          >
+            <div className="absolute right-0 top-0 w-24 h-24 bg-green-100/30 rounded-full blur-2xl -mr-6 -mt-6"></div>
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-green-500 to-emerald-500 flex items-center justify-center text-white text-lg font-black shrink-0 shadow-md shadow-green-500/10 group-hover:scale-105 transition-transform">
+              <Sparkles size={22} className="text-white animate-pulse" />
+            </div>
+
+            <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5 relative z-10">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black text-sm text-gray-900">AI 골프 비서 에이전트</span>
+                  <span className="text-[8px] font-black text-white bg-green-600 px-1.5 py-0.5 rounded shadow-sm">
+                    1초 티타임 매칭
+                  </span>
+                </div>
+                <span className="text-[9.5px] text-green-600 font-extrabold shrink-0 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">대화하기 <ChevronRight size={10} strokeWidth={3} /></span>
+              </div>
+              <p className="text-xs text-gray-600 font-bold mt-1 pr-6 leading-relaxed">
+                "이번 주말 경기/인천 20만원 이하 티타임 찾아줘" 같이 대화하듯 편하게 요청해보세요!
+              </p>
+            </div>
+          </div>
+
           {filteredRooms.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm py-16">
               <p className="text-gray-400 font-bold">진행 중인 대화방이 없습니다.</p>
@@ -5449,7 +5467,6 @@ const MyPageTabView = () => {
                 </AnimatePresence>
               </div>
             )}
-            <AiAgentButton />
             <AiAgentModal />
             <BottomNav />
           </div>
