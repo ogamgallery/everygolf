@@ -2530,7 +2530,7 @@ function EveryGolfApp() {
   };
 
   const LoginView = () => {
-    const [email, setEmail] = useState('');
+    const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [loginType, setLoginType] = useState<string | null>(null);
@@ -2556,18 +2556,18 @@ function EveryGolfApp() {
 
     const handleEmailLogin = (e: React.FormEvent) => {
       e.preventDefault();
-      if (!email.trim() || !password.trim()) {
-        showToast('이메일과 비밀번호를 모두 입력해 주세요.');
+      if (!userId.trim() || !password.trim()) {
+        showToast('아이디와 비밀번호를 모두 입력해 주세요.');
         return;
       }
       setIsLoading(true);
-      setLoginType('이메일');
+      setLoginType('아이디');
       setTimeout(() => {
         setIsLoading(false);
         setLoginType(null);
         sessionStorage.setItem('user_logged_in', 'true');
         setIsLoggedIn(true);
-        showToast('이메일 로그인이 완료되었습니다!');
+        showToast('로그인이 완료되었습니다!');
         popView();
       }, 1500);
     };
@@ -2596,15 +2596,15 @@ function EveryGolfApp() {
               <p className="text-xs text-gray-500 font-bold mt-2">골프 라이프의 시작, 애브리골프</p>
             </div>
 
-            {/* Email Login Form */}
+            {/* ID Login Form */}
             <form onSubmit={handleEmailLogin} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-black text-gray-500">이메일 주소</label>
+                <label className="text-xs font-black text-gray-500">아이디</label>
                 <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="golf@everygolf.com"
+                  type="text" 
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  placeholder="아이디 입력"
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-medium"
                 />
               </div>
@@ -2624,7 +2624,7 @@ function EveryGolfApp() {
                 disabled={isLoading}
                 className="w-full py-4 mt-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-extrabold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-[0.99] transition-all flex items-center justify-center gap-2"
               >
-                {isLoading && loginType === '이메일' ? '로그인 중...' : '이메일로 로그인'}
+                {isLoading && loginType === '아이디' ? '로그인 중...' : '로그인하기'}
               </button>
             </form>
 
