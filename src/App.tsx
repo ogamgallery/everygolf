@@ -5,7 +5,7 @@ import {
   Star, ChevronDown, Award, Plus, CheckCircle2, AlertCircle, AlertTriangle,
   ChevronLeft, CreditCard, Send, MoreHorizontal, Minus, Crosshair,
   Phone, Mail, SlidersHorizontal, ArrowDown, ArrowUp, Map,
-  Flag, UserPlus, CalendarCheck, FileText
+  Flag, UserPlus, CalendarCheck, FileText, LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
@@ -5360,10 +5360,16 @@ const MyPageTabView = () => {
             ))}
           </ul>
        </div>
-       <div className="p-8 shrink-0 text-center flex flex-col items-center w-full">
+       <div className="p-6 shrink-0 text-center flex flex-col items-center w-full">
+          <button 
+            onClick={handleLogout} 
+            className="w-full py-3.5 bg-gray-50 hover:bg-gray-100 active:scale-[0.98] border border-gray-100 text-gray-500 rounded-2xl font-bold text-xs transition-all mb-6 flex items-center justify-center gap-1.5 shadow-sm"
+          >
+            <LogOut size={14} className="text-gray-400" />
+            <span>로그아웃</span>
+          </button>
           <div className="text-xl font-black text-gray-300 tracking-tighter mb-2">everygolf</div>
           <div className="text-xs text-gray-400 font-bold">버전 1.2.0 (최신)</div>
-          <button onClick={handleLogout} className="mt-4 text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600">로그아웃</button>
        </div>
     </div>
   );
