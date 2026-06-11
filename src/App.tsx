@@ -2560,6 +2560,10 @@ function EveryGolfApp() {
         showToast('아이디와 비밀번호를 모두 입력해 주세요.');
         return;
       }
+      if (userId.trim() !== 'ogam' || password !== '1234') {
+        showToast('아이디 또는 비밀번호가 올바르지 않습니다.');
+        return;
+      }
       setIsLoading(true);
       setLoginType('아이디');
       setTimeout(() => {
