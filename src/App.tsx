@@ -5308,12 +5308,6 @@ const MyPageTabView = () => {
         );
       }
       
-      const mockReviews = [
-        { id: 1, text: "시간 약속을 잘 지켜요 ⏰", count: 5, date: "최근" },
-        { id: 2, text: "동반자를 배려하고 유쾌해요 🏌️‍♂️", count: 4, date: "최근" },
-        { id: 3, text: "그린 매너가 훌륭해요 ⛳", count: 3, date: "1주 전" }
-      ];
-
       return (
         <div className="pb-32 bg-white min-h-full flex flex-col w-full overflow-hidden">
           {/* Header */}
@@ -5437,23 +5431,6 @@ const MyPageTabView = () => {
             </ul>
           </div>
           
-          {/* 당근마켓 스타일 최근 받은 매너 후기 목록 */}
-          <div className="bg-white p-5 mb-2 shadow-sm shrink-0 w-full">
-            <h3 className="font-black text-gray-900 text-sm mb-4">최근 받은 매너 후기</h3>
-            <div className="space-y-3.5">
-              {mockReviews.map((review) => (
-                <div key={review.id} className="flex justify-between items-start gap-4">
-                  <div className="bg-gray-50 border border-gray-100 rounded-2xl p-3.5 flex-1">
-                    <p className="text-xs font-bold text-gray-800 leading-snug">{review.text}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[9px] text-[#2db400] bg-green-50 font-black px-1.5 py-0.5 rounded border border-green-100/50">선택한 동반자 {review.count}명</span>
-                      <span className="text-[9.5px] text-gray-400 font-medium">{review.date}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
        
        <div className="bg-white shadow-sm shrink-0 w-full">
           <ul className="divide-y divide-gray-50 w-full">
