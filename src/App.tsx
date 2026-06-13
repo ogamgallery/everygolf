@@ -5631,9 +5631,9 @@ const MyPageTabView = () => {
                 <button 
                   type="button"
                   onClick={() => setIsPrepaid(!isPrepaid)}
-                  className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${isPrepaid ? 'bg-green-600' : 'bg-gray-200'}`}
+                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${isPrepaid ? 'bg-green-600' : 'bg-gray-200'}`}
                 >
-                  <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${isPrepaid ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isPrepaid ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
@@ -5645,9 +5645,9 @@ const MyPageTabView = () => {
                 <button 
                   type="button"
                   onClick={() => setIsCartIncluded(!isCartIncluded)}
-                  className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${isCartIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
+                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${isCartIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
                 >
-                  <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${isCartIncluded ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isCartIncluded ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
@@ -5659,9 +5659,9 @@ const MyPageTabView = () => {
                 <button 
                   type="button"
                   onClick={() => setIsMealIncluded(!isMealIncluded)}
-                  className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${isMealIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
+                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${isMealIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
                 >
-                  <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${isMealIncluded ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isMealIncluded ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
             </div>
@@ -5699,9 +5699,9 @@ const MyPageTabView = () => {
               <button 
                 type="button"
                 onClick={() => setIs3PlayerAllowed(!is3PlayerAllowed)}
-                className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${is3PlayerAllowed ? 'bg-green-600' : 'bg-gray-200'}`}
+                className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${is3PlayerAllowed ? 'bg-green-600' : 'bg-gray-200'}`}
               >
-                <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${is3PlayerAllowed ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${is3PlayerAllowed ? 'translate-x-6' : 'translate-x-0'}`} />
               </button>
             </div>
 
