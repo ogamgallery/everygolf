@@ -3645,141 +3645,7 @@ function EveryGolfApp() {
               </button>
             </div>
 
-            {/* 상세 필터 바텀시트 모달 */}
-            <AnimatePresence>
-              {showDetailFilterSection && (
-                <motion.div 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  exit={{ opacity: 0 }} 
-                  className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-end justify-center" 
-                  onClick={() => setShowDetailFilterSection(false)}
-                >
-                  <motion.div 
-                    initial={{ y: '100%' }} 
-                    animate={{ y: 0 }} 
-                    exit={{ y: '100%' }} 
-                    transition={{ type: 'spring', damping: 25, stiffness: 300 }} 
-                    onClick={e => e.stopPropagation()} 
-                    className="bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)] flex flex-col w-full max-h-[85%] max-w-[500px]"
-                  >
-                    {/* 바텀시트 헤더 */}
-                    <div className="flex justify-between items-center p-5 border-b border-gray-100 shrink-0">
-                      <div className="flex items-center gap-2">
-                        <SlidersHorizontal size={18} className="text-green-600" />
-                        <h3 className="text-base font-extrabold text-gray-900">상세 필터 설정</h3>
-                      </div>
-                      <button 
-                        onClick={() => setShowDetailFilterSection(false)} 
-                        className="p-2 bg-gray-50 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-600 transition-colors"
-                      >
-                        <X size={18} />
-                      </button>
-                    </div>
 
-                    {/* 바텀시트 바디 */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar">
-                      
-                      {/* 캐디 형태 */}
-                      <div className="space-y-2.5">
-                        <span className="text-xs font-black text-gray-500">캐디 형태 선택</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {['전체', '노캐디', '일반캐디', '드라이빙캐디', '인턴캐디'].map(caddie => (
-                            <button
-                              key={caddie}
-                              type="button"
-                              onClick={() => setSelectedCaddieType(caddie)}
-                              className={`px-3 py-2.5 text-xs font-bold rounded-lg border text-center transition-all flex-1 min-w-[70px] ${
-                                selectedCaddieType === caddie 
-                                  ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                  : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-55'
-                              }`}
-                            >
-                              {caddie}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* 플레이 인원 (단일 선택형) */}
-                      {bookingMode !== '조인' && (
-                        <div className="space-y-2.5 pt-2">
-                          <span className="text-xs font-black text-gray-500">플레이 인원 설정</span>
-                          <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
-                            {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
-                              const isSelected = selectedMinPlayers === opt;
-                              return (
-                                <button
-                                  key={opt}
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedMinPlayers(opt);
-                                    showToast(`인원: ${opt} 적용`);
-                                  }}
-                                  className={`flex-1 py-2.5 rounded-lg text-xs font-black transition-all ${
-                                    isSelected 
-                                      ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
-                                      : 'text-gray-500 hover:text-gray-900 border border-transparent'
-                                  }`}
-                                >
-                                  {opt}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* 추가 필터 옵션 */}
-                      <div className="space-y-2.5 pt-2">
-                        <span className="text-xs font-black text-gray-500">추가 옵션 선택 (중복 가능)</span>
-                        <div className="grid grid-cols-2 gap-2">
-                          {[
-                            { icon: Award, label: '식사포함' },
-                            { icon: Sparkles, label: '양잔디' }
-                          ].map(feat => {
-                            const isSelected = selectedFeatures.includes(feat.label);
-                            return (
-                              <button
-                                key={feat.label}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedFeatures(prev => 
-                                    prev.includes(feat.label) 
-                                      ? prev.filter(f => f !== feat.label) 
-                                      : [...prev, feat.label]
-                                  );
-                                  showToast(`옵션: ${feat.label} ${!isSelected ? '선택' : '해제'}`);
-                                }}
-                                className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg border text-[11px] font-black transition-all ${
-                                  isSelected 
-                                    ? 'bg-green-600 text-white border-green-600 shadow-sm' 
-                                    : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-55'
-                                }`}
-                              >
-                                <feat.icon size={13} className={isSelected ? 'text-white' : 'text-gray-400'} />
-                                <span className="truncate">{feat.label}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 바텀시트 푸터 */}
-                    <div className="p-5 border-t border-gray-100 shrink-0 bg-white">
-                      <button 
-                        onClick={() => setShowDetailFilterSection(false)}
-                        className="w-full py-4 bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white font-black rounded-2xl shadow-md transition-all text-sm"
-                      >
-                        필터 조건 적용하기
-                      </button>
-                    </div>
-
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
 
           {/* 하단 검색하기 버튼 (고정 해제하여 스크롤 흐름에 맞춤) */}
@@ -5901,6 +5767,142 @@ const MyPageTabView = () => {
             )}
             <AiAgentModal />
             <BottomNav />
+
+            {/* 상세 필터 바텀시트 모달 (최상위 오버레이 배치) */}
+            <AnimatePresence>
+              {showDetailFilterSection && (
+                <motion.div 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  exit={{ opacity: 0 }} 
+                  className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-end justify-center" 
+                  onClick={() => setShowDetailFilterSection(false)}
+                >
+                  <motion.div 
+                    initial={{ y: '100%' }} 
+                    animate={{ y: 0 }} 
+                    exit={{ y: '100%' }} 
+                    transition={{ type: 'spring', damping: 25, stiffness: 300 }} 
+                    onClick={e => e.stopPropagation()} 
+                    className="bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)] flex flex-col w-full max-h-[85%] max-w-[500px]"
+                  >
+                    {/* 바텀시트 헤더 */}
+                    <div className="flex justify-between items-center p-5 border-b border-gray-100 shrink-0">
+                      <div className="flex items-center gap-2">
+                        <SlidersHorizontal size={18} className="text-green-600" />
+                        <h3 className="text-base font-extrabold text-gray-900">상세 필터 설정</h3>
+                      </div>
+                      <button 
+                        onClick={() => setShowDetailFilterSection(false)} 
+                        className="p-2 bg-gray-50 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-600 transition-colors"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+
+                    {/* 바텀시트 바디 */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6 hide-scrollbar">
+                      
+                      {/* 캐디 형태 */}
+                      <div className="space-y-2.5 text-left">
+                        <span className="text-xs font-black text-gray-500">캐디 형태 선택</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {['전체', '노캐디', '일반캐디', '드라이빙캐디', '인턴캐디'].map(caddie => (
+                            <button
+                              key={caddie}
+                              type="button"
+                              onClick={() => setSelectedCaddieType(caddie)}
+                              className={`px-3 py-2.5 text-xs font-bold rounded-lg border text-center transition-all flex-1 min-w-[70px] ${
+                                selectedCaddieType === caddie 
+                                  ? 'bg-green-600 text-white border-green-600 shadow-sm' 
+                                  : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'
+                              }`}
+                            >
+                              {caddie}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 플레이 인원 (단일 선택형) */}
+                      {bookingMode !== '조인' && (
+                        <div className="space-y-2.5 pt-2 text-left">
+                          <span className="text-xs font-black text-gray-500">플레이 인원 설정</span>
+                          <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1 select-none">
+                            {(['전체', '2인이상', '3인이상', '4인이상'] as const).map(opt => {
+                              const isSelected = selectedMinPlayers === opt;
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedMinPlayers(opt);
+                                    showToast(`인원: ${opt} 적용`);
+                                  }}
+                                  className={`flex-1 py-2.5 rounded-lg text-xs font-black transition-all ${
+                                    isSelected 
+                                      ? 'bg-white text-green-600 shadow-sm font-extrabold border border-gray-100' 
+                                      : 'text-gray-500 hover:text-gray-900 border border-transparent'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 추가 필터 옵션 */}
+                      <div className="space-y-2.5 pt-2 text-left">
+                        <span className="text-xs font-black text-gray-500">추가 옵션 선택 (중복 가능)</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { icon: Award, label: '식사포함' },
+                            { icon: Sparkles, label: '양잔디' }
+                          ].map(feat => {
+                            const isSelected = selectedFeatures.includes(feat.label);
+                            return (
+                              <button
+                                key={feat.label}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedFeatures(prev => 
+                                    prev.includes(feat.label) 
+                                      ? prev.filter(f => f !== feat.label) 
+                                      : [...prev, feat.label]
+                                  );
+                                  showToast(`옵션: ${feat.label} ${!isSelected ? '선택' : '해제'}`);
+                                }}
+                                className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg border text-[11px] font-black transition-all ${
+                                  isSelected 
+                                    ? 'bg-green-600 text-white border-green-600 shadow-sm' 
+                                    : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-55'
+                                }`}
+                              >
+                                <feat.icon size={13} className={isSelected ? 'text-white' : 'text-gray-400'} />
+                                <span className="truncate">{feat.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 바텀시트 푸터 */}
+                    <div className="p-5 border-t border-gray-100 shrink-0 bg-white">
+                      <button 
+                        onClick={() => setShowDetailFilterSection(false)}
+                        className="w-full py-4 bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white font-black rounded-2xl shadow-md transition-all text-sm"
+                      >
+                        필터 조건 적용하기
+                      </button>
+                    </div>
+
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       case 'map': return <MapView payload={view.payload} />;
