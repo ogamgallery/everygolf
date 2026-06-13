@@ -5023,25 +5023,30 @@ function EveryGolfApp() {
           {/* AI 골프 비서 에이전트 카드 */}
           <div 
             onClick={() => { setIsAiOpen(true); setAiChatStep(0); setAiInputVal(''); }}
-            className="bg-gradient-to-r from-green-50/50 to-emerald-50/30 border border-green-200/60 p-4.5 rounded-2xl flex gap-3.5 cursor-pointer hover:border-green-300 hover:shadow-md hover:scale-[1.01] transition-all relative overflow-hidden group mb-2"
+            className="bg-gradient-to-r from-green-50/50 to-emerald-50/30 border border-green-200/60 p-4 rounded-2xl flex gap-3.5 cursor-pointer hover:border-green-300 hover:shadow-md hover:scale-[1.01] transition-all relative overflow-hidden group mb-2.5 items-center"
           >
             <div className="absolute right-0 top-0 w-24 h-24 bg-green-100/30 rounded-full blur-2xl -mr-6 -mt-6"></div>
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-green-500 to-emerald-500 flex items-center justify-center text-white text-lg font-black shrink-0 shadow-md shadow-green-500/10 group-hover:scale-105 transition-transform">
+            
+            {/* 왼쪽 아이콘 박스: 일반 아바타와 크기/정렬 일치 */}
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-green-500 to-emerald-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-green-500/10 group-hover:scale-105 transition-transform">
               <Sparkles size={22} className="text-white animate-pulse" />
             </div>
 
+            {/* 오른쪽 텍스트 영역 */}
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5 relative z-10">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-black text-sm text-gray-900">AI 골프 비서 에이전트</span>
-                  <span className="text-[8px] font-black text-white bg-green-600 px-1.5 py-0.5 rounded shadow-sm">
-                    1초 티타임 매칭
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="font-extrabold text-sm text-gray-900 truncate">AI 골프 비서 에이전트</span>
+                  <span className="text-[8.5px] font-bold text-green-600 bg-green-50 border border-green-100 px-1.5 py-0.5 rounded shrink-0">
+                    1초 매칭
                   </span>
                 </div>
-                <span className="text-[9.5px] text-green-600 font-extrabold shrink-0 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">대화하기 <ChevronRight size={10} strokeWidth={3} /></span>
+                <span className="text-[9.5px] text-green-600 font-black shrink-0 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 ml-2">
+                  대화하기 <ChevronRight size={10} strokeWidth={3} />
+                </span>
               </div>
-              <p className="text-xs text-gray-600 font-bold mt-1 pr-6 leading-relaxed">
-                "이번 주말 경기/인천 20만원 이하 티타임 찾아줘" 같이 대화하듯 편하게 요청해보세요!
+              <p className="text-xs text-gray-500 font-medium truncate pr-4 mt-1">
+                "이번 주말 경기 20만원 이하 티타임 찾아줘" 같이 편하게 대화해 보세요!
               </p>
             </div>
           </div>
