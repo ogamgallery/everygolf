@@ -14,7 +14,7 @@ import { MOCK_BOOKINGS, MOCK_JOINS, MOCK_COMMUNITY, MOCK_PARTNERS, MOCK_INFLUENC
 
 interface ViewState {
   id: string;
-  type: 'main' | 'bookingDetail' | 'postDetail' | 'partnerDetail' | 'map' | 'empty' | 'checkout' | 'success' | 'chat' | 'influencerProfile' | 'influencerList' | 'regionList' | 'joinDetail' | 'storyForm' | 'login' | 'profileInput' | 'userProfileDetail' | 'chatRoom';
+  type: 'main' | 'bookingDetail' | 'postDetail' | 'partnerDetail' | 'map' | 'empty' | 'checkout' | 'success' | 'chat' | 'influencerProfile' | 'influencerList' | 'regionList' | 'joinDetail' | 'storyForm' | 'login' | 'profileInput' | 'userProfileDetail' | 'chatRoom' | 'agentUpload' | 'agentTeeList';
   payload?: any;
 }
 
@@ -80,6 +80,8 @@ function EveryGolfApp() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => sessionStorage.getItem('user_logged_in') === 'true');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [bookingList, setBookingList] = useState<any[]>(() => MOCK_BOOKINGS);
+  const [joinList] = useState<any[]>(() => MOCK_JOINS);
   
   const [partnerFilters, setPartnerFilters] = useState<PartnerFilters>({
     region: '전체',
@@ -555,7 +557,7 @@ function EveryGolfApp() {
                        딱 맞는 티타임 3건을 찾았습니다!
                      </div>
                      <div className="space-y-2">
-                       {MOCK_BOOKINGS.slice(0, 3).map(b => (
+                       {bookingList.slice(0, 3).map(b => (
                          <div key={b.id} onClick={() => { setIsAiOpen(false); pushView('bookingDetail', b); }} className="bg-white p-3 rounded-xl border border-gray-200 cursor-pointer flex gap-3 hover:border-green-400">
                            <img src={b.image} className="w-14 h-14 rounded-lg object-cover" />
                            <div className="flex-1">
@@ -695,11 +697,11 @@ function EveryGolfApp() {
         <TopBarNav title={title} transparent={false} />
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           <div className="flex justify-between items-end mb-2">
-             <p className="text-sm font-bold text-gray-500">총 {mode === '조인' ? MOCK_JOINS.length : MOCK_BOOKINGS.length}건의 결과가 있습니다.</p>
+             <p className="text-sm font-bold text-gray-500">총 {mode === '조인' ? joinList.length : bookingList.length}건의 결과가 있습니다.</p>
              <button className="text-xs font-bold text-gray-600 flex items-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm">시간순 <ChevronDown size={14}/></button>
           </div>
           {mode === '조인' ? (
-            MOCK_JOINS.map((join, i) => (
+            joinList.map((join, i) => (
               <div key={i} onClick={() => pushView('joinDetail', join)} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:border-green-300 transition-colors">
                 <div className="flex justify-between mb-2">
                    <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">{join.needed}명 모집중</span>
@@ -716,7 +718,7 @@ function EveryGolfApp() {
               </div>
             ))
           ) : (
-            MOCK_BOOKINGS.map((booking, i) => (
+            bookingList.map((booking, i) => (
               <div key={i} onClick={() => pushView('bookingDetail', booking)} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:border-blue-300 flex gap-4 transition-colors">
                 <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden shrink-0"><img src={booking.image} className="w-full h-full object-cover"/></div>
                 <div className="flex-1 flex flex-col justify-between min-w-0">
@@ -962,9 +964,9 @@ function EveryGolfApp() {
             <TopBarNav title="알림 내역" />
             <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
               {[
-                { icon: Calendar, title: '예약이 확정되었습니다 (예약번호: B77891)', time: '1시간 전', color: 'text-green-500', bg: 'bg-green-50', action: () => pushView('bookingDetail', MOCK_BOOKINGS[0]) },
+                { icon: Calendar, title: '예약이 확정되었습니다 (예약번호: B77891)', time: '1시간 전', color: 'text-green-500', bg: 'bg-green-50', action: () => pushView('bookingDetail', bookingList[0]) },
                 { icon: MessageSquare, title: '내 게시글에 새로운 댓글이 달렸습니다', time: '3시간 전', color: 'text-blue-500', bg: 'bg-blue-50', action: () => pushView('postDetail', MOCK_COMMUNITY[0]) },
-                { icon: Heart, title: '회원님이 설정한 조건에 맞는 특가티가 등록되었습니다', time: '어제', color: 'text-red-500', bg: 'bg-red-50', action: () => pushView('bookingDetail', MOCK_BOOKINGS[1]) },
+                { icon: Heart, title: '회원님이 설정한 조건에 맞는 특가티가 등록되었습니다', time: '어제', color: 'text-red-500', bg: 'bg-red-50', action: () => pushView('bookingDetail', bookingList[1]) },
               ].map((noti, i) => (
                 <div key={i} onClick={noti.action} className="p-4 flex gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
                   <div className={`w-12 h-12 shrink-0 ${noti.bg} rounded-full flex items-center justify-center`}><noti.icon size={20} className={noti.color}/></div>
@@ -989,19 +991,19 @@ function EveryGolfApp() {
      <button className="flex-1 bg-white border border-gray-200 text-gray-600 font-bold py-2 rounded-lg text-sm">예약 취소</button>
    </div>
    <h3 className="font-bold text-gray-900">다가오는 라운딩</h3>
-              <div onClick={() => pushView('bookingDetail', MOCK_BOOKINGS[0])} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col cursor-pointer hover:border-green-300 transition-colors">
+              <div onClick={() => pushView('bookingDetail', bookingList[0])} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col cursor-pointer hover:border-green-300 transition-colors">
                 <div className="flex justify-between items-center mb-3">
                   <span className="bg-green-50 text-green-600 text-xs font-bold px-2 py-1 rounded">예약확정</span>
                   <span className="text-gray-400 text-xs">내일 오전</span>
                 </div>
-                <h4 className="font-black text-xl text-gray-900 mb-1">{MOCK_BOOKINGS[0].name}</h4>
-                <p className="text-sm text-gray-500 font-medium mb-4 flex items-center gap-1"><MapPin size={14}/> {MOCK_BOOKINGS[0].location} • {MOCK_BOOKINGS[0].time}</p>
+                <h4 className="font-black text-xl text-gray-900 mb-1">{bookingList[0].name}</h4>
+                <p className="text-sm text-gray-500 font-medium mb-4 flex items-center gap-1"><MapPin size={14}/> {bookingList[0].location} • {bookingList[0].time}</p>
                 <button className="w-full py-3 bg-gray-50 text-gray-900 text-sm font-bold rounded-xl hover:bg-gray-100 transition-colors border border-gray-200">예약 상세보기</button>
               </div>
               <h3 className="font-bold text-gray-900 pt-4">지난 내역</h3>
-              <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex justify-between items-center opacity-80 cursor-pointer hover:bg-gray-50" onClick={() => pushView('bookingDetail', MOCK_BOOKINGS[2])}>
+              <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex justify-between items-center opacity-80 cursor-pointer hover:bg-gray-50" onClick={() => pushView('bookingDetail', bookingList[2])}>
                 <div>
-                  <h4 className="font-bold text-gray-900 mb-1">{MOCK_BOOKINGS[2].name}</h4>
+                  <h4 className="font-bold text-gray-900 mb-1">{bookingList[2].name}</h4>
                   <p className="text-xs text-gray-500">2023.10.15 완료</p>
                 </div>
                 <button onClick={(e) => { e.stopPropagation(); pushView('empty', { type: 'default', title: '새 글 작성' }); }} className="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-200 transition-colors">리뷰 작성</button>
@@ -1066,7 +1068,7 @@ function EveryGolfApp() {
             <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
               <h3 className="font-bold text-gray-900 mb-3">검색된 골프장 (3건)</h3>
               <div className="space-y-3 mb-6">
-                {MOCK_BOOKINGS.slice(0, 3).map((b, i) => (
+                {bookingList.slice(0, 3).map((b, i) => (
                   <div key={i} onClick={() => pushView('bookingDetail', b)} className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex gap-3 cursor-pointer hover:shadow-md">
                     <img src={b.image} className="w-16 h-16 rounded-lg object-cover" />
                     <div>
@@ -1625,7 +1627,7 @@ function EveryGolfApp() {
     const mapRef = useRef<HTMLDivElement>(null);
     const controls = useAnimation();
 
-    const sourceData = isCommunityMode ? partnerList : (isJoinMode ? MOCK_JOINS : MOCK_BOOKINGS);
+    const sourceData = isCommunityMode ? partnerList : (isJoinMode ? joinList : bookingList);
     
     const groupedMap = new globalThis.Map<string, { name: string; location: string; count: number; items: any[] }>();
     
@@ -3160,7 +3162,7 @@ function EveryGolfApp() {
 
     // 실시간 필터링 로직 (선택된 날짜, 시간대, 지역, 검색어, 가격 상한선, 캐디 조건 매칭)
     const getFilteredItems = () => {
-      let rawData: any[] = bookingMode === '부킹' ? MOCK_BOOKINGS : MOCK_JOINS;
+      let rawData: any[] = bookingMode === '부킹' ? bookingList : joinList;
       
       // 날짜 변경 시 리스트 셔플링 시뮬레이션 (동적 효과 부여)
       const dateIdx = dates.indexOf(selectedDate);
@@ -5385,6 +5387,31 @@ const MyPageTabView = () => {
             </div>
           </div>
 
+          {/* 에이전트 전용 도구 그룹 */}
+          {userProfile?.role === '에브리골프 에이전트' && (
+            <div className="bg-white mb-2 shadow-sm shrink-0 w-full border-t border-b border-gray-100/50 mt-2">
+              <div className="px-5 pt-4 pb-1">
+                <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">에이전트 전용 도구</h3>
+              </div>
+              <ul className="divide-y divide-gray-50 w-full">
+                <li onClick={() => pushView('agentUpload')} className="p-5 w-full flex justify-between items-center text-sm font-bold text-gray-800 cursor-pointer hover:bg-gray-50 transition-colors group">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 shrink-0 bg-green-50 rounded-xl flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors"><Plus size={18} className="shrink-0"/></div>
+                    <span className="truncate">⛳ 새 부킹 티타임 등록하기</span>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-300 shrink-0"/>
+                </li>
+                <li onClick={() => pushView('agentTeeList')} className="p-5 w-full flex justify-between items-center text-sm font-bold text-gray-800 cursor-pointer hover:bg-gray-50 transition-colors group">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 shrink-0 bg-green-50 rounded-xl flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors"><CalendarCheck size={18} className="shrink-0"/></div>
+                    <span className="truncate">📋 등록한 티타임 관리/조회</span>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-300 shrink-0"/>
+                </li>
+              </ul>
+            </div>
+          )}
+
           {/* 마이페이지 메뉴 */}
           <div className="bg-white mb-2 shadow-sm shrink-0 w-full">
             <ul className="divide-y divide-gray-50 w-full">
@@ -5454,6 +5481,378 @@ const MyPageTabView = () => {
     </div>
   );
 };
+  // --- [Agent Tee-time Upload View] ---
+  const AgentUploadView = () => {
+    const [region, setRegion] = useState('경기/인천');
+    const [golfCourse, setGolfCourse] = useState('');
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
+    const [price, setPrice] = useState('');
+    const [isPrepaid, setIsPrepaid] = useState(false);
+    const [isCartIncluded, setIsCartIncluded] = useState(false);
+    const [isMealIncluded, setIsMealIncluded] = useState(false);
+    const [holeCount, setHoleCount] = useState<number>(18);
+    const [is3PlayerAllowed, setIs3PlayerAllowed] = useState(false);
+    const [caddieType, setCaddieType] = useState('캐디');
+    const [description, setDescription] = useState('');
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!golfCourse.trim() || !date || !time || !price) {
+        showToast('필수 항목(골프장, 날짜, 시간, 그린피)을 입력해 주세요.');
+        return;
+      }
+
+      const rawPriceNum = parseInt(price.replace(/[^0-9]/g, '')) || 0;
+      const formattedPrice = rawPriceNum.toLocaleString();
+
+      const dateObj = new Date(date);
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const dayOfWeekList = ['일', '월', '화', '수', '목', '금', '토'];
+      const dayOfWeek = dayOfWeekList[dateObj.getDay()];
+      const formattedDate = `${month}/${day} (${dayOfWeek})`;
+
+      const newBooking = {
+        id: Date.now(),
+        name: golfCourse,
+        location: region,
+        time: `${formattedDate} · ${time}`,
+        price: formattedPrice,
+        isPrepaid,
+        isCartIncluded,
+        isMealIncluded,
+        holeCount,
+        is3PlayerAllowed,
+        caddieType,
+        description: description.trim() || `${golfCourse}에서 등록된 특가 부킹 티타임입니다.`,
+        hostName: userProfile?.name || '부킹 매니저 님',
+        status: '가능'
+      };
+
+      setBookingList(prev => [newBooking, ...prev]);
+      showToast('부킹 티타임이 성공적으로 등록되었습니다! ⛳');
+      popView();
+    };
+
+    return (
+      <div className="w-full h-full bg-white flex flex-col relative">
+        {/* Header */}
+        <div className="sticky top-0 z-30 w-full bg-white border-b border-gray-100 px-4 pt-12 pb-4 flex items-center justify-between shadow-sm">
+          <button onClick={popView} className="p-2 -ml-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors">
+            <ChevronLeft size={24} />
+          </button>
+          <h1 className="text-base font-extrabold text-gray-900">새 부킹 티타임 등록</h1>
+          <div className="w-10"></div>
+        </div>
+
+        {/* Form Body */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 pb-20">
+          
+          {/* 기본구장정보 */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">기본 구장 정보</h3>
+            
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500">지역 선택 <span className="text-red-500">*</span></label>
+              <select 
+                value={region} 
+                onChange={e => setRegion(e.target.value)}
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800"
+              >
+                {['경기/인천', '충청', '강원', '전라', '경상', '제주'].map(r => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500">골프장명 <span className="text-red-500">*</span></label>
+              <input 
+                type="text" 
+                placeholder="골프장 이름 입력 (예: 아일랜드 CC)" 
+                value={golfCourse}
+                onChange={e => setGolfCourse(e.target.value)}
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800 placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+          {/* 일정정보 */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">티타임 일정</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-500">날짜 <span className="text-red-500">*</span></label>
+                <input 
+                  type="date" 
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
+                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-500">시간 <span className="text-red-500">*</span></label>
+                <input 
+                  type="time" 
+                  value={time}
+                  onChange={e => setTime(e.target.value)}
+                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 비용조건 */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">비용 및 포함 조건</h3>
+            
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500">그린피 금액 (1인) <span className="text-red-500">*</span></label>
+              <div className="relative flex items-center">
+                <input 
+                  type="number" 
+                  placeholder="예: 120000" 
+                  value={price}
+                  onChange={e => setPrice(e.target.value)}
+                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800 placeholder-gray-400"
+                />
+                <span className="absolute right-4 text-sm font-bold text-gray-500">원</span>
+              </div>
+            </div>
+
+            {/* 토글 조건 리스트 */}
+            <div className="space-y-3 bg-gray-50 border border-gray-100 p-4.5 rounded-2xl">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-xs font-black text-gray-800">그린피 전체 선입금</p>
+                  <p className="text-[10px] text-gray-400 font-bold mt-0.5">예약 시 금액 전체 결제 여부</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setIsPrepaid(!isPrepaid)}
+                  className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${isPrepaid ? 'bg-green-600' : 'bg-gray-200'}`}
+                >
+                  <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${isPrepaid ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                </button>
+              </div>
+
+              <div className="flex justify-between items-center border-t border-gray-100 pt-3">
+                <div>
+                  <p className="text-xs font-black text-gray-800">카트비 포함</p>
+                  <p className="text-[10px] text-gray-400 font-bold mt-0.5">카트 대여료 포함 여부</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setIsCartIncluded(!isCartIncluded)}
+                  className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${isCartIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
+                >
+                  <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${isCartIncluded ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                </button>
+              </div>
+
+              <div className="flex justify-between items-center border-t border-gray-100 pt-3">
+                <div>
+                  <p className="text-xs font-black text-gray-800">식사 포함</p>
+                  <p className="text-[10px] text-gray-400 font-bold mt-0.5">클럽하우스 조식/중식 등 제공</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setIsMealIncluded(!isMealIncluded)}
+                  className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${isMealIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
+                >
+                  <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${isMealIncluded ? 'translate-x-5.5' : 'translate-x-0'}`} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 코스 세부 정보 */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">코스 세부 조건</h3>
+            
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-500">홀수 선택</label>
+              <div className="grid grid-cols-4 gap-2">
+                {[9, 18, 27, 36].map(h => (
+                  <button
+                    key={h}
+                    type="button"
+                    onClick={() => setHoleCount(h)}
+                    className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all ${
+                      holeCount === h 
+                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
+                        : 'bg-gray-50 border-gray-100 text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {h}홀
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center bg-gray-50 border border-gray-100 p-4 rounded-2xl mt-2">
+              <div>
+                <p className="text-xs font-black text-gray-800">3인 진행 가능 여부</p>
+                <p className="text-[10px] text-gray-400 font-bold mt-0.5">3인 라운딩 동시 출발 가능</p>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setIs3PlayerAllowed(!is3PlayerAllowed)}
+                className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none ${is3PlayerAllowed ? 'bg-green-600' : 'bg-gray-200'}`}
+              >
+                <div className={`bg-white w-5.5 h-5.5 rounded-full shadow-md transform transition-transform duration-300 ${is3PlayerAllowed ? 'translate-x-5.5' : 'translate-x-0'}`} />
+              </button>
+            </div>
+
+            <div className="space-y-2 mt-4">
+              <label className="text-xs font-bold text-gray-500">캐디 여부</label>
+              <div className="grid grid-cols-3 gap-2">
+                {['캐디', '노캐디', '드라이빙캐디'].map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setCaddieType(c)}
+                    className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all ${
+                      caddieType === c 
+                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
+                        : 'bg-gray-50 border-gray-100 text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 코멘트 */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-gray-500">상세 안내 사항</label>
+            <textarea 
+              placeholder="예약 취소 규정, 양도 조건 또는 특이 사항을 자세히 적어주세요."
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              rows={4}
+              className="w-full px-4 py-3.5 bg-gray-55 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-medium text-gray-800 placeholder-gray-400 resize-none leading-relaxed"
+            />
+          </div>
+
+          <button 
+            type="submit"
+            className="w-full py-4 mt-6 bg-green-600 hover:bg-green-700 active:scale-[0.99] text-white font-black rounded-2xl text-sm shadow-lg shadow-green-150 transition-all"
+          >
+            티타임 등록 완료 ⛳
+          </button>
+        </form>
+      </div>
+    );
+  };
+
+  // --- [Agent Tee-time Manage/List View] ---
+  const AgentTeeListView = () => {
+    const myTees = bookingList.filter(b => b.hostName === (userProfile?.name || '부킹 매니저 님'));
+
+    const handleCloseTee = (id: number) => {
+      setBookingList(prev => prev.map(b => b.id === id ? { ...b, status: '마감' } : b));
+      showToast('티타임이 마감 처리되었습니다.');
+    };
+
+    const handleDeleteTee = (id: number) => {
+      setBookingList(prev => prev.filter(b => b.id !== id));
+      showToast('티타임이 삭제되었습니다.');
+    };
+
+    return (
+      <div className="w-full h-full bg-white flex flex-col relative">
+        {/* Header */}
+        <div className="sticky top-0 z-30 w-full bg-white border-b border-gray-100 px-4 pt-12 pb-4 flex items-center justify-between shadow-sm">
+          <button onClick={popView} className="p-2 -ml-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors">
+            <ChevronLeft size={24} />
+          </button>
+          <h1 className="text-base font-extrabold text-gray-900">등록한 티타임 관리</h1>
+          <div className="w-10"></div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4 pb-20 bg-gray-50/30">
+          {myTees.length === 0 ? (
+            <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 mb-4 border border-gray-100 shadow-sm">
+                <Calendar size={24} />
+              </div>
+              <h3 className="text-sm font-black text-gray-800">등록한 부킹 티타임이 없습니다</h3>
+              <p className="text-xs text-gray-400 font-bold mt-1.5 leading-relaxed">
+                에브리골프 매장에 등록된 할인 혜택 구장의<br />
+                티타임을 직접 등록해 유저들을 유입해 보세요!
+              </p>
+              <button 
+                onClick={() => { popView(); pushView('agentUpload'); }}
+                className="mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-black rounded-xl text-xs shadow-md shadow-green-150 transition-all active:scale-[0.98]"
+              >
+                티타임 등록하러 가기
+              </button>
+            </div>
+          ) : (
+            myTees.map(tee => (
+              <div key={tee.id} className="bg-white p-4.5 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className={`text-[9.5px] font-black px-2 py-0.5 rounded border ${
+                      tee.status === '마감' 
+                        ? 'bg-gray-100 text-gray-400 border-gray-200' 
+                        : 'bg-green-50 text-green-600 border-green-100'
+                    }`}>
+                      {tee.status === '마감' ? '마감됨' : '예약가능'}
+                    </span>
+                    <h3 className="font-extrabold text-base text-gray-900 mt-2">{tee.name}</h3>
+                    <p className="text-xs text-gray-500 font-bold mt-1 flex items-center gap-1">
+                      <MapPin size={12}/> {tee.location} • {tee.time}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-bold text-gray-400">그린피 (1인)</p>
+                    <p className="text-base font-black text-green-600 mt-0.5">{tee.price}원</p>
+                  </div>
+                </div>
+
+                {/* 태그그룹 */}
+                <div className="flex flex-wrap gap-1.5 border-t border-gray-50 pt-3">
+                  <span className="text-[10px] font-bold bg-gray-50 text-gray-600 px-2 py-1 rounded-lg border border-gray-100">{tee.holeCount}홀</span>
+                  <span className="text-[10px] font-bold bg-gray-50 text-gray-600 px-2 py-1 rounded-lg border border-gray-100">{tee.caddieType}</span>
+                  {tee.is3PlayerAllowed && <span className="text-[10px] font-bold bg-gray-50 text-gray-600 px-2 py-1 rounded-lg border border-gray-100">3인진행</span>}
+                  {tee.isCartIncluded && <span className="text-[10px] font-bold bg-green-50/50 text-green-600 px-2 py-1 rounded-lg border border-green-100/30">카트비 포함</span>}
+                  {tee.isMealIncluded && <span className="text-[10px] font-bold bg-green-50/50 text-green-600 px-2 py-1 rounded-lg border border-green-100/30">식사 포함</span>}
+                </div>
+
+                {/* 액션 버튼 */}
+                <div className="flex gap-2 border-t border-gray-50 pt-3">
+                  <button 
+                    disabled={tee.status === '마감'}
+                    onClick={() => handleCloseTee(tee.id)}
+                    className={`flex-1 py-2.5 rounded-xl text-xs font-extrabold transition-all border flex items-center justify-center gap-1 ${
+                      tee.status === '마감' 
+                        ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed' 
+                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-[0.98]'
+                    }`}
+                  >
+                    <span>마감하기</span>
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteTee(tee.id)}
+                    className="flex-1 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-xl text-xs transition-all border border-red-100 active:scale-[0.98] flex items-center justify-center gap-1"
+                  >
+                    <span>삭제하기</span>
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // --- [Main Stack Router] ---
 
   const renderView = (view: ViewState) => {
@@ -5494,6 +5893,8 @@ const MyPageTabView = () => {
       case 'login': return <LoginView />;
       case 'profileInput': return <ProfileInputView />;
       case 'userProfileDetail': return <UserProfileDetailView payload={view.payload} />;
+      case 'agentUpload': return <AgentUploadView />;
+      case 'agentTeeList': return <AgentTeeListView />;
       default: return null;
     }
   };
