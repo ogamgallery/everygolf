@@ -69,7 +69,14 @@ const regionOptions = ['전체 지역', '서울/경기', '강원', '충청', '�
 
 function EveryGolfApp() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [viewStack, setViewStack] = useState<ViewState[]>([{ id: 'home-root', type: 'main' }]);
+  const [viewStack, setViewStack] = useState<ViewState[]>(() => {
+    const loggedIn = sessionStorage.getItem('user_logged_in') === 'true';
+    const initialStack: ViewState[] = [{ id: 'home-root', type: 'main' }];
+    if (!loggedIn) {
+      initialStack.push({ id: 'initial-login', type: 'login' });
+    }
+    return initialStack;
+  });
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => sessionStorage.getItem('user_logged_in') === 'true');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -353,9 +360,7 @@ function EveryGolfApp() {
   };
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      pushView('login');
-    } else {
+    if (isLoggedIn) {
       const role = sessionStorage.getItem('user_role');
       if (role === 'agent') {
         setUserProfile({ 
@@ -5257,6 +5262,7 @@ const MyPageTabView = () => {
       const handleLogout = () => {
         sessionStorage.removeItem('user_logged_in');
         setIsLoggedIn(false);
+        pushView('login');
         showToast('로그아웃 완료! 안전하게 세션이 종료되었습니다. ⛳');
       };
 
