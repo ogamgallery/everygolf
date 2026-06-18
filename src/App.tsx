@@ -5386,7 +5386,7 @@ const MyPageTabView = () => {
     const [isMealIncluded, setIsMealIncluded] = useState(false);
     const [holeCount, setHoleCount] = useState<number>(18);
     const [is3PlayerAllowed, setIs3PlayerAllowed] = useState(false);
-    const [caddieType, setCaddieType] = useState('캐디');
+    const [caddieType, setCaddieType] = useState('일반캐디');
     const [description, setDescription] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -5528,7 +5528,7 @@ const MyPageTabView = () => {
                     onChange={e => setCaddieType(e.target.value)}
                     className="w-full px-2 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
                   >
-                    {['캐디', '노캐디', '드라이빙캐디'].map(c => (
+                    {['일반캐디', '노캐디', '드라이빙캐디', '인턴캐디'].map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
