@@ -5453,8 +5453,7 @@ const MyPageTabView = () => {
               
               {/* 1행: 지역 & 구장 */}
               <div className="grid grid-cols-12 gap-2.5">
-                <div className="col-span-4 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">지역 *</span>
+                <div className="col-span-4">
                   <select 
                     value={region} 
                     onChange={e => setRegion(e.target.value)}
@@ -5465,8 +5464,7 @@ const MyPageTabView = () => {
                     ))}
                   </select>
                 </div>
-                <div className="col-span-8 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">골프장명 *</span>
+                <div className="col-span-8">
                   <input 
                     type="text" 
                     placeholder="골프장 이름 (예: 아일랜드 CC)" 
@@ -5479,8 +5477,7 @@ const MyPageTabView = () => {
 
               {/* 2행: 날짜 & 시간(시/분 분할 입력 + 드래그 목록) */}
               <div className="grid grid-cols-12 gap-2.5">
-                <div className="col-span-6 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">날짜 *</span>
+                <div className="col-span-6">
                   <input 
                     type="date" 
                     value={date}
@@ -5488,8 +5485,7 @@ const MyPageTabView = () => {
                     className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
                   />
                 </div>
-                <div className="col-span-3 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">시 *</span>
+                <div className="col-span-3">
                   <input 
                     type="text"
                     maxLength={2}
@@ -5508,8 +5504,7 @@ const MyPageTabView = () => {
                     ))}
                   </datalist>
                 </div>
-                <div className="col-span-3 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">분 *</span>
+                <div className="col-span-3">
                   <input 
                     type="text"
                     maxLength={2}
@@ -5532,8 +5527,7 @@ const MyPageTabView = () => {
 
               {/* 3행: 홀수 & 그린피 & 캐디 */}
               <div className="grid grid-cols-12 gap-2.5">
-                <div className="col-span-3 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">홀수</span>
+                <div className="col-span-3">
                   <select
                     value={holeCount}
                     onChange={e => setHoleCount(Number(e.target.value))}
@@ -5544,8 +5538,7 @@ const MyPageTabView = () => {
                     ))}
                   </select>
                 </div>
-                <div className="col-span-5 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">그린피 (1인) *</span>
+                <div className="col-span-5">
                   <div className="relative flex items-center">
                     <input 
                       type="number" 
@@ -5558,8 +5551,7 @@ const MyPageTabView = () => {
                     <span className="absolute right-2 text-[10px] font-black text-gray-400">만원</span>
                   </div>
                 </div>
-                <div className="col-span-4 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">캐디여부</span>
+                <div className="col-span-4">
                   <select
                     value={caddieType}
                     onChange={e => setCaddieType(e.target.value)}
@@ -5573,8 +5565,7 @@ const MyPageTabView = () => {
               </div>
 
               {/* 4행: 가로형 옵션 체크박스 그룹 */}
-              <div className="pt-1.5">
-                <span className="text-[10px] font-black text-gray-400 block mb-1.5">선택 옵션</span>
+              <div className="pt-0.5">
                 <div className="grid grid-cols-4 gap-2">
                   {[
                     { state: isPrepaid, setter: setIsPrepaid, label: '선입금' },
@@ -5601,14 +5592,13 @@ const MyPageTabView = () => {
             </div>
 
             {/* 상세 안내 코멘트 */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black text-gray-400">상세 안내 사항</span>
+            <div>
               <textarea 
                 placeholder="예약 취소 규정, 양도 조건 또는 특이 사항을 기재하세요."
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 rows={3}
-                className="w-full px-3.5 py-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-medium text-gray-800 placeholder-gray-400 resize-none leading-relaxed focus:outline-none focus:border-green-500 focus:bg-white transition-all"
+                className="w-full px-3.5 py-3 bg-gray-55 border border-gray-100 rounded-xl text-xs font-medium text-gray-800 placeholder-gray-400 resize-none leading-relaxed focus:outline-none focus:border-green-500 focus:bg-white transition-all"
               />
             </div>
           </div>
