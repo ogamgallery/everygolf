@@ -5429,219 +5429,173 @@ const MyPageTabView = () => {
     };
 
     return (
-      <div className="w-full h-full bg-white flex flex-col relative">
+      <div className="w-full h-full bg-white flex flex-col relative overflow-hidden">
         {/* Header */}
-        <div className="sticky top-0 z-30 w-full bg-white border-b border-gray-100 px-4 pt-12 pb-4 flex items-center justify-between shadow-sm">
-          <button onClick={popView} className="p-2 -ml-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors">
-            <ChevronLeft size={24} />
+        <div className="sticky top-0 z-30 w-full bg-white border-b border-gray-100 px-4 pt-11 pb-3.5 flex items-center justify-between shadow-sm">
+          <button onClick={popView} className="p-1.5 -ml-1 text-gray-600 hover:bg-gray-50 rounded-full transition-colors">
+            <ChevronLeft size={22} />
           </button>
-          <h1 className="text-base font-extrabold text-gray-900">새 부킹 티타임 등록</h1>
-          <div className="w-10"></div>
+          <h1 className="text-sm font-black text-gray-900 tracking-tight">새 부킹 티타임 등록</h1>
+          <div className="w-8"></div>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-6 space-y-6 pb-20">
+        <form onSubmit={handleSubmit} className="flex-1 px-4 py-4 space-y-4 flex flex-col justify-between overflow-hidden">
           
-          {/* 기본구장정보 */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">기본 구장 정보</h3>
-            
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-gray-500">지역 선택 <span className="text-red-500">*</span></label>
-              <select 
-                value={region} 
-                onChange={e => setRegion(e.target.value)}
-                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800"
-              >
-                {['경기/인천', '충청', '강원', '전라', '경상', '제주'].map(r => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
+          <div className="space-y-3.5 flex-1 overflow-y-auto pr-1 hide-scrollbar">
+            {/* 조밀한 그리드 입력 패널 */}
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 space-y-3">
+              
+              {/* 1행: 지역 & 구장 */}
+              <div className="grid grid-cols-12 gap-2.5">
+                <div className="col-span-4 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">지역 *</span>
+                  <select 
+                    value={region} 
+                    onChange={e => setRegion(e.target.value)}
+                    className="w-full px-2 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
+                  >
+                    {['경기/인천', '충청', '강원', '전라', '경상', '제주'].map(r => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-span-8 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">골프장명 *</span>
+                  <input 
+                    type="text" 
+                    placeholder="골프장 이름 (예: 아일랜드 CC)" 
+                    value={golfCourse}
+                    onChange={e => setGolfCourse(e.target.value)}
+                    className="w-full px-3 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-500"
+                  />
+                </div>
+              </div>
+
+              {/* 2행: 날짜 & 시간 */}
+              <div className="grid grid-cols-12 gap-2.5">
+                <div className="col-span-6 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">날짜 *</span>
+                  <input 
+                    type="date" 
+                    value={date}
+                    onChange={e => setDate(e.target.value)}
+                    className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
+                  />
+                </div>
+                <div className="col-span-6 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">시간 *</span>
+                  <input 
+                    type="time" 
+                    value={time}
+                    onChange={e => setTime(e.target.value)}
+                    className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
+                  />
+                </div>
+              </div>
+
+              {/* 3행: 홀수 & 그린피 & 캐디 */}
+              <div className="grid grid-cols-12 gap-2.5">
+                <div className="col-span-3 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">홀수</span>
+                  <select
+                    value={holeCount}
+                    onChange={e => setHoleCount(Number(e.target.value))}
+                    className="w-full px-2 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
+                  >
+                    {[9, 18, 27, 36].map(h => (
+                      <option key={h} value={h}>{h}홀</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-span-5 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">그린피 (1인) *</span>
+                  <div className="relative flex items-center">
+                    <input 
+                      type="number" 
+                      placeholder="예: 120000" 
+                      value={price}
+                      onChange={e => setPrice(e.target.value)}
+                      className="w-full pl-3 pr-6 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-500"
+                    />
+                    <span className="absolute right-2 text-[10px] font-black text-gray-400">원</span>
+                  </div>
+                </div>
+                <div className="col-span-4 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">캐디여부</span>
+                  <select
+                    value={caddieType}
+                    onChange={e => setCaddieType(e.target.value)}
+                    className="w-full px-2 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
+                  >
+                    {['캐디', '노캐디', '드라이빙캐디'].map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 4행: 가로형 옵션 체크박스 그룹 */}
+              <div className="pt-1.5">
+                <span className="text-[10px] font-black text-gray-400 block mb-1.5">선택 옵션</span>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { state: isPrepaid, setter: setIsPrepaid, label: '선입금' },
+                    { state: isCartIncluded, setter: setIsCartIncluded, label: '카트포함' },
+                    { state: isMealIncluded, setter: setIsMealIncluded, label: '식사포함' },
+                    { state: is3PlayerAllowed, setter: setIs3PlayerAllowed, label: '3인진행' }
+                  ].map(opt => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      onClick={() => opt.setter(!opt.state)}
+                      className={`py-2 px-1 rounded-xl text-[10px] font-black border transition-all text-center ${
+                        opt.state 
+                          ? 'bg-green-600 border-green-600 text-white shadow-sm' 
+                          : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
             </div>
 
+            {/* 상세 안내 코멘트 */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-gray-500">골프장명 <span className="text-red-500">*</span></label>
-              <input 
-                type="text" 
-                placeholder="골프장 이름 입력 (예: 아일랜드 CC)" 
-                value={golfCourse}
-                onChange={e => setGolfCourse(e.target.value)}
-                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800 placeholder-gray-400"
+              <span className="text-[10px] font-black text-gray-400">상세 안내 사항</span>
+              <textarea 
+                placeholder="예약 취소 규정, 양도 조건 또는 특이 사항을 기재하세요."
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                rows={3}
+                className="w-full px-3.5 py-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-medium text-gray-800 placeholder-gray-400 resize-none leading-relaxed focus:outline-none focus:border-green-500 focus:bg-white transition-all"
               />
             </div>
           </div>
 
-          {/* 일정정보 */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">티타임 일정</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500">날짜 <span className="text-red-500">*</span></label>
-                <input 
-                  type="date" 
-                  value={date}
-                  onChange={e => setDate(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500">시간 <span className="text-red-500">*</span></label>
-                <input 
-                  type="time" 
-                  value={time}
-                  onChange={e => setTime(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800"
-                />
-              </div>
-            </div>
+          {/* 하단 취소 / 등록 가로 버튼 */}
+          <div className="grid grid-cols-12 gap-2.5 pt-3 border-t border-gray-100 bg-white shrink-0">
+            <button 
+              type="button"
+              onClick={popView}
+              className="col-span-4 py-3.5 bg-gray-50 hover:bg-gray-100 text-gray-500 font-extrabold rounded-xl text-xs border border-gray-100 active:scale-[0.98] transition-all"
+            >
+              취소
+            </button>
+            <button 
+              type="submit"
+              className="col-span-8 py-3.5 bg-green-600 hover:bg-green-700 text-white font-black rounded-xl text-xs shadow-md shadow-green-150 active:scale-[0.98] transition-all"
+            >
+              티타임 등록 완료 ⛳
+            </button>
           </div>
-
-          {/* 비용조건 */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">비용 및 포함 조건</h3>
-            
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-gray-500">그린피 금액 (1인) <span className="text-red-500">*</span></label>
-              <div className="relative flex items-center">
-                <input 
-                  type="number" 
-                  placeholder="예: 120000" 
-                  value={price}
-                  onChange={e => setPrice(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-semibold text-gray-800 placeholder-gray-400"
-                />
-                <span className="absolute right-4 text-sm font-bold text-gray-500">원</span>
-              </div>
-            </div>
-
-            {/* 토글 조건 리스트 */}
-            <div className="space-y-3 bg-gray-50 border border-gray-100 p-4.5 rounded-2xl">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-xs font-black text-gray-800">그린피 전체 선입금</p>
-                  <p className="text-[10px] text-gray-400 font-bold mt-0.5">예약 시 금액 전체 결제 여부</p>
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => setIsPrepaid(!isPrepaid)}
-                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${isPrepaid ? 'bg-green-600' : 'bg-gray-200'}`}
-                >
-                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isPrepaid ? 'translate-x-6' : 'translate-x-0'}`} />
-                </button>
-              </div>
-
-              <div className="flex justify-between items-center border-t border-gray-100 pt-3">
-                <div>
-                  <p className="text-xs font-black text-gray-800">카트비 포함</p>
-                  <p className="text-[10px] text-gray-400 font-bold mt-0.5">카트 대여료 포함 여부</p>
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => setIsCartIncluded(!isCartIncluded)}
-                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${isCartIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
-                >
-                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isCartIncluded ? 'translate-x-6' : 'translate-x-0'}`} />
-                </button>
-              </div>
-
-              <div className="flex justify-between items-center border-t border-gray-100 pt-3">
-                <div>
-                  <p className="text-xs font-black text-gray-800">식사 포함</p>
-                  <p className="text-[10px] text-gray-400 font-bold mt-0.5">클럽하우스 조식/중식 등 제공</p>
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => setIsMealIncluded(!isMealIncluded)}
-                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${isMealIncluded ? 'bg-green-600' : 'bg-gray-200'}`}
-                >
-                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isMealIncluded ? 'translate-x-6' : 'translate-x-0'}`} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 코스 세부 정보 */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-black text-green-600 uppercase tracking-wider">코스 세부 조건</h3>
-            
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-500">홀수 선택</label>
-              <div className="grid grid-cols-4 gap-2">
-                {[9, 18, 27, 36].map(h => (
-                  <button
-                    key={h}
-                    type="button"
-                    onClick={() => setHoleCount(h)}
-                    className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all ${
-                      holeCount === h 
-                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
-                        : 'bg-gray-50 border-gray-100 text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    {h}홀
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center bg-gray-50 border border-gray-100 p-4 rounded-2xl mt-2">
-              <div>
-                <p className="text-xs font-black text-gray-800">3인 진행 가능 여부</p>
-                <p className="text-[10px] text-gray-400 font-bold mt-0.5">3인 라운딩 동시 출발 가능</p>
-              </div>
-              <button 
-                type="button"
-                onClick={() => setIs3PlayerAllowed(!is3PlayerAllowed)}
-                className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 focus:outline-none ${is3PlayerAllowed ? 'bg-green-600' : 'bg-gray-200'}`}
-              >
-                <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${is3PlayerAllowed ? 'translate-x-6' : 'translate-x-0'}`} />
-              </button>
-            </div>
-
-            <div className="space-y-2 mt-4">
-              <label className="text-xs font-bold text-gray-500">캐디 여부</label>
-              <div className="grid grid-cols-3 gap-2">
-                {['캐디', '노캐디', '드라이빙캐디'].map(c => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setCaddieType(c)}
-                    className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all ${
-                      caddieType === c 
-                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
-                        : 'bg-gray-50 border-gray-100 text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* 코멘트 */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500">상세 안내 사항</label>
-            <textarea 
-              placeholder="예약 취소 규정, 양도 조건 또는 특이 사항을 자세히 적어주세요."
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              rows={4}
-              className="w-full px-4 py-3.5 bg-gray-55 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition-all font-medium text-gray-800 placeholder-gray-400 resize-none leading-relaxed"
-            />
-          </div>
-
-          <button 
-            type="submit"
-            className="w-full py-4 mt-6 bg-green-600 hover:bg-green-700 active:scale-[0.99] text-white font-black rounded-2xl text-sm shadow-lg shadow-green-150 transition-all"
-          >
-            티타임 등록 완료 ⛳
-          </button>
         </form>
       </div>
     );
   };
-
   // --- [Agent Tee-time Manage/List View] ---
   const AgentTeeListView = () => {
     const myTees = bookingList.filter(b => b.hostName === (userProfile?.name || '부킹 매니저 님'));
