@@ -5379,7 +5379,8 @@ const MyPageTabView = () => {
     const [region, setRegion] = useState('경기/인천');
     const [golfCourse, setGolfCourse] = useState('');
     const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
+    const [hour, setHour] = useState('');
+    const [minute, setMinute] = useState('');
     const [price, setPrice] = useState('');
     const [isPrepaid, setIsPrepaid] = useState(false);
     const [isCartIncluded, setIsCartIncluded] = useState(false);
@@ -5391,7 +5392,7 @@ const MyPageTabView = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      if (!golfCourse.trim() || !date || !time || !price) {
+      if (!golfCourse.trim() || !date || !hour.trim() || !minute.trim() || !price) {
         showToast('필수 항목(골프장, 날짜, 시간, 그린피)을 입력해 주세요.');
         return;
       }
@@ -5406,11 +5407,15 @@ const MyPageTabView = () => {
       const dayOfWeek = dayOfWeekList[dateObj.getDay()];
       const formattedDate = `${month}/${day} (${dayOfWeek})`;
 
+      const formattedHour = hour.padStart(2, '0');
+      const formattedMinute = minute.padStart(2, '0');
+      const timeStr = `${formattedHour}:${formattedMinute}`;
+
       const newBooking = {
         id: Date.now(),
         name: golfCourse,
         location: region,
-        time: `${formattedDate} · ${time}`,
+        time: `${formattedDate} · ${timeStr}`,
         price: formattedPrice,
         isPrepaid,
         isCartIncluded,
@@ -5472,7 +5477,7 @@ const MyPageTabView = () => {
                 </div>
               </div>
 
-              {/* 2행: 날짜 & 시간 */}
+              {/* 2행: 날짜 & 시간(시/분 분할 입력 + 드래그 목록) */}
               <div className="grid grid-cols-12 gap-2.5">
                 <div className="col-span-6 space-y-1">
                   <span className="text-[10px] font-black text-gray-400">날짜 *</span>
@@ -5483,14 +5488,45 @@ const MyPageTabView = () => {
                     className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
                   />
                 </div>
-                <div className="col-span-6 space-y-1">
-                  <span className="text-[10px] font-black text-gray-400">시간 *</span>
+                <div className="col-span-3 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">시 *</span>
                   <input 
-                    type="time" 
-                    value={time}
-                    onChange={e => setTime(e.target.value)}
-                    className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500"
+                    type="text"
+                    maxLength={2}
+                    placeholder="시"
+                    list="hour-list"
+                    value={hour}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      if (val === '' || Number(val) <= 23) setHour(val);
+                    }}
+                    className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500 text-center"
                   />
+                  <datalist id="hour-list">
+                    {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')).map(h => (
+                      <option key={h} value={h}>{h}시</option>
+                    ))}
+                  </datalist>
+                </div>
+                <div className="col-span-3 space-y-1">
+                  <span className="text-[10px] font-black text-gray-400">분 *</span>
+                  <input 
+                    type="text"
+                    maxLength={2}
+                    placeholder="분"
+                    list="minute-list"
+                    value={minute}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      if (val === '' || Number(val) <= 59) setMinute(val);
+                    }}
+                    className="w-full px-2 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 focus:outline-none focus:border-green-500 text-center"
+                  />
+                  <datalist id="minute-list">
+                    {Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0')).map(m => (
+                      <option key={m} value={m}>{m}분</option>
+                    ))}
+                  </datalist>
                 </div>
               </div>
 
