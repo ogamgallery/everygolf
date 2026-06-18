@@ -5397,7 +5397,7 @@ const MyPageTabView = () => {
         return;
       }
 
-      const rawPriceNum = parseInt(price.replace(/[^0-9]/g, '')) || 0;
+      const rawPriceNum = Math.round(parseFloat(price) * 10000) || 0;
       const formattedPrice = rawPriceNum.toLocaleString();
 
       const dateObj = new Date(date);
@@ -5549,12 +5549,13 @@ const MyPageTabView = () => {
                   <div className="relative flex items-center">
                     <input 
                       type="number" 
-                      placeholder="예: 120000" 
+                      step="0.1"
+                      placeholder="ex) 16" 
                       value={price}
                       onChange={e => setPrice(e.target.value)}
-                      className="w-full pl-3 pr-6 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-500"
+                      className="w-full pl-3 pr-10 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-500"
                     />
-                    <span className="absolute right-2 text-[10px] font-black text-gray-400">원</span>
+                    <span className="absolute right-2 text-[10px] font-black text-gray-400">만원</span>
                   </div>
                 </div>
                 <div className="col-span-4 space-y-1">
